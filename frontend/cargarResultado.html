@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cargar Resultados - Pro Cup Padel</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    header {
+      background-color: #021b39;
+      padding: 10px 40px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo img {
+      width: 110px;
+      height: 85px;
+    }
+
+    .nav-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .nav-center {
+      display: flex;
+      gap: 120px;
+    }
+
+    .nav-center a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .nav-center .active {
+      pointer-events: none;
+      opacity: 0.6;
+      text-decoration: underline;
+    }
+
+    .main-container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #0a2b4c;
+      margin-bottom: 30px;
+    }
+
+    .round-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #021b39;
+      margin-top: 30px;
+      margin-bottom: 15px;
+    }
+
+    .match {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #0a2b4c;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #0a2b4c;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    button {
+      background-color: #021b39;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      display: block;
+      margin: 40px auto 0;
+    }
+
+    button:hover {
+      background-color: #053467;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="homeOrganizador.html" class="logo">
+      <img src="logo.jpg" alt="Logo Pro Cup Padel" />
+    </a>
+    <div class="nav-wrapper">
+        <div class="nav-center">
+          <a href="crearTorneo.html">Crear Torneo</a>
+          <a class="active">Cargar Resultados</a>
+          <a href="rankingOrganizador.html">Ranking</a>
+          <a href="cargarFotos.html">Subir Multimedia</a>
+          <a href="transmisionOrganizador.html">Transmisión</a>
+        </div>
+      </div>
+  </header>
+
+  <div class="main-container">
+    <h1>Cargar Resultados del Torneo</h1>
+
+    <div class="round-title">🟦 Octavos de Final</div>
+    <div class="match">
+      <label>1. Lopes/Garcia vs Perez/Tomassini</label>
+      <select>
+        <option value="">Seleccionar ganador</option>
+        <option>Lopes/Garcia</option>
+        <option>Perez/Tomassini</option>
+      </select>
+    </div>
+    <div class="match">
+      <label>2. Salazar/Bredanini vs Wortley/Ferrero</label>
+      <select>
+        <option value="">Seleccionar ganador</option>
+        <option>Salazar/Bredanini</option>
+        <option>Wortley/Ferrero</option>
+      </select>
+    </div>
+    <div class="match">
+      <label>3. Martinez/Sanchez vs Nudelman/Ruiz</label>
+      <select>
+        <option value="">Seleccionar ganador</option>
+        <option>Martinez/Sanchez</option>
+        <option>Nudelman/Ruiz</option>
+      </select>
+    </div>
+    <div class="match">
+      <label>4. Caturelli/Gamarra vs Cepeda/Adorni</label>
+      <select>
+        <option value="">Seleccionar ganador</option>
+        <option>Caturelli/Gamarra</option>
+        <option>Cepeda/Adorni</option>
+      </select>
+    </div>
+    <div class="match">
+      <label>5. Vergara/Marin vs Soler/Capdevila</label>
+      <select>
+        <option value="">Seleccionar ganador</option>
+        <option>Vergara/Marin</option>
+        <option>Soler/Capdevila</option>
+      </select>
+    </div>
+    <div class="match">
+      <label>6. Ortiz/Crespo vs Mendez/Cuaranta</label>
+      <select>
+        <option value="">Seleccionar ganador</option>
+        <option>Ortiz/Crespo</option>
+        <option>Mendez/Cuaranta</option>
+      </select>
+    </div>
+    <div class="match">
+      <label>7. Hernandez/Luna vs Ruiz/Ruiz</label>
+      <select>
+        <option value="">Seleccionar ganador</option>
+        <option>Hernandez/Luna</option>
+        <option>Ruiz/Ruiz</option>
+      </select>
+    </div>
+    <div class="match">
+      <label>8. Zapata/Romero vs Lebron/James</label>
+      <select>
+        <option value="">Seleccionar ganador</option>
+        <option>Zapata/Romero</option>
+        <option>Lebron/James</option>
+      </select>
+    </div>
+
+    <!-- Podés agregar acá cuartos, semis y final si querés mostrar todo -->
+
+    <button>Guardar Resultados</button>
+  </div>
+
+</body>
+</html>

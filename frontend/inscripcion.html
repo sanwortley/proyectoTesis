@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inscripción - Pro Cup Padel</title>
+
+</head>
+<body>
+
+  <header>
+    <a href="homeJugador.html" class="logo">
+      <img src="logo.jpg" alt="Logo Pro Cup Padel" />
+    </a>
+    <div class="nav-wrapper">
+      <div class="nav-center">
+        <a href="torneo.html">Torneos</a>
+        <a class="active">Inscripción</a>
+        <a href="rankingJugador.html">Ranking</a>
+        <a href="multimediaJugador.html">Multimedia</a>
+        <a href="transmisionJugador.html">Transmisión</a>
+       
+      </div>
+    </div>
+  </header>
+
+  <div class="form-container">
+    <h2>Inscribite al Torneo</h2>
+    <form>
+
+      <label for="jugador1">Jugador principal:</label>
+      <select id="jugador1" name="jugador1" disabled>
+        <option>Santiago Rodriguez</option>
+      </select>
+
+      <label for="jugador2">Compañero:</label>
+      <select id="jugador2" name="jugador2" required>
+        <option value="">Seleccioná compañero</option>
+        <option value="1">Lucas Martínez</option>
+        <option value="2">Federico Ruiz</option>
+        <option value="3">Matías Gómez</option>
+      </select>
+
+      <label for="torneo">Torneo:</label>
+      <select id="torneo" name="torneo" required>
+        <option value="">Seleccioná torneo</option>
+        <option value="a">Primera - Abril</option>
+        <option value="b">Segunda - Abril</option>
+        <option value="c">Mixto - Abril</option>
+      </select>
+
+      <label for="telefono">Número de contacto:</label>
+      <input type="tel" id="telefono" name="telefono" placeholder="Ej: 3511234567" required>
+
+      <label for="email">Correo electrónico:</label>
+      <input type="email" id="email" name="email" placeholder="Ej: jugador@correo.com" required>
+
+      <button type="submit">Inscribirse</button>
+    </form>
+  </div>
+
+</body>
+</html>
