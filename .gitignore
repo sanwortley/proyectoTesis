@@ -1,0 +1,18 @@
+# Node
+node_modules/
+npm-debug.log
+
+# Docker volumes
+backend/postgres_data/
+*.bak
+
+# Env files
+*.env
+
+# VSCode
+.vscode/
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini

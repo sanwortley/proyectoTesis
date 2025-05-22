@@ -1,7 +1,0 @@
-# node
-node_modules/
-.env
-npm-debug.log
-
-# docker
-postgres_data/
