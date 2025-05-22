@@ -12,6 +12,7 @@ services:
       - "5432:5432"
     volumes:
     - ./DATA/procup.sql:/docker-entrypoint-initdb.d/procup.sql
+    
 
   backend:
     build: .
@@ -20,6 +21,7 @@ services:
       - "3000:3000"
     volumes:
       - .:/app
+       - ./backend/.env:/app/.env
     depends_on:
       - db
     environment:

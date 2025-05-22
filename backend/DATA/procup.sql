@@ -9,7 +9,18 @@ CREATE TABLE torneo (
   nombre VARCHAR(100) NOT NULL,
   fecha_inicio DATE NOT NULL,
   fecha_fin DATE NOT NULL,
+  cierre_inscripcion DATE NOT NULL,
+  cantidad_maxima_equipos INT NOT NULL,
   id_categoria INT REFERENCES categoria(id_categoria)
+);
+CREATE TABLE usuario (
+  id_usuario SERIAL PRIMARY KEY,
+  nombre_completo VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  telefono VARCHAR(20),
+  password VARCHAR(255) NOT NULL,
+  rol VARCHAR(20) NOT NULL DEFAULT 'jugador' CHECK (rol IN ('jugador', 'organizador')),
+  fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE jugador (
@@ -57,12 +68,22 @@ INSERT INTO jugador (nombre, apellido, edad) VALUES
 ('Pedro', 'Fernández', 27),
 ('Luis', 'Díaz', 29);
 
+--Insertar usuarios
+INSERT INTO usuario (nombre_completo, email, telefono, password)
+VALUES ('Juan Pérez', 'juan.perez@example.com', '3512345678', 'claveEncriptada123');
+
+INSERT INTO usuario (nombre_completo, email, telefono, password, rol)
+VALUES ('Ana Martínez', 'ana.martinez@example.com', '3519876543', 'claveEncriptada456', 'organizador');
+
+
 -- Insertar equipos
 INSERT INTO equipo (jugador1_id, jugador2_id) VALUES (1, 2), (3, 4);
 
 -- Insertar torneo
-INSERT INTO torneo (nombre, fecha_inicio, fecha_fin, id_categoria)
-VALUES ('Pro Cup Apertura', '2025-06-01', '2025-06-15', 1);
+INSERT INTO torneo (nombre, fecha_inicio, fecha_fin, cierre_inscripcion, cantidad_maxima_equipos, id_categoria)
+VALUES ('Pro Cup Apertura', '2025-06-01', '2025-06-15', '2025-05-30', 16, 1);
+
+
 
 -- Inscripción de equipos
 INSERT INTO inscripcion (id_equipo, id_torneo) VALUES (1, 1), (2, 1);
