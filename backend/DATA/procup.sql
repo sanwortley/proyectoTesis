@@ -1,3 +1,4 @@
+-- Active: 1747946693861@@db@5432
 -- Crear la tabla 
 CREATE TABLE categoria (
   id_categoria SERIAL PRIMARY KEY,
