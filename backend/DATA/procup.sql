@@ -92,3 +92,11 @@ INSERT INTO inscripcion (id_equipo, id_torneo) VALUES (1, 1), (2, 1);
 -- Insertar partido
 INSERT INTO partido (id_torneo, equipo1_id, equipo2_id, fecha, resultado) VALUES
 (1, 1, 2, '2025-06-03', '6-4 3-6 10-8');
+
+
+CREATE TABLE control_torneo_id (
+  ultimo_id INT NOT NULL
+);
+
+-- Insertar el primer valor si no existe
+INSERT INTO control_torneo_id (ultimo_id) VALUES (0);

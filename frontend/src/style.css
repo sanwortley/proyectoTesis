@@ -211,3 +211,117 @@ body {
     }
   }
   
+
+  /* BOTONES HOME */
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    align-items: center;
+  }
+  
+  .main-button {
+    padding: 12px 20px;
+    font-size: 16px;
+    background-color: #004aad;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 200px;
+    transition: background-color 0.3s;
+  }
+  
+  .main-button:hover {
+    background-color: #003a88;
+  }
+  
+/* NAV
+*/
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #001738; /* azul oscuro */
+  padding: 10px 40px;
+}
+
+.navbar-logo {
+  height: 60px;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 40px;
+}
+
+.navbar-links a {
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.navbar-links a:hover {
+  color: #ffd700;
+}
+/* CREAR TORNEO*/
+
+.crear-torneo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 100px);
+  background-color: #f5f5f5;
+}
+
+.crear-torneo-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.crear-torneo-form h2 {
+  text-align: center;
+  color: #002244;
+}
+
+.crear-torneo-form input,
+.crear-torneo-form select {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.crear-torneo-form button {
+  background-color: #002244;
+  color: white;
+  padding: 0.6rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.crear-torneo-form button:hover {
+  background-color: #014aad;
+}
+
+.success {
+  color: green;
+  font-weight: bold;
+  text-align: center;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+}
