@@ -4,10 +4,10 @@ import { createContext, useState, useContext } from 'react';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [usuario, setUsuario] = useState(null); // { rol: 'jugador' | 'organizador' | 'invitado' }
+  const [jugador, setJugador] = useState(null); // { rol: 'jugador' | 'organizador' }
 
   return (
-    <AuthContext.Provider value={{ usuario, setUsuario }}>
+    <AuthContext.Provider value={{ jugador, setJugador }}>
       {children}
     </AuthContext.Provider>
   );

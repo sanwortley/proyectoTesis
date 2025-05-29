@@ -10,6 +10,7 @@ import SubirMultimedia from './pages/SubirMultimedia'
 import CargarResultado from './pages/CargarResultado'
 import CargarTransmision from './pages/CargarTransmision'
 import Registro from './pages/Registro';
+import MisTorneosOrganizador from './pages/MisTorneosOrganizador';
 
 function App() {
   return (
@@ -24,6 +25,8 @@ function App() {
       <Route path="/subir-multimedia" element={<SubirMultimedia />} />
       <Route path="/cargar-resultado" element={<CargarResultado />} />
       <Route path="/cargar-transmision" element={<CargarTransmision />} />
+      <Route path="/organizador/torneos" element={<MisTorneosOrganizador />} />
+
 
     </Routes>
   );

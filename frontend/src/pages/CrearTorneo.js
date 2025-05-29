@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import logo from '../assets/logo.jpg'; 
 import { Link } from 'react-router-dom';
-import '../style.css'; // Asegurate de tener los estilos cargados
+import '../style.css';
 
 function CrearTorneo() {
-  const [nombre, setNombre] = useState('');
+  const [nombre_torneo, setNombreTorneo] = useState('');
   const [fechaInicio, setFechaInicio] = useState('');
   const [fechaFin, setFechaFin] = useState('');
-  const [cierreInscripcion, setCierreInscripcion] = useState('');
-  const [cantidadMaximaEquipos, setCantidadMaximaEquipos] = useState('');
+  const [fecha_cierre_inscripcion, setFechaCierreInscripcion] = useState('');
+  const [max_equipos, setMaxEquipos] = useState('');
   const [idCategoria, setIdCategoria] = useState('');
   const [categorias, setCategorias] = useState([]);
   const [mensaje, setMensaje] = useState('');
@@ -31,21 +31,21 @@ function CrearTorneo() {
 
       await axios.post(`${process.env.REACT_APP_API_URL}/torneos`, {
         id_torneo,
-        nombre,
+        nombre_torneo,
         fecha_inicio: fechaInicio,
         fecha_fin: fechaFin,
-        cierre_inscripcion: cierreInscripcion,
-        cantidad_maxima_equipos: parseInt(cantidadMaximaEquipos),
-        id_categoria: parseInt(idCategoria)
+        fecha_cierre_inscripcion,
+        max_equipos: parseInt(max_equipos),
+        id_categoria: parseInt(idCategoria),
       });
 
       setMensaje('Torneo creado con éxito');
-      // Reset campos
-      setNombre('');
+      // Reset
+      setNombreTorneo('');
       setFechaInicio('');
       setFechaFin('');
-      setCierreInscripcion('');
-      setCantidadMaximaEquipos('');
+      setFechaCierreInscripcion('');
+      setMaxEquipos('');
       setIdCategoria('');
     } catch (err) {
       setError('Error al crear torneo');
@@ -59,68 +59,66 @@ function CrearTorneo() {
           <img src={logo} alt="Logo" className="navbar-logo" />
         </Link>
       </nav>
-    <div className="crear-torneo-container">
-    
-    <form onSubmit={handleSubmit} className="crear-torneo-form">
-      <h2>Crear Torneo</h2>
-  
-      {mensaje && <p className="success">{mensaje}</p>}
-      {error && <p className="error">{error}</p>}
-  
-      <input
-        type="text"
-        value={nombre}
-        placeholder="Nombre del torneo"
-        onChange={(e) => setNombre(e.target.value)}
-        required
-      />
-  
-      <label>Fecha de inicio del torneo</label>
-      <input
-        type="date"
-        value={fechaInicio}
-        onChange={(e) => setFechaInicio(e.target.value)}
-        required
-      />
-  
-      <label>Fecha de finalización del torneo</label>
-      <input
-        type="date"
-        value={fechaFin}
-        onChange={(e) => setFechaFin(e.target.value)}
-        required
-      />
-  
-      <label>Fecha de cierre de inscripción</label>
-      <input
-        type="date"
-        value={cierreInscripcion}
-        onChange={(e) => setCierreInscripcion(e.target.value)}
-        required
-      />
-  
-      <input
-        type="number"
-        placeholder="Máx equipos"
-        value={cantidadMaximaEquipos}
-        onChange={(e) => setCantidadMaximaEquipos(e.target.value)}
-        required
-      />
-  
-      <select value={idCategoria} onChange={(e) => setIdCategoria(e.target.value)} required>
-        <option value="">Seleccioná una categoría</option>
-        {categorias.map((cat) => (
-          <option key={cat.id_categoria} value={cat.id_categoria}>
-            {cat.nombre}
-          </option>
-        ))}
-      </select>
-  
-      <button type="submit">Crear Torneo</button>
-    </form>
-  </div>
-  </>
-  
+      <div className="crear-torneo-container">
+        <form onSubmit={handleSubmit} className="crear-torneo-form">
+          <h2>Crear Torneo</h2>
+
+          {mensaje && <p className="success">{mensaje}</p>}
+          {error && <p className="error">{error}</p>}
+
+          <input
+            type="text"
+            value={nombre_torneo}
+            placeholder="Nombre del torneo"
+            onChange={(e) => setNombreTorneo(e.target.value)}
+            required
+          />
+
+          <label>Fecha de inicio del torneo</label>
+          <input
+            type="date"
+            value={fechaInicio}
+            onChange={(e) => setFechaInicio(e.target.value)}
+            required
+          />
+
+          <label>Fecha de finalización del torneo</label>
+          <input
+            type="date"
+            value={fechaFin}
+            onChange={(e) => setFechaFin(e.target.value)}
+            required
+          />
+
+          <label>Fecha de cierre de inscripción</label>
+          <input
+            type="date"
+            value={fecha_cierre_inscripcion}
+            onChange={(e) => setFechaCierreInscripcion(e.target.value)}
+            required
+          />
+
+          <input
+            type="number"
+            placeholder="Máx equipos"
+            value={max_equipos}
+            onChange={(e) => setMaxEquipos(e.target.value)}
+            required
+          />
+
+          <select value={idCategoria} onChange={(e) => setIdCategoria(e.target.value)} required>
+            <option value="">Seleccioná una categoría</option>
+            {categorias.map((cat) => (
+              <option key={cat.id_categoria} value={cat.id_categoria}>
+                {cat.nombre}
+              </option>
+            ))}
+          </select>
+
+          <button type="submit">Crear Torneo</button>
+        </form>
+      </div>
+    </>
   );
 }
 

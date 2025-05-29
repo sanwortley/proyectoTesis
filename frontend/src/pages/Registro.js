@@ -1,20 +1,22 @@
 // Si no usás useEffect, no lo importes
 import { useState } from 'react';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom'; // solo Link si no usás navigate
-import logo from '../assets/logo.jpg';
+import { useNavigate } from 'react-router-dom'; // solo Link si no usás navigate
+//import logo from '../assets/logo.jpg';
 import '../style.css';
 
 
 
 function Registro() {
   const [form, setForm] = useState({
-    nombre_completo: '',
+    nombre_jugador: '',
+    apellido_jugador: '',
     email: '',
     telefono: '',
     password: '',
     confirmar_password: ''
   });
+  
 
   const [error, setError] = useState('');
   const [mensaje, setMensaje] = useState('');
@@ -28,6 +30,11 @@ function Registro() {
     e.preventDefault();
     setError('');
     setMensaje('');
+    
+    if (!form.nombre_jugador.trim() || !form.apellido_jugador.trim()) {
+      setError('Nombre y apellido son obligatorios');
+      return;
+    }
 
     try {
       await axios.post(`${process.env.REACT_APP_API_URL}/registro`, form);
@@ -51,9 +58,17 @@ function Registro() {
 
         <input
           type="text"
-          name="nombre_completo"
-          placeholder="Nombre completo"
-          value={form.nombre_completo}
+          name="nombre_jugador"
+          placeholder="Nombre"
+          value={form.nombre_jugador}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="apellido_jugador"
+          placeholder="Apellido"
+          value={form.apellido_jugador}
           onChange={handleChange}
           required
         />

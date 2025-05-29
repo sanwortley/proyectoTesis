@@ -325,3 +325,37 @@ body {
   font-weight: bold;
   text-align: center;
 }
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/*MIS TORNEOS ORGANIZADOR*/
+.lista-torneos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.torneo-card {
+  border: 1px solid #ccc;
+  padding: 16px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.boton-ver {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 6px 12px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+}

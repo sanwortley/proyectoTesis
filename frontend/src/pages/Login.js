@@ -11,7 +11,7 @@ function Login() {
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
-  const { setUsuario } = useAuth(); // contexto
+  const { setJugador } = useAuth(); // contexto
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -19,9 +19,10 @@ function Login() {
       const res = await axios.post(`${process.env.REACT_APP_API_URL}/login`, { login, password });
       console.log('Login exitoso', res.data);
 
-      setUsuario(res.data.usuario); // Guarda el usuario en el contexto
+      setJugador(res.data.jugador); // Guarda el usuario en el contexto
 
-      const rol = res.data.usuario.rol
+      const rol = res.data.jugador.rol
+      console.log('ROL:', rol); 
 
       // Redirige según el rol
       if (rol === 'jugador') navigate('/home-jugador');
@@ -41,7 +42,7 @@ function Login() {
         <form onSubmit={handleLogin}>
           <input
             type="text"
-            placeholder="Email o usuario"
+            placeholder="Email"
             value={login}
             onChange={(e) => setLogin(e.target.value)}
           />
