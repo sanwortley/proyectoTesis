@@ -11,6 +11,7 @@ import CargarResultado from './pages/CargarResultado'
 import CargarTransmision from './pages/CargarTransmision'
 import Registro from './pages/Registro';
 import MisTorneosOrganizador from './pages/MisTorneosOrganizador';
+import Inscripcion from './pages/Inscripcion';
 
 function App() {
   return (
@@ -26,6 +27,8 @@ function App() {
       <Route path="/cargar-resultado" element={<CargarResultado />} />
       <Route path="/cargar-transmision" element={<CargarTransmision />} />
       <Route path="/organizador/torneos" element={<MisTorneosOrganizador />} />
+      <Route path="/inscripcion" element={<Inscripcion />} />
+
 
 
     </Routes>
