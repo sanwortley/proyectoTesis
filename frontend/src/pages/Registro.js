@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // solo Link si no usás navigate
-//import logo from '../assets/logo.jpg';
+import logo from '../assets/logo.png';
 import '../style.css';
 
 
@@ -48,9 +48,11 @@ function Registro() {
   };
 
   return (
-    <div className="crear-torneo-container">
+    <div className="registro-form-container">
+       <img src={logo} alt="Logo del torneo" className="logo" />
 
-      <form onSubmit={handleSubmit} className="crear-torneo-form">
+      <form onSubmit={handleSubmit} className="registro-form">
+  
         <h2>Registro de Jugador</h2>
 
         {mensaje && <p className="success">{mensaje}</p>}

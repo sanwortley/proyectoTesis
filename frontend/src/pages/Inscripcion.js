@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
-import logo from '../assets/logo.jpg';
+import logo from '../assets/logo.png';
 import '../style.css';
 
 function Inscripcion() {
@@ -91,58 +91,74 @@ function Inscripcion() {
 
   return (
     <>
-      <nav className="navbar">
-        <Link to="/home-jugador">
-          <img src={logo} alt="Logo" className="navbar-logo" />
-        </Link>
-      </nav>
+       <nav className="navbar">
+  <Link to="/home-jugador">
+    <img src={logo} alt="Logo" className="navbar-logo" />
+  </Link>
+</nav>
 
-      <div className="crear-torneo-container">
-        <form onSubmit={handleSubmit} className="crear-torneo-form">
-          <h2>Inscribite al Torneo</h2>
+<div className="inscripcion-container">
+  <form onSubmit={handleSubmit} className="inscripcion-form">
+    <h2 className="inscripcion-titulo">Inscribite al Torneo</h2>
 
-          {mensaje && <p className="success">{mensaje}</p>}
-          {error && <p className="error">{error}</p>}
-          {yaInscripto && <p className="error">Ya estás inscripto en este torneo.</p>}
-          {torneoLleno && <p className="error">Este torneo ya está lleno.</p>}
+    {mensaje && <p className="success">{mensaje}</p>}
+    {error && <p className="error">{error}</p>}
+    {yaInscripto && <p className="error">Ya estás inscripto en este torneo.</p>}
+    {torneoLleno && <p className="error">Este torneo ya está lleno.</p>}
 
-          {jugador && (
-            <>
-              <label>Jugador principal:</label>
-              <input
-                value={`${jugador.nombre_jugador} ${jugador.apellido_jugador}`}
-                disabled
-              />
-            </>
-          )}
+    {jugador && (
+      <>
+        <label className="inscripcion-label">Jugador principal:</label>
+        <input
+          className="inscripcion-input"
+          value={`${jugador.nombre_jugador} ${jugador.apellido_jugador}`}
+          disabled
+        />
+      </>
+    )}
 
-          <label>Compañero:</label>
-          <select value={jugador2Id} onChange={(e) => setJugador2Id(e.target.value)} required>
-            <option value="">Seleccioná compañero</option>
-            {jugadores
-              .filter(j => j.id_jugador !== jugador?.id_jugador)
-              .map(j => (
-                <option key={j.id_jugador} value={j.id_jugador}>
-                  {j.nombre_jugador} {j.apellido_jugador}
-                </option>
-              ))}
-          </select>
+    <label className="inscripcion-label">Compañero:</label>
+    <select
+      className="inscripcion-select"
+      value={jugador2Id}
+      onChange={(e) => setJugador2Id(e.target.value)}
+      required
+    >
+      <option value="">Seleccioná compañero</option>
+      {jugadores
+        .filter(j => j.id_jugador !== jugador?.id_jugador)
+        .map(j => (
+          <option key={j.id_jugador} value={j.id_jugador}>
+            {j.nombre_jugador} {j.apellido_jugador}
+          </option>
+        ))}
+    </select>
 
-          <label>Torneo:</label>
-          <select value={torneoId} onChange={(e) => setTorneoId(e.target.value)} required>
-            <option value="">Seleccioná torneo</option>
-            {torneos.map(t => (
-              <option key={t.id_torneo} value={t.id_torneo}>
-                {t.nombre_torneo} (Cierra: {new Date(t.fecha_cierre_inscripcion).toLocaleDateString()})
-              </option>
-            ))}
-          </select>
+    <label className="inscripcion-label">Torneo:</label>
+    <select
+      className="inscripcion-select"
+      value={torneoId}
+      onChange={(e) => setTorneoId(e.target.value)}
+      required
+    >
+      <option value="">Seleccioná torneo</option>
+      {torneos.map(t => (
+        <option key={t.id_torneo} value={t.id_torneo}>
+          {t.nombre_torneo} (Cierra: {new Date(t.fecha_cierre_inscripcion).toLocaleDateString()})
+        </option>
+      ))}
+    </select>
 
-          <button type="submit" disabled={loading || yaInscripto || torneoLleno}>
-            {loading ? 'Inscribiendo...' : 'Inscribirse'}
-          </button>
-        </form>
-      </div>
+    <button
+      className="inscripcion-boton"
+      type="submit"
+      disabled={loading || yaInscripto || torneoLleno}
+    >
+      {loading ? 'Inscribiendo...' : 'Inscribirse'}
+    </button>
+  </form>
+</div>
+
     </>
   );
 }

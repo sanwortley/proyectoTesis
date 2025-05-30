@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import logo from '../assets/logo.jpg'; // Asegurate de tener la ruta correcta
+import logo from '../assets/logo.png'; // Asegurate de tener la ruta correcta
 
 function HomeJugador() {
   return (

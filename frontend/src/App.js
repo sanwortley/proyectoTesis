@@ -12,6 +12,7 @@ import CargarTransmision from './pages/CargarTransmision'
 import Registro from './pages/Registro';
 import MisTorneosOrganizador from './pages/MisTorneosOrganizador';
 import Inscripcion from './pages/Inscripcion';
+import Torneos from './pages/Torneos';
 
 function App() {
   return (
@@ -28,6 +29,8 @@ function App() {
       <Route path="/cargar-transmision" element={<CargarTransmision />} />
       <Route path="/organizador/torneos" element={<MisTorneosOrganizador />} />
       <Route path="/inscripcion" element={<Inscripcion />} />
+      <Route path="/torneosllave" element={<Torneos />} />
+      
 
 
 

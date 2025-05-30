@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import logo from '../assets/logo.jpg'; 
+import logo from '../assets/logo.png'; 
 import { Link } from 'react-router-dom';
 import '../style.css';
+import { useLocation } from 'react-router-dom';
+
 
 function CrearTorneo() {
   const [nombre_torneo, setNombreTorneo] = useState('');
@@ -20,6 +22,12 @@ function CrearTorneo() {
   const [torneosExpandido, setTorneosExpandido] = useState({});
   const [editando, setEditando] = useState(null);
   const [formEdit, setFormEdit] = useState({});
+  const [mensajeGrupos, setMensajeGrupos] = useState('');
+  const [torneoConGrupos, setTorneoConGrupos] = useState(null);
+
+  const location = useLocation();
+
+  const isActive = (path) => location.pathname === path;
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/categorias`)
@@ -56,6 +64,16 @@ function CrearTorneo() {
       setError('Error al crear torneo');
     }
   };
+  useEffect(() => {
+    if (mensajeGrupos) {
+      const timer = setTimeout(() => {
+        setMensajeGrupos('');
+        setTorneoConGrupos(null);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [mensajeGrupos]);
+  
 
   const obtenerTorneos = async () => {
     try {
@@ -122,134 +140,179 @@ function CrearTorneo() {
       return nuevoEstado;
     });
   };
+  const generarGrupos = async (idTorneo) => {
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/torneos/${idTorneo}/generar-grupos`, {
+        method: 'POST'
+      });
+  
+      setTorneoConGrupos(idTorneo);
+      if (res.ok) {
+        setMensajeGrupos('Grupos generados correctamente');
+        obtenerTorneos();
+      } else {
+        setMensajeGrupos('Error al generar grupos');
+      }
+    } catch (err) {
+      console.error('Error generando grupos:', err);
+      setMensajeGrupos('Ocurrió un error inesperado');
+    }
+  };
+  
+  
 
   return (
     <>
       <nav className="navbar">
-        <Link to="/home-organizador">
-          <img src={logo} alt="Logo" className="navbar-logo" />
-        </Link>
-      </nav>
-
-      <div className="crear-torneo-container">
-        <form onSubmit={handleSubmit} className="crear-torneo-form">
-          <h2>Crear Torneo</h2>
-
-          {mensaje && <p className="success">{mensaje}</p>}
-          {error && <p className="error">{error}</p>}
-
-          <input type="text" value={nombre_torneo} placeholder="Nombre del torneo" onChange={(e) => setNombreTorneo(e.target.value)} required />
-          <label>Fecha de inicio del torneo</label>
-          <input type="date" value={fechaInicio} onChange={(e) => setFechaInicio(e.target.value)} required />
-          <label>Fecha de finalización del torneo</label>
-          <input type="date" value={fechaFin} onChange={(e) => setFechaFin(e.target.value)} required />
-          <label>Fecha de cierre de inscripción</label>
-          <input type="date" value={fecha_cierre_inscripcion} onChange={(e) => setFechaCierreInscripcion(e.target.value)} required />
-          <input type="number" placeholder="Máx equipos" value={max_equipos} onChange={(e) => setMaxEquipos(e.target.value)} required />
-
-          <select value={idCategoria} onChange={(e) => setIdCategoria(e.target.value)} required>
-            <option value="">Seleccioná una categoría</option>
-            {categorias.map((cat) => (
-              <option key={cat.id_categoria} value={cat.id_categoria}>{cat.nombre}</option>
-            ))}
-          </select>
-
-          <button type="submit">Crear Torneo</button>
-        </form>
-
-        <div className="mostrar-torneos-container">
-          <button className="btn-azul" onClick={() => {
-            setMostrarTorneos(!mostrarTorneos);
-            if (!mostrarTorneos) obtenerTorneos();
-          }}>
-            {mostrarTorneos ? 'Ocultar torneos' : 'Mostrar torneos'}
-          </button>
-        </div>
-
-        {mostrarTorneos && (
-          <div className="torneo-grid">
-            {torneos.map(t => (
-              <div key={t.id_torneo} className="torneo-card">
-                <h3>{t.nombre_torneo}</h3>
-                <p><strong>Inicio:</strong> {new Date(t.fecha_inicio).toLocaleDateString()}</p>
-                <p><strong>Fin:</strong> {new Date(t.fecha_fin).toLocaleDateString()}</p>
-                <p><strong>Cierre inscripción:</strong> {new Date(t.fecha_cierre_inscripcion).toLocaleDateString()}</p>
-                <p><strong>Máx equipos:</strong> {t.max_equipos}</p>
-
-                <div className="torneo-botones">
-                  <button onClick={() => toggleExpandir(t.id_torneo)}>
-                    {torneosExpandido[t.id_torneo] ? 'Ocultar equipos' : 'Ver equipos'}
-                  </button>
-                  <button onClick={() => setEditando(t)} className="btn-warning">Editar</button>
-                  <button onClick={() => eliminarTorneo(t.id_torneo)} className="btn-danger">Eliminar Torneo</button>
-                </div>
-
-                {torneosExpandido[t.id_torneo] && (
-                  <ul className="equipo-lista">
-                    {Array.isArray(equiposPorTorneo[t.id_torneo]) && equiposPorTorneo[t.id_torneo].length > 0 ? (
-                      equiposPorTorneo[t.id_torneo].map(e => (
-                        <li key={e.id_equipo}>
-                          <span>{e.nombre_equipo}</span>
-                          <span className="equipo-detalle">{e.nombre_jugador1} {e.apellido_jugador1} / {e.nombre_jugador2} {e.apellido_jugador2}</span>
-                          <button onClick={() => eliminarEquipo(e.id_equipo)} className="btn-warning">Eliminar equipo</button>
-                        </li>
-                      ))
-                    ) : (
-                      <li>No hay equipos aún.</li>
-                    )}
-                  </ul>
-                )}
-              </div>
-            ))}
+          <div className="navbar-logo-container">
+            <Link to="/home-organizador">
+            <img src={logo} alt="Logo" className="navbar-logo" />
+            </Link>
           </div>
-        )}
 
-        {editando && (
-          <div className="editar-form-modal">
-            <h3>Editar Torneo</h3>
-            <input
-              type="text"
-              value={formEdit.nombre_torneo || ''}
-              onChange={(e) => setFormEdit({ ...formEdit, nombre_torneo: e.target.value })}
-              placeholder="Nombre del torneo"
-            />
-            <input
-              type="date"
-              value={formEdit.fecha_inicio || ''}
-              onChange={(e) => setFormEdit({ ...formEdit, fecha_inicio: e.target.value })}
-            />
-            <input
-              type="date"
-              value={formEdit.fecha_fin || ''}
-              onChange={(e) => setFormEdit({ ...formEdit, fecha_fin: e.target.value })}
-            />
-            <input
-              type="date"
-              value={formEdit.fecha_cierre_inscripcion || ''}
-              onChange={(e) => setFormEdit({ ...formEdit, fecha_cierre_inscripcion: e.target.value })}
-            />
-            <input
-              type="number"
-              value={formEdit.max_equipos || ''}
-              onChange={(e) => setFormEdit({ ...formEdit, max_equipos: e.target.value })}
-              placeholder="Máx equipos"
-            />
-            <select
-              value={formEdit.categoria || ''}
-              onChange={(e) => setFormEdit({ ...formEdit, categoria: e.target.value })}
-            >
+              <div className="navbar-links">
+                <Link to="/crear-torneo" className={isActive('/crear-torneo') ? 'active-link' : ''}>
+                    Crear Torneo
+                </Link>
+                <Link to="/ranking">Ranking</Link>
+                <Link to="/subir-multimedia">Multimedia</Link>
+                <Link to="/cargar-resultado">Resultados</Link>
+                <Link to="/cargar-transmision">Transmisión</Link>
+              </div>
+            </nav>
+  
+      <div className="contenedor-crear-torneo">
+        {/* FORMULARIO */}
+        <div className="formulario-lado">
+          <form onSubmit={handleSubmit} className="crear-torneo-form">
+            <h2>Crear Torneo</h2>
+  
+            {mensaje && <p className="success">{mensaje}</p>}
+            {error && <p className="error">{error}</p>}
+  
+            <input type="text" value={nombre_torneo} placeholder="Nombre del torneo" onChange={(e) => setNombreTorneo(e.target.value)} required />
+            <label>Fecha de inicio del torneo</label>
+            <input type="date" value={fechaInicio} onChange={(e) => setFechaInicio(e.target.value)} required />
+            <label>Fecha de finalización del torneo</label>
+            <input type="date" value={fechaFin} onChange={(e) => setFechaFin(e.target.value)} required />
+            <label>Fecha de cierre de inscripción</label>
+            <input type="date" value={fecha_cierre_inscripcion} onChange={(e) => setFechaCierreInscripcion(e.target.value)} required />
+            <input type="number" placeholder="Máx equipos" value={max_equipos} onChange={(e) => setMaxEquipos(e.target.value)} required />
+  
+            <select value={idCategoria} onChange={(e) => setIdCategoria(e.target.value)} required>
               <option value="">Seleccioná una categoría</option>
               {categorias.map((cat) => (
-                <option key={cat.categoria} value={cat.categoria}>{cat.nombre}</option>
+                <option key={cat.id_categoria} value={cat.id_categoria}>{cat.nombre}</option>
               ))}
             </select>
-            <button onClick={editarTorneo}>Guardar Cambios</button>
-            <button onClick={() => setEditando(null)}>Cancelar</button>
+  
+            <button type="submit">Crear Torneo</button>
+          </form>
+        </div>
+  
+        {/* TORNEOS */}
+        <div className="torneos-lado">
+          <div className="mostrar-torneos-container">
+            <button className="btn-azul" onClick={() => {
+              setMostrarTorneos(!mostrarTorneos);
+              if (!mostrarTorneos) obtenerTorneos();
+            }}>
+              {mostrarTorneos ? 'Ocultar torneos' : 'Mostrar torneos'}
+            </button>
           </div>
-        )}
+  
+          {mostrarTorneos && (
+            <div className="torneo-grid">
+              {torneos.map(t => (
+                <div key={t.id_torneo} className="torneo-card">
+                  <h3>{t.nombre_torneo}</h3>
+                  <p><strong>Inicio:</strong> {new Date(t.fecha_inicio).toLocaleDateString()}</p>
+                  <p><strong>Fin:</strong> {new Date(t.fecha_fin).toLocaleDateString()}</p>
+                  <p><strong>Cierre inscripción:</strong> {new Date(t.fecha_cierre_inscripcion).toLocaleDateString()}</p>
+                  <p><strong>Máx equipos:</strong> {t.max_equipos}</p>
+  
+                  <div className="torneo-botones">
+                    <button onClick={() => toggleExpandir(t.id_torneo)}>
+                      {torneosExpandido[t.id_torneo] ? 'Ocultar equipos' : 'Ver equipos'}
+                    </button>
+                    <button onClick={() => setEditando(t)} className="btn-warning">Editar</button>
+                    <button onClick={() => eliminarTorneo(t.id_torneo)} className="btn-danger">Eliminar Torneo</button>
+                    <button onClick={() => generarGrupos(t.id_torneo)} className="btn-generar">Generar Grupos</button>
+                  </div>
+  
+                  {torneosExpandido[t.id_torneo] && (
+                    <ul className="equipo-lista">
+                      {Array.isArray(equiposPorTorneo[t.id_torneo]) && equiposPorTorneo[t.id_torneo].length > 0 ? (
+                        equiposPorTorneo[t.id_torneo].map(e => (
+                          <li key={e.id_equipo}>
+                            <span>{e.nombre_equipo}</span>
+                            <span className="equipo-detalle">{e.nombre_jugador1} {e.apellido_jugador1} / {e.nombre_jugador2} {e.apellido_jugador2}</span>
+                            <button onClick={() => eliminarEquipo(e.id_equipo)} className="btn-warning">Eliminar equipo</button>
+                          </li>
+                        ))
+                      ) : (
+                        <li>No hay equipos aún.</li>
+                      )}
+                    </ul>
+                  )}
+  
+                  {torneoConGrupos === t.id_torneo && mensajeGrupos && (
+                    <p className="success">{mensajeGrupos}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
+  
+      {/* MODAL DE EDICIÓN */}
+      {editando && (
+        <div className="editar-form-modal">
+          <h3>Editar Torneo</h3>
+          <input
+            type="text"
+            value={formEdit.nombre_torneo || ''}
+            onChange={(e) => setFormEdit({ ...formEdit, nombre_torneo: e.target.value })}
+            placeholder="Nombre del torneo"
+          />
+          <input
+            type="date"
+            value={formEdit.fecha_inicio || ''}
+            onChange={(e) => setFormEdit({ ...formEdit, fecha_inicio: e.target.value })}
+          />
+          <input
+            type="date"
+            value={formEdit.fecha_fin || ''}
+            onChange={(e) => setFormEdit({ ...formEdit, fecha_fin: e.target.value })}
+          />
+          <input
+            type="date"
+            value={formEdit.fecha_cierre_inscripcion || ''}
+            onChange={(e) => setFormEdit({ ...formEdit, fecha_cierre_inscripcion: e.target.value })}
+          />
+          <input
+            type="number"
+            value={formEdit.max_equipos || ''}
+            onChange={(e) => setFormEdit({ ...formEdit, max_equipos: e.target.value })}
+            placeholder="Máx equipos"
+          />
+          <select
+            value={formEdit.categoria || ''}
+            onChange={(e) => setFormEdit({ ...formEdit, categoria: e.target.value })}
+          >
+            <option value="">Seleccioná una categoría</option>
+            {categorias.map((cat) => (
+              <option key={cat.categoria} value={cat.categoria}>{cat.nombre}</option>
+            ))}
+          </select>
+          <button onClick={editarTorneo}>Guardar Cambios</button>
+          <button onClick={() => setEditando(null)}>Cancelar</button>
+        </div>
+      )}
     </>
   );
+  
 }
 
 export default CrearTorneo;

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext'; // Asegurate de tener este context creado
-import logo from '../assets/logo.jpg';
+import logo from '../assets/logo.png';
 import '../style.css';
 
 function Login() {

@@ -1,329 +1,463 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
 /* Reset básico */
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-  }
-  
-  /* HEADER */
-  header {
-    background-color: #021b39;
-    padding: 10px 40px;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .logo img {
-    width: 110px;
-    height: 85px;
-  }
-  
-  /* NAVBAR */
-  .nav-wrapper {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-  }
-  
-  .nav-center {
-    display: flex;
-    gap: 120px;
-  }
-  
-  .nav-center a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 16px;
-  }
-  
-  .nav-center .active {
-    pointer-events: none;
-    opacity: 0.6;
-    text-decoration: underline;
-  }
-  
-  /* CONTENEDORES PRINCIPALES */
-  .main-container,
-  .form-container,
-  .login-container,
-  .multimedia-container,
-  .ranking-container,
-  .gallery-container {
-    max-width: 400px;
-    margin: 40px auto;
-    background-color: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  } 
-  .form-container form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  
-  /* TÍTULOS */
-  h1, h2 {
-    text-align: center;
-    color: #021b39;
-    margin-bottom: 25px;
-  }
-  
-  /* FORMULARIOS */
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  label {
-    font-weight: bold;
-    color: #0a2b4c;
-  }
-  form input {
-    width: 250px; /* Cambialo a lo que prefieras, por ejemplo: 200px */
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  
-  input,
-  select,
-  button {
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-  }
-  
-  /* BOTONES */
-  button {
-    background-color: #021b39;
-    color: white;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  button:hover {
-    background-color: #053467;
-  }
-  
-  /* GALERÍA */
-  .photo-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-  }
-  
-  .photo-grid img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
-  }
-  
-  .photo-grid img:hover {
-    transform: scale(1.03);
-  }
-  
-  /* TABLAS */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  th, td {
-    padding: 12px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  th {
-    background-color: #021b39;
-    color: white;
-  }
-  
-  tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  
+  background-color: #0a0a0a;
+  color: #ffd700;
+  font-family: 'Poppins', sans-serif;
+}
 
-  /*LOGIN*/
-
-  .login-links {
-    display: flex;
-    flex-direction: column;
-    gap: 8px; /* espacio entre ellos */
-    margin-top: 15px;
-  }
-  
-  .login-links a,
-  .login-links button {
-    text-align: center;
-    background: none;
-    border: none;
-    color: #007bff;
-    cursor: pointer;
-    text-decoration: underline;
-    font-size: 14px;
-    padding: 4px;
-  }
-  
-  .link-button {
-    background: none;
-    border: none;
-    color: #007bff;
-    text-decoration: underline;
-    cursor: pointer;
-    font-size: 14px;
-    padding: 0;
-  }
-  
-  /*LOGO*/
-  .logo {
-    display: block;
-    margin: 10px auto 20px auto;
-    width: 180px;
-    height: auto;
-    animation: fadeIn 1s ease-in-out;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
-  }
-  
-  /* Animación suave */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-  
-
-  /* BOTONES HOME */
-  .button-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
-    align-items: center;
-  }
-  
-  .main-button {
-    padding: 12px 20px;
-    font-size: 16px;
-    background-color: #004aad;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    width: 200px;
-    transition: background-color 0.3s;
-  }
-  
-  .main-button:hover {
-    background-color: #003a88;
-  }
-  
-/* NAV
-*/
-
-.navbar {
+/* HEADER */
+header {
+  background-color: #000000;
+  padding: 10px 40px; 
+  color: white;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #001738; /* azul oscuro */
-  padding: 10px 40px;
 }
 
-.navbar-logo {
-  height: 60px;
+.logo img {
+  width: 90px;
+  height: 85px;
+}
+
+/* NAVBAR */
+.nav-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-center {
+  display: flex;
+  gap: 120px;
+}
+
+.nav-center a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.nav-center .active {
+  pointer-events: none;
+  opacity: 0.6;
+  text-decoration: underline;
+}
+
+/* CONTENEDORES PRINCIPALES */
+
+
+.login-container,
+.multimedia-container,
+.ranking-container,
+.gallery-container {
+  max-width: 400px;
+  margin: 40px auto;
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+} 
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+.form-container form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-container {
+  background-color: #1a1a1a;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+/* TÍTULOS */
+h1, h2 {
+  color: #ffd700;
+}
+
+/* FORMULARIOS */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+label {
+  font-weight: bold;
+  color: #000000;
+}
+form input {
+  width: 250px;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+input,
+button {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* BOTONES */
+button {
+  background-color: #000;
+  color: #ffd700;
+  border: 1px solid #ffd700;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #ffd700;
+  color: #000;
+}
+
+/* GALERÍA */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.photo-grid img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.photo-grid img:hover {
+  transform: scale(1.03);
+}
+
+/* TABLAS */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #000000;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* LOGIN */
+.login-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.login-links a,
+.login-links button,
+.link-button {
+  background: none;
+  border: none;
+  color: #d4af37;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
+  padding: 4px;
+}
+
+/* LOGO */
+body {
+  background-color: #0a0a0a;
+  color: #ffd700;
+}
+
+/* Contenedor general del login */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* Logo animado */
+.logo {
+  width: 180px;
+  height: auto;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 2px 6px rgba(255, 215, 0, 0.5));
+}
+
+/* Tarjeta de formulario */
+.form-container {
+  background-color: #1a1a1a;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+/* Título */
+.form-container h2 {
+  margin-bottom: 20px;
+  color: #ffd700;
+}
+
+/* Inputs */
+.form-container input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  border: 1px solid #555;
+  background-color: #111;
+  color: #ffd700;
+}
+
+/* Botón principal */
+.form-container button[type="submit"] {
+  background-color: #000;
+  color: #ffd700;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  width: 100%;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+.form-container button[type="submit"]:hover {
+  background-color: #333;
+}
+
+/* Enlaces secundarios */
+.login-links {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: #ffd700;
+  text-decoration: underline;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.link-button:hover {
+  color: white;
+}
+
+.logo {
+  width: 180px;
+  height: auto;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 2px 6px rgba(255, 215, 0, 0.5));
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* BOTONES HOME */
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  align-items: center;
+}
+
+.main-button {
+  padding: 12px 20px;
+  font-size: 16px;
+  background-color: #d4af37;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 200px;
+  transition: background-color 0.3s;
+}
+
+.main-button:hover {
+  background-color: #f7d774;
+}
+/* BOTONES CREAR TORNEOS*/
+button {
+  background-color: #000;
+  color: #ffd700;
+  border: 1px solid #ffd700;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+
+/* NAV */
+.navbar {
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #000;
+  padding: 12px 40px;
+  box-sizing: border-box;
 }
 
 .navbar-links {
   display: flex;
-  gap: 40px;
+  gap: 15px; /* separa los enlaces */
+}
+
+.navbar-logo{
+  height: 70px;
 }
 
 .navbar-links a {
-  color: white;
+  color: #ffd700; /* dorado */
   font-weight: bold;
   text-decoration: none;
-  transition: color 0.3s;
+  margin-left: 220px;
+  transition: color 0.3s ease;
 }
 
 .navbar-links a:hover {
-  color: #ffd700;
+  color: #fff; /* blanco o un dorado más claro si querés */
 }
+
+.navbar-logo-container {
+  display: flex;
+  align-items: center;
+}
+.navbar-links .active-link {
+  color: white;
+  text-decoration: underline;
+}
+
+/* RESTO DEL CSS SIN CAMBIOS DE COLOR... */
+
 /* CREAR TORNEO*/
 
 .crear-torneo-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: calc(100vh - 100px);
-  background-color: #f5f5f5;
+  width: 100%;
 }
 
+
 .crear-torneo-form {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  width: 400px;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  background-color: #0a0a0a;
+  color: #ffd700;
+  border: 1px solid #ffd700;
+  padding: 30px 20px; /* espaciado interno horizontal agregado */
+  border-radius: 16px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
+  box-sizing: border-box; /* ✅ importantísimo para que padding no rompa el layout */
 }
+
+
 
 .crear-torneo-form h2 {
   text-align: center;
-  color: #002244;
+  margin-bottom: 20px;
+  color: #ffd700;
+}
+
+.crear-torneo-form label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+  color: #ffd700;
 }
 
 .crear-torneo-form input,
 .crear-torneo-form select {
-  padding: 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  width: 100%;
+  box-sizing: border-box; /* ⚠️ esto evita que se desborden con padding */
+  padding: 10px;
+  margin-top: 4px;
+  margin-bottom: 14px;
+  border: 1px solid #333;
+  background-color: #111;
+  color: #ffd700;
+  border-radius: 8px;
 }
 
+
 .crear-torneo-form button {
-  background-color: #002244;
-  color: white;
-  padding: 0.6rem;
+  width: 100%;
+  background-color: #000;
+  color: #ffd700;
+  font-weight: bold;
+  padding: 12px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .crear-torneo-form button:hover {
-  background-color: #014aad;
+  background-color: #222;
 }
 
 .success {
-  color: green;
+  color: #00ff88;
   font-weight: bold;
-  text-align: center;
+  margin-top: 10px;
 }
 
+
 .error {
-  color: red;
-  font-weight: bold;
+  color: #ff4d4d;
   text-align: center;
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 
 .checkbox-label {
@@ -333,6 +467,28 @@ body {
   margin-top: 10px;
 }
 
+.doble-columna {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.torneos-lado-derecho {
+  flex: 1;
+}
+
+.formulario-lado {
+  flex: 1;
+  min-width: 360px;
+}
+
+.torneos-lado {
+  flex: 2;
+}
+
+
 /*MIS TORNEOS ORGANIZADOR*/
 .torneo-grid {
   display: flex;
@@ -341,13 +497,7 @@ body {
   margin-top: 20px;
 }
 
-.torneo-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  width: 280px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+
 
 .torneo-botones {
   margin-top: 10px;
@@ -415,20 +565,15 @@ body {
 }
 
 .btn-azul {
-  background-color: #001f3f;
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  font-size: 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s ease;
+  background-color: #000;
+  color: #ffd700;
+  border: 1px solid #ffd700;
+}
+.btn-azul:hover {
+  background-color: #ffd700;
+  color: #000;
 }
 
-.btn-azul:hover {
-  background-color: #004080;
-}
 
 /* BOTÓN MOSTRAR TORNEOS */
 .mostrar-torneos-container {
@@ -439,14 +584,15 @@ body {
 
 /* TARJETA DE TORNEO */
 .torneo-card {
-  background: #fff;
+  background-color: #111;
+  color: #ffd700;
   border-radius: 12px;
   padding: 20px;
   width: 100%;
   max-width: 400px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin: 0 auto;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
 }
+
 
 /* GRILLA DE TORNEOS */
 .torneo-grid {
@@ -510,14 +656,497 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: white;
+  background-color: #0a0a0a;  /* Fondo oscuro */
+  color: #ffd700;             /* Texto dorado */
   border-radius: 12px;
   padding: 30px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  border: 1px solid #ffd700;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.15); /* Sombra dorada sutil */
   z-index: 999;
   display: flex;
   flex-direction: column;
   gap: 12px;
   width: 90%;
   max-width: 400px;
+}
+
+.editar-form-modal input,
+.editar-form-modal select {
+  background-color: #111;
+  color: #ffd700;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+
+/*   PARTIDOS GRUPOS Y PLAY OFFS*/
+
+.partidos-contenedor {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 1rem;
+}
+
+.partido-card {
+  background-color: #ffc9c9;
+  border-radius: 12px;
+  padding: 12px 16px;
+  width: 280px; /* Tamaño fijo de la tarjeta */
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+
+
+.partido-no-iniciado {
+  background-color: #fecaca; /* rojo claro */
+}
+
+.partido-iniciado {
+  background-color: #bbf7d0; /* verde claro */
+}
+
+.partido-finalizado {
+  background-color: #e5e7eb; /* gris claro */
+}
+
+.equipos-y-sets {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.equipos-nombres {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  color: #111827;
+}
+
+.sets-partido {
+  text-align: right;
+  font-weight: 600;
+  font-size: 15px;
+  color: #111827;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.estado-texto {
+  font-style: italic;
+  font-size: 14px;
+  color: #4b5563;
+  text-align: right;
+}
+
+/*  AJUSTAR CREAR TORNEO*/
+
+.contenedor-crear-torneo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 30px 60px;
+  flex-wrap: wrap;
+}
+
+/*   REGISTRO     */
+
+.registro-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.registro-form {
+  background-color: #0a0a0a;
+  color: #ffd700;
+  border: 1px solid #ffd700;
+  padding: 50px;
+  border-radius: 12px;
+  width: 380px;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
+}
+
+.registro-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ffd700;
+}
+
+.registro-form input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 14px;
+  background-color: #111;
+  color: #ffd700;
+  border: 1px solid #333;
+  border-radius: 8px;
+}
+
+.registro-form button {
+  width: 100%;
+  background-color: #000;
+  color: #ffd700;
+  font-weight: bold;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.registro-form button:hover {
+  background-color: #222;
+}
+
+
+/*   LISTA DESPLEGABLE TORNEOS CATEGORIAS  */
+select {
+  background-color: #111;
+  color: #ffd700;
+  padding: 10px 14px;
+  border: 1px solid #ffd700;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  background-image: url("data:image/svg+xml,%3Csvg fill='%23ffd700' height='24' viewBox='0 0 24 24' width='24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+select:hover {
+  border-color: #fff;
+}
+
+select:focus {
+  outline: none;
+  border-color: white;
+  box-shadow: 0 0 6px rgba(255, 215, 0, 0.6);
+}
+
+
+/*  LLAVE TORNEO  */
+.selector-categoria-bloque {
+  margin-bottom: 30px;
+}
+
+.selector-y-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+}
+
+.selector-y-botones select {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ffd700;
+  background-color: #111;
+  color: #ffd700;
+  font-weight: bold;
+}
+
+.selector-y-botones button {
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #ffd700;
+  background-color: #000;
+  color: #ffd700;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.selector-y-botones button.activo,
+.selector-y-botones button:hover {
+  background-color: #ffd700;
+  color: #000;
+}
+
+/*   LLAVE TORNEO  Y FASES DE GRUPO    */
+
+/* --- CONTENEDOR GENERAL --- */
+.p-4 {
+  padding: 1.5rem;
+}
+
+/* --- TÍTULO PRINCIPAL --- */
+.text-2xl {
+  font-size: 1.5rem;
+}
+.font-bold {
+  font-weight: bold;
+}
+.mb-4 {
+  margin-bottom: 1rem;
+}
+.text-yellow-400 {
+  color: #ffd700;
+}
+
+/* --- SELECTOR DE CATEGORÍA Y BOTONES --- */
+.selector-categoria-bloque {
+  margin-bottom: 1.5rem;
+}
+
+.selector-y-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.selector-y-botones select {
+  background-color: #111;
+  color: #ffd700;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-weight: bold;
+}
+
+.selector-y-botones button {
+  background-color: transparent;
+  border: 1px solid #ffd700;
+  color: #ffd700;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.selector-y-botones button:hover {
+  background-color: #ffd700;
+  color: #000;
+}
+
+.selector-y-botones .activo {
+  background-color: #ffd700;
+  color: #000;
+}
+
+/* --- MENSAJE SIN GRUPOS --- */
+.mensaje-sin-grupos {
+  text-align: center;
+  color: #aaa;
+  font-style: italic;
+}
+
+/* --- GRILLA DE GRUPOS --- */
+.grupos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 24px;
+}
+
+/* --- TARJETA DE GRUPO --- */
+.tarjeta-grupo {
+  background-color: #111;
+  color: #ffd700;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+/* --- TÍTULO DEL GRUPO --- */
+.titulo-grupo {
+  text-align: center;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+/* --- TABLA --- */
+.tabla-grupo {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.encabezado-tabla {
+  background-color: #0a0a0a;
+  color: #ffcc00;
+}
+
+.encabezado-tabla th {
+  padding: 10px;
+  border: 1px solid #333;
+}
+
+.fila-equipo td {
+  padding: 10px;
+  border: 1px solid #333;
+  color: #ffd700;
+  text-align: center;
+}
+
+.fila-equipo:nth-child(even) {
+  background-color: #1a1a1a;
+}
+
+.fila-equipo:nth-child(odd) {
+  background-color: #0f0f0f;
+}
+
+.equipo-nombre {
+  font-weight: bold;
+  color: #ffcc00;
+}
+
+/* --- PARTIDOS --- */
+.subtitulo-partidos {
+  color: #999;
+  font-size: 0.9rem;
+  margin: 10px 0;
+  font-weight: bold;
+}
+
+.partidos-contenedor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.partido-card {
+  background-color: #222;
+  border-radius: 8px;
+  padding: 10px 14px;
+  min-width: 260px;
+  color: #eee;
+}
+
+.partido-no-iniciado {
+  background-color: #fecaca;
+  color: #000;
+}
+
+.partido-iniciado {
+  background-color: #bbf7d0;
+  color: #000;
+}
+
+.partido-finalizado {
+  background-color: #e5e7eb;
+  color: #000;
+}
+
+.equipos-y-sets {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.equipos-nombres {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+  color: #111827;
+}
+
+.sets-partido {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+  color: #111827;
+  text-align: right;
+  gap: 4px;
+}
+
+.estado-texto {
+  font-style: italic;
+  font-size: 14px;
+  color: #333;
+  align-self: center;
+  text-align: right;
+}
+
+/* --- MENSAJE PLAYOFF --- */
+.mensaje-playoff {
+  text-align: center;
+  color: #bbb;
+  font-size: 1.1rem;
+  margin-top: 3rem;
+}
+
+/*  INSCRIPCION  */
+.inscripcion-container {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  padding: 40px 20px;
+  background-color: #0a0a0a;
+  min-height: 100vh;
+}
+
+.inscripcion-form {
+  background-color: #111;
+  border: 1px solid #ffd700;
+  padding: 30px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  color: #ffd700;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
+}
+
+.inscripcion-titulo {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #ffd700;
+}
+
+.inscripcion-label {
+  color: #ffd700;
+  font-weight: 600;
+  font-size: 14px;
+  margin-top: 16px;
+  display: block;
+}
+
+.inscripcion-input,
+.inscripcion-select {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 6px;
+  margin-bottom: 12px;
+  border: 1px solid #444;
+  border-radius: 8px;
+  background-color: #1a1a1a;
+  color: #ffd700;
+  font-size: 14px;
+}
+
+.inscripcion-boton {
+  width: 100%;
+  padding: 12px;
+  background-color: #000;
+  color: #ffd700;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.inscripcion-boton:hover {
+  background-color: #222;
 }
