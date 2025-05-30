@@ -242,6 +242,7 @@ router.get('/torneos/:id/verificar-cupo', async (req, res) => {
   });
 
 
+  
 
 // Obtener todos los equipos inscriptos en un torneo
 router.get('/torneos/:id/equipos', async (req, res) => {
@@ -274,7 +275,7 @@ router.get('/torneos/:id/equipos', async (req, res) => {
       equipos: resultado.rows
     });
 
-    res.json(resultado.rows);
+    
   } catch (error) {
     console.error('Error al obtener equipos del torneo:', error);
     res.status(500).json({ error: 'No se pudo obtener los equipos del torneo' });
@@ -411,6 +412,102 @@ router.post('/verificar-inscripcion', async (req, res) => {
 });
 
 
+//EDITAR
+
+// PUT torneo 
+router.put('/torneos/:id', async (req, res) => {
+  const { id } = req.params;
+  const {
+    nombre_torneo,
+    categoria,  
+    fecha_inicio,
+    fecha_fin,
+    fecha_cierre_inscripcion,
+    max_equipos
+  } = req.body;
+
+  try {
+    await pool.query(
+      `UPDATE torneo SET nombre_torneo=$1, categoria=$2, fecha_inicio=$3, fecha_fin=$4, fecha_cierre_inscripcion=$5, max_equipos=$6 WHERE id_torneo=$7`,
+      [nombre_torneo, categoria, fecha_inicio, fecha_fin, fecha_cierre_inscripcion, max_equipos, id]
+    );
+    res.json({ mensaje: 'Torneo actualizado correctamente' });
+  } catch (error) {
+    console.error('Error al editar torneo:', error);
+    res.status(500).json({ error: 'No se pudo editar el torneo' });
+  }
+});
+
+// PUT equipo 
+router.put('/equipos/:id', async (req, res) => {
+  const { id } = req.params;
+  const { jugador1_id, jugador2_id, nombre_equipo } = req.body;
+
+  try {
+    await pool.query(
+      `UPDATE equipo SET jugador1_id=$1, jugador2_id=$2, nombre_equipo=$3 WHERE id_equipo=$4`,
+      [jugador1_id, jugador2_id, nombre_equipo, id]
+    );
+    res.json({ mensaje: 'Equipo actualizado correctamente' });
+  } catch (error) {
+    console.error('Error al editar equipo:', error);
+    res.status(500).json({ error: 'No se pudo editar el equipo' });
+  }
+});
+
+
+//ELIMINAR
+
+// DELETE torneo
+router.delete('/torneos/:id', async (req, res) => {
+  const { id } = req.params;
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // Borrar inscripciones relacionadas
+    await client.query(`
+      DELETE FROM inscripcion WHERE id_torneo = $1
+    `, [id]);
+
+    // Borrar el torneo
+    await client.query(`
+      DELETE FROM torneo WHERE id_torneo = $1
+    `, [id]);
+
+    await client.query('COMMIT');
+    res.json({ mensaje: 'Torneo eliminado correctamente' });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error al eliminar torneo:', error);
+    res.status(500).json({ error: 'No se pudo eliminar el torneo' });
+  } finally {
+    client.release();
+  }
+});
+
+
+
+// DELETE equipo
+router.delete('/equipos/:id', async (req, res) => {
+  const { id } = req.params;
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    await client.query('DELETE FROM inscripcion WHERE id_equipo = $1', [id]);
+    await client.query('DELETE FROM equipo WHERE id_equipo = $1', [id]);
+
+    await client.query('COMMIT');
+    res.json({ mensaje: 'Equipo eliminado correctamente' });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error al eliminar equipo:', error);
+    res.status(500).json({ error: 'No se pudo eliminar el equipo' });
+  } finally {
+    client.release();
+  }
+});
 
 
 
