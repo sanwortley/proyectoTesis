@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../assets/logo.png';
 import '../style.css';
@@ -17,6 +18,9 @@ function Inscripcion() {
   const [loading, setLoading] = useState(false);
   const [yaInscripto, setYaInscripto] = useState(false);
   const [torneoLleno, setTorneoLleno] = useState(false);
+  const location = useLocation();
+
+  const isActive = (path) => location.pathname === path;
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/jugadores`)
@@ -92,12 +96,22 @@ function Inscripcion() {
   return (
     <>
        <nav className="navbar">
-  <Link to="/home-jugador">
-    <img src={logo} alt="Logo" className="navbar-logo" />
-  </Link>
-</nav>
+                 <div className="navbar-logo-container">
+                   <Link to="/home-jugador">
+                   <img src={logo} alt="Logo" className="navbar-logo" />
+                   </Link>
+                 </div>
+       
+                     <div className="navbar-links">
+                       <Link to="/torneosllave" > Torneos </Link>
+                       <Link to="/inscripcion" className={isActive('/inscripcion') ? 'active-link' : ''}>
+                       Inscripcion </Link>
+                       <Link to="/ranking">Ranking</Link>
+                       <Link to="/multimedia">Multimedia</Link>
+                       <Link to="transmision">Transmisión</Link>
+                     </div>
+                   </nav>
 
-<div className="inscripcion-container">
   <form onSubmit={handleSubmit} className="inscripcion-form">
     <h2 className="inscripcion-titulo">Inscribite al Torneo</h2>
 
@@ -157,10 +171,10 @@ function Inscripcion() {
       {loading ? 'Inscribiendo...' : 'Inscribirse'}
     </button>
   </form>
-</div>
+
 
     </>
-  );
+  )
 }
 
 export default Inscripcion;

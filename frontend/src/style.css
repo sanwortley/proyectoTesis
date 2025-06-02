@@ -1096,50 +1096,53 @@ select:focus {
   min-height: 100vh;
 }
 
+/* CENTRADO GENERAL */
 .inscripcion-form {
   background-color: #111;
-  border: 1px solid #ffd700;
-  padding: 30px;
+  border: 1px solid #FFD700;
   border-radius: 12px;
-  width: 100%;
-  max-width: 420px;
-  color: #ffd700;
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
+  padding: 2rem;
+  max-width: 450px;
+  margin: 3rem auto; /* Esto lo centra horizontalmente */
+  color: #FFD700;
+  box-shadow: 0 0 10px #000;
 }
 
+/* TITULO */
 .inscripcion-titulo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
   text-align: center;
-  margin-bottom: 20px;
-  font-size: 22px;
-  color: #ffd700;
 }
 
+/* LABELS */
 .inscripcion-label {
-  color: #ffd700;
   font-weight: 600;
-  font-size: 14px;
-  margin-top: 16px;
+  margin-top: 1rem;
   display: block;
+  color: #FFD700;
 }
 
+/* INPUTS Y SELECTS */
 .inscripcion-input,
 .inscripcion-select {
   width: 100%;
-  padding: 10px 12px;
-  margin-top: 6px;
-  margin-bottom: 12px;
-  border: 1px solid #444;
-  border-radius: 8px;
   background-color: #1a1a1a;
-  color: #ffd700;
-  font-size: 14px;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 0.6rem;
+  margin-top: 0.3rem;
+  margin-bottom: 1rem;
+  color: #FFD700;
 }
 
+/* BOTÓN */
 .inscripcion-boton {
   width: 100%;
-  padding: 12px;
-  background-color: #000;
-  color: #ffd700;
+  background-color: black;
+  color: #FFD700;
+  padding: 0.7rem;
   border: none;
   border-radius: 8px;
   font-weight: bold;
@@ -1149,4 +1152,182 @@ select:focus {
 
 .inscripcion-boton:hover {
   background-color: #222;
+}
+
+/*  TORNEOS LLAVE   */
+
+/* CONTENEDOR PRINCIPAL */
+.torneo-categorias-container {
+  padding: 2rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.torneo-categorias-titulo {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #FFD700; /* Amarillo dorado */
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* SELECTOR Y BOTONES */
+.torneo-selector-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.torneo-selector {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.torneo-selector select {
+  padding: 0.6rem 1rem;
+  background-color: #222;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 8px;
+}
+
+.boton-fase {
+  padding: 0.6rem 1.2rem;
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #777;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.boton-fase.activo,
+.boton-fase:hover {
+  background-color: #FFD700;
+  color: #000;
+  font-weight: bold;
+}
+
+/* MENSAJE SIN GRUPOS */
+.mensaje-sin-grupos {
+  color: #ccc;
+  text-align: center;
+  font-style: italic;
+}
+
+/* GRILLA DE GRUPOS */
+.grupos-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.grupo-tarjeta {
+  background-color: #1c1c1c;
+  color: #FFD700;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 0 8px rgba(0,0,0,0.5);
+  border: 1px solid #333;
+}
+
+/* TABLA */
+.grupo-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.grupo-tabla-encabezado {
+  background-color: #111;
+  color: #FFD700;
+}
+
+.grupo-tabla th,
+.grupo-tabla td {
+  border: 1px solid #444;
+  padding: 0.4rem;
+  text-align: center;
+}
+
+.grupo-equipo-nombre {
+  font-weight: 600;
+  color: #FFF8DC;
+}
+
+.grupo-tabla-fila:nth-child(even) {
+  background-color: #1f1f1f; /* Gris oscuro */
+}
+
+.grupo-tabla-fila:nth-child(odd) {
+  background-color: #121212; /* Aún más oscuro para contraste */
+}
+
+.grupo-tabla-fila td {
+  color: #FFD700; /* Amarillo legible */
+  padding: 0.5rem;
+  border: 1px solid #333;
+}
+
+
+/* PARTIDOS */
+.grupo-subtitulo {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #ccc;
+}
+
+.grupo-partidos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.grupo-partido-card {
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  border-left: 4px solid #444;
+}
+
+.grupo-partido-detalle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.grupo-equipos div {
+  color: #fff;
+  font-weight: 500;
+}
+
+.grupo-sets div {
+  color: #FFD700;
+  font-weight: bold;
+}
+
+.grupo-estado {
+  color: #999;
+  font-style: italic;
+}
+
+/* ESTADOS DE PARTIDO */
+.partido-iniciado {
+  border-left-color: #00bcd4;
+}
+.partido-no-iniciado {
+  border-left-color: #ff9800;
+}
+.partido-finalizado {
+  border-left-color: #4caf50;
+}
+
+/* MENSAJE PLAYOFF */
+.mensaje-playoff {
+  text-align: center;
+  color: #bbb;
+  font-size: 1.1rem;
+  margin-top: 3rem;
 }
