@@ -1155,6 +1155,12 @@ select:focus {
 }
 
 /*  TORNEOS LLAVE   */
+.fecha-torneo-info {
+  color: #FFD700;
+  margin-top: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+}
 
 /* CONTENEDOR PRINCIPAL */
 .torneo-categorias-container {
@@ -1331,3 +1337,50 @@ select:focus {
   font-size: 1.1rem;
   margin-top: 3rem;
 }
+
+
+/*CALENDARIO SCROLLEABLE*/
+
+.meses-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 8px;
+  padding: 12px 20px;
+  background-color: #0a0a0a;
+  border-bottom: 1px solid #333;
+  scroll-snap-type: x mandatory;
+}
+
+.meses-scroll button {
+  scroll-snap-align: center;
+  min-width: 90px;
+  padding: 10px 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  background-color: transparent;
+  border: 2px solid #ffc107;
+  color: #ffc107;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.meses-scroll button:hover {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.mes-activo {
+  background-color: #ffc107 !important;
+  color: #000 !important;
+  border-color: #ffc107;
+}
+
+
+/* COLOR TORNEOS YA FINALIZADOS*/
+
+.grupo-finalizado {
+  opacity: 0.5;
+  filter: grayscale(100%);
+}
+

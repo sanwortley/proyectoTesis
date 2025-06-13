@@ -18,13 +18,13 @@ function Login() {
     try {
       const res = await axios.post(`${process.env.REACT_APP_API_URL}/login`, { login, password });
       console.log('Login exitoso', res.data);
-
-      setJugador(res.data.jugador); // Guarda el usuario en el contexto
-
-      const rol = res.data.jugador.rol
-      console.log('ROL:', rol); 
-
-      // Redirige según el rol
+  
+      setJugador(res.data.jugador); // Guarda en contexto
+      localStorage.setItem("jugador", JSON.stringify(res.data.jugador)); // Guarda en localStorage
+  
+      const rol = res.data.jugador.rol;
+      console.log('ROL:', rol);
+  
       if (rol === 'jugador') navigate('/home-jugador');
       else if (rol === 'organizador') navigate('/home-organizador');
       else navigate('/home-invitado');
@@ -32,6 +32,7 @@ function Login() {
       setError('Usuario o contraseña incorrectos');
     }
   };
+  
 
   return (
     <div className="main-container">

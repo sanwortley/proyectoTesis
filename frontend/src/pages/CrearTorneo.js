@@ -78,11 +78,33 @@ function CrearTorneo() {
   const obtenerTorneos = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_URL}/torneos`);
-      setTorneos(res.data);
+      const todos = res.data;
+  
+      const hoy = new Date();
+  
+      const torneosPorCategoria = {};
+  
+      todos.forEach(t => {
+        const inicio = new Date(t.fecha_inicio);
+        if (!torneosPorCategoria[t.categoria] || inicio > new Date(torneosPorCategoria[t.categoria].fecha_inicio)) {
+          torneosPorCategoria[t.categoria] = t;
+        }
+      });
+  
+      const torneosValidos = todos.filter(t => {
+        const inicio = new Date(t.fecha_inicio);
+        const diffDias = (hoy - inicio) / (1000 * 60 * 60 * 24);
+        const esReciente = diffDias <= 7;
+        const masReciente = torneosPorCategoria[t.categoria]?.id_torneo === t.id_torneo;
+        return esReciente || masReciente;
+      });
+  
+      setTorneos(torneosValidos);
     } catch (err) {
-      console.error('Error al obtener torneos');
+      console.error('Error al obtener todos los torneos');
     }
   };
+  
 
   const obtenerEquipos = async (id_torneo) => {
     try {

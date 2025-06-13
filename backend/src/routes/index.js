@@ -112,7 +112,7 @@
   router.get('/jugadores', async (req, res) => {
     try {
       const result = await pool.query(
-        `SELECT id_jugador, nombre_jugador, apellido_jugador FROM jugador`
+        `SELECT id_jugador, nombre_jugador, apellido_jugador, rol FROM jugador`
       );
       res.json(result.rows);
     } catch (error) {
@@ -204,6 +204,23 @@
     }
   });
 
+  // Obtener torneos de un organizador
+router.get('/torneos/organizador/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      `SELECT * FROM torneo WHERE id_organizador = $1`,
+      [id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error al obtener torneos por organizador:', error);
+    res.status(500).json({ error: 'No se pudo obtener los torneos del organizador' });
+  }
+});
+
+
 
   // VERIFICAR CUPO JUGADORES
   router.get('/torneos/:id/verificar-cupo', async (req, res) => {
@@ -230,6 +247,7 @@
 
 
 
+//GET TORNEOS 
 
     router.get('/torneos', async (req, res) => {
       try {
@@ -240,6 +258,38 @@
         res.status(500).json({ error: 'Error del servidor' });
       }
     });
+    // Obtener el torneo más reciente (de los últimos 7 días) por categoría
+
+  router.get('/torneos/reciente/:idCategoria', async (req, res) => {
+    const { idCategoria } = req.params;
+
+    try {
+      const result = await pool.query(`
+        SELECT * FROM torneo
+        WHERE categoria = $1
+        ORDER BY fecha_inicio DESC
+        LIMIT 1
+    ` , [idCategoria]);
+
+      const torneo = result.rows[0];
+
+      if (!torneo) return res.json([]);
+
+      const hoy = new Date();
+      const fechaInicio = new Date(torneo.fecha_inicio);
+      const diasDiferencia = (hoy - fechaInicio) / (1000 * 60 * 60 * 24);
+
+      if (diasDiferencia > 7) {
+        return res.json([]); // No mostrar torneo viejo
+      }
+
+      res.json([torneo]);
+    } catch (error) {
+      console.error('Error al obtener torneo reciente:', error);
+      res.status(500).json({ error: 'Error del servidor' });
+    }
+  });
+
 
 
     
