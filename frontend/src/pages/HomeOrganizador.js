@@ -9,9 +9,9 @@ function HomeOrganizador() {
         <div className="navbar-links">
           <Link to="/crear-torneo">Crear Torneo</Link>
           <Link to="/ranking">Ranking</Link>
-          <Link to="/subir-multimedia">Subir Multimedia</Link>
-          <Link to="/cargar-resultado">Cargar Resultados</Link>
-          <Link to="/cargar-transmision">Cargar Transmisión</Link>
+          <Link to="/subir-multimedia">Multimedia</Link>
+          <Link to="/cargar-resultado">Resultados</Link>
+          <Link to="/cargar-transmision">Transmisión</Link>
         </div>
       </nav>
 

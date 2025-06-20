@@ -613,73 +613,73 @@ router.get('/torneos/organizador/:id', async (req, res) => {
   //  GENERAR GRUPOS
 
 
-  router.post('/torneos/:id/generar-grupos', async (req, res) => {
-    const { id } = req.params;
-    const client = await pool.connect();
-  
-    try {
-      await client.query('BEGIN');
-  
-      // Traer los equipos inscriptos al torneo
-      const equiposRes = await client.query(`
-        SELECT e.id_equipo, e.nombre_equipo
-        FROM inscripcion i
-        JOIN equipo e ON i.id_equipo = e.id_equipo
-        WHERE i.id_torneo = $1
-      `, [id]);
-  
-      const equipos = equiposRes.rows;
-  
-      if (equipos.length < 2) {
-        await client.query('ROLLBACK');
-        return res.status(400).json({ error: 'Se necesitan al menos 2 equipos para generar partidos' });
-      }
-  
-      // 🔥 CASO ESPECIAL: solo 2 equipos → partido final directo
-      if (equipos.length === 2) {
-        await client.query(`
-          INSERT INTO partidos_llave (
-            id_torneo, ronda, equipo1_id, equipo2_id, estado
-          ) VALUES ($1, 'Final', $2, $3, 'no_iniciado')
-        `, [id, equipos[0].id_equipo, equipos[1].id_equipo]);
-  
-        await client.query('COMMIT');
-        return res.json({ mensaje: 'Partido final generado (solo 2 equipos)' });
-      }
-  
-      // 💡 CASO NORMAL: 3 o más equipos → generar grupos
-      const grupos = generarGruposAleatorios(equipos);
-      const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  
-      for (let i = 0; i < grupos.length; i++) {
-        const nombreGrupo = `Grupo ${letras[i]}`;
-  
-        // Insertar grupo
-        const grupoRes = await client.query(
-          `INSERT INTO grupos (id_torneo, nombre) VALUES ($1, $2) RETURNING id_grupo`,
-          [id, nombreGrupo]
-        );
-        const grupoId = grupoRes.rows[0].id_grupo;
-  
-        // Insertar equipos en equipos_grupo
-        for (const equipo of grupos[i]) {
-          await client.query(
-            `INSERT INTO equipos_grupo (grupo_id, equipo_id) VALUES ($1, $2)`,
-            [grupoId, equipo.id_equipo]
-          );
+    router.post('/torneos/:id/generar-grupos', async (req, res) => {
+      const { id } = req.params;
+      const client = await pool.connect();
+    
+      try {
+        await client.query('BEGIN');
+    
+        // Traer los equipos inscriptos al torneo
+        const equiposRes = await client.query(`
+          SELECT e.id_equipo, e.nombre_equipo
+          FROM inscripcion i
+          JOIN equipo e ON i.id_equipo = e.id_equipo
+          WHERE i.id_torneo = $1
+        `, [id]);
+    
+        const equipos = equiposRes.rows;
+    
+        if (equipos.length < 2) {
+          await client.query('ROLLBACK');
+          return res.status(400).json({ error: 'Se necesitan al menos 2 equipos para generar partidos' });
         }
-  
-        // Crear partidos round-robin del grupo
-        const participantes = grupos[i];
-        for (let j = 0; j < participantes.length; j++) {
-          for (let k = j + 1; k < participantes.length; k++) {
+    
+        // CASO ESPECIAL: solo 2 equipos → partido final directo
+        if (equipos.length === 2) {
+          await client.query(`
+            INSERT INTO partidos_llave (
+              id_torneo, ronda, equipo1_id, equipo2_id, estado
+            ) VALUES ($1, 'Final', $2, $3, 'no_iniciado')
+          `, [id, equipos[0].id_equipo, equipos[1].id_equipo]);
+    
+          await client.query('COMMIT');
+          return res.json({ mensaje: 'Partido final generado (solo 2 equipos)' });
+        }
+    
+        // 💡 CASO NORMAL: 3 o más equipos → generar grupos
+        const grupos = generarGruposAleatorios(equipos);
+        const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    
+        for (let i = 0; i < grupos.length; i++) {
+          const nombreGrupo = `Grupo ${letras[i]}`;
+    
+          // Insertar grupo
+          const grupoRes = await client.query(
+            `INSERT INTO grupos (id_torneo, nombre) VALUES ($1, $2) RETURNING id_grupo`,
+            [id, nombreGrupo]
+          );
+          const grupoId = grupoRes.rows[0].id_grupo;
+    
+          // Insertar equipos en equipos_grupo
+          for (const equipo of grupos[i]) {
             await client.query(
-              `INSERT INTO partidos_grupo (grupo_id, equipo1_id, equipo2_id) VALUES ($1, $2, $3)`,
-              [grupoId, participantes[j].id_equipo, participantes[k].id_equipo]
+              `INSERT INTO equipos_grupo (grupo_id, equipo_id) VALUES ($1, $2)`,
+              [grupoId, equipo.id_equipo]
             );
           }
+    
+          // Crear partidos round-robin del grupo
+          const participantes = grupos[i];
+          for (let j = 0; j < participantes.length; j++) {
+            for (let k = j + 1; k < participantes.length; k++) {
+              await client.query(
+                `INSERT INTO partidos_grupo (grupo_id, equipo1_id, equipo2_id) VALUES ($1, $2, $3)`,
+                [grupoId, participantes[j].id_equipo, participantes[k].id_equipo]
+              );
+            }
+          }
         }
-      }
   
       await client.query('COMMIT');
       res.json({ mensaje: 'Grupos generados correctamente' });

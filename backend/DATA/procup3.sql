@@ -136,7 +136,7 @@ INSERT INTO categoria (nombre) VALUES
 
 -- Insertar usuario organizador
 INSERT INTO jugador (nombre_jugador, apellido_jugador, email, telefono, password, rol)
-VALUES ('Ana', 'Martínez', 'ana.martinez@example.com', '3519876543', 'claveEncriptada456', 'organizador');
+VALUES ('Fernando', 'Frias', 'ffrias@mail.com', '12345678', '1234', 'organizador');
 
 -- Insertar valor inicial
 INSERT INTO control_torneo_id (ultimo_id) VALUES (0);
