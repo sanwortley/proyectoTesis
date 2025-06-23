@@ -217,6 +217,34 @@ tr:nth-child(even) {
   padding: 4px;
 }
 
+.no-logueado-container {
+  max-width: 600px;
+  margin: 100px auto;
+  background-color: #1e1e1e;
+  color: #ffc107;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(255, 193, 7, 0.2);
+}
+
+.volver-login-boton {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #ffc107;
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.volver-login-boton:hover {
+  background-color: #e0a800;
+}
+
+
 /* LOGO */
 body {
   background-color: #0a0a0a;

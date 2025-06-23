@@ -7,7 +7,7 @@ import logo from '../assets/logo.png';
 import '../style.css';
 
 function Inscripcion() {
-  const { jugador } = useAuth();
+ 
   const navigate = useNavigate();
   const [jugadores, setJugadores] = useState([]);
   const [torneos, setTorneos] = useState([]);
@@ -16,12 +16,14 @@ function Inscripcion() {
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [yaInscripto, setYaInscripto] = useState(false);
   const [torneoLleno, setTorneoLleno] = useState(false);
+  const [jugador1Inscripto, setJugador1Inscripto] = useState(false);
+  const [jugador2Inscripto, setJugador2Inscripto] = useState(false);
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;
-
+  const { jugador } = useAuth();
+  
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/jugadores`)
       .then(res => {
@@ -41,29 +43,41 @@ function Inscripcion() {
 
   useEffect(() => {
     const verificarEstado = async () => {
-      if (!torneoId) return;
-
+      if (!torneoId || !jugador || !jugador2Id) return;
+  
       try {
-        if (jugador2Id) {
-          const resInscripcion = await axios.post(`${process.env.REACT_APP_API_URL}/verificar-inscripcion`, {
-            jugador1_id: jugador.id_jugador,
-            jugador2_id: jugador2Id,
-            id_torneo: torneoId
-          });
-          setYaInscripto(resInscripcion.data.inscrito);
-        } else {
-          setYaInscripto(false);
-        }
-
+        const resInscripcion = await axios.post(`${process.env.REACT_APP_API_URL}/verificar-inscripcion`, {
+          jugador1_id: jugador.id_jugador,
+          jugador2_id: jugador2Id,
+          id_torneo: torneoId
+        });
+  
+      
+        setJugador1Inscripto(resInscripcion.data.jugador1Inscripto);
+        setJugador2Inscripto(resInscripcion.data.jugador2Inscripto);
+  
         const resCupo = await axios.get(`${process.env.REACT_APP_API_URL}/torneos/${torneoId}/verificar-cupo`);
         setTorneoLleno(resCupo.data.lleno);
       } catch (err) {
         console.error('Error al verificar inscripción o cupo:', err);
       }
     };
-
+  
     verificarEstado();
-  }, [jugador2Id, torneoId, jugador.id_jugador]);
+  }, [jugador2Id, torneoId, jugador]);
+
+
+  if (!jugador) {
+    return (
+      <div className="no-logueado-container">
+        <h2>No estás logueado</h2>
+        <p>Por favor, iniciá sesión para poder inscribirte en un torneo.</p>
+        <Link to="/" className="volver-login-boton">Volver al login</Link>
+      </div>
+    );
+  }
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -101,7 +115,7 @@ function Inscripcion() {
             <img src={logo} alt="Logo" className="navbar-logo" />
           </Link>
         </div>
-
+  
         <div className="navbar-links">
           <Link to="/torneosllave">Torneos</Link>
           <Link to="/inscripcion" className={isActive('/inscripcion') ? 'active-link' : ''}>Inscripción</Link>
@@ -110,15 +124,16 @@ function Inscripcion() {
           <Link to="/transmision">Transmisión</Link>
         </div>
       </nav>
-
+  
       <form onSubmit={handleSubmit} className="inscripcion-form">
         <h2 className="inscripcion-titulo">Inscribite al Torneo</h2>
-
+  
         {mensaje && <p className="success">{mensaje}</p>}
         {error && <p className="error">{error}</p>}
-        {yaInscripto && <p className="error">Ya estás inscripto en este torneo.</p>}
         {torneoLleno && <p className="error">Este torneo ya está lleno.</p>}
-
+        {jugador1Inscripto && <p className="error">Ya estás inscripto en este torneo.</p>}
+        {jugador2Inscripto && <p className="error">El jugador seleccionado como compañero ya está inscripto en este torneo.</p>}
+  
         {jugador && (
           <>
             <label className="inscripcion-label">Jugador principal:</label>
@@ -129,7 +144,7 @@ function Inscripcion() {
             />
           </>
         )}
-
+  
         <label className="inscripcion-label">Compañero:</label>
         <select
           className="inscripcion-select"
@@ -149,7 +164,7 @@ function Inscripcion() {
               </option>
             ))}
         </select>
-
+  
         <label className="inscripcion-label">Torneo:</label>
         <select
           className="inscripcion-select"
@@ -164,17 +179,18 @@ function Inscripcion() {
             </option>
           ))}
         </select>
-
+  
         <button
           className="inscripcion-boton"
           type="submit"
-          disabled={loading || yaInscripto || torneoLleno}
-        >
+          disabled={loading || jugador1Inscripto || jugador2Inscripto || torneoLleno}
+          >
           {loading ? 'Inscribiendo...' : 'Inscribirse'}
         </button>
       </form>
     </>
   );
+  
 }
 
 export default Inscripcion;

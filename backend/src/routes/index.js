@@ -434,25 +434,35 @@ router.get('/torneos/organizador/:id', async (req, res) => {
   router.post('/verificar-inscripcion', async (req, res) => {
     const { jugador1_id, jugador2_id, id_torneo } = req.body;
     const client = await pool.connect();
-
+  
     try {
-      const check = await client.query(`
-        SELECT i.id_inscripcion
+      // Verificamos si el jugador 1 ya está inscripto
+      const checkJugador1 = await client.query(`
+        SELECT 1
         FROM inscripcion i
         JOIN equipo e ON i.id_equipo = e.id_equipo
-        WHERE i.id_torneo = $1 AND (
-          e.jugador1_id = $2 OR
-          e.jugador2_id = $2 OR
-          e.jugador1_id = $3 OR
-          e.jugador2_id = $3
-        )
-      `, [id_torneo, jugador1_id, jugador2_id]);
-
-      if (check.rows.length > 0) {
-        return res.json({ inscrito: true });
-      }
-
-      res.json({ inscrito: false });
+        WHERE i.id_torneo = $1 AND ($2 = e.jugador1_id OR $2 = e.jugador2_id)
+      `, [id_torneo, jugador1_id]);
+  
+      // Verificamos si el jugador 2 ya está inscripto
+      const checkJugador2 = await client.query(`
+        SELECT 1
+        FROM inscripcion i
+        JOIN equipo e ON i.id_equipo = e.id_equipo
+        WHERE i.id_torneo = $1 AND ($2 = e.jugador1_id OR $2 = e.jugador2_id)
+      `, [id_torneo, jugador2_id]);
+  
+      const jugador1Inscripto = checkJugador1.rows.length > 0;
+      const jugador2Inscripto = checkJugador2.rows.length > 0;
+  
+      const hayInscripcion = jugador1Inscripto || jugador2Inscripto;
+  
+      return res.json({
+        inscrito: hayInscripcion,
+        jugador1Inscripto,
+        jugador2Inscripto
+      });
+  
     } catch (error) {
       console.error('Error al verificar inscripción:', error);
       res.status(500).json({ error: 'No se pudo verificar la inscripción' });
@@ -460,7 +470,7 @@ router.get('/torneos/organizador/:id', async (req, res) => {
       client.release();
     }
   });
-
+  
 
   //EDITAR
 
