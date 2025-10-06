@@ -1,16 +1,30 @@
 # Node
 node_modules/
-npm-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Docker volumes
-backend/postgres_data/
-*.bak
+# Builds / coverage
+dist/
+build/
+coverage/
+
+# TypeScript (si aplica)
+*.tsbuildinfo
 
 # Env files
-*.env
+.env
+.env.*
+!.env.example
 
-# VSCode
+# Docker volumes / dumps
+backend/postgres_data/
+**/postgres_data/
+*.bak
+
+# Editors / IDE
 .vscode/
+.idea/
 
 # Sistema
 .DS_Store
