@@ -41,17 +41,45 @@ function CargarResultado() {
   };
 
   const guardarResultado = async (partido) => {
-    const data = resultados[partido.id];
-    if (!data) return;
+  const data = resultados[partido.id];
+  if (!data) {
+    alert('Completá al menos un set antes de guardar');
+    return;
+  }
 
-    try {
-      await axios.put(`${process.env.REACT_APP_API_URL}/partidos/${partido.id}/resultado`, data);
-      alert('Resultado guardado');
-    } catch (err) {
-      console.error('Error al guardar resultado:', err);
-      alert('Error al guardar resultado');
-    }
+  // casteo seguro: si viene vacío -> null (tu backend lo tolera)
+  const n = (v) => (v === '' || v == null ? null : Number(v));
+
+  const payload = {
+    set1_equipo1: n(data.set1_equipo1),
+    set1_equipo2: n(data.set1_equipo2),
+    set2_equipo1: n(data.set2_equipo1),
+    set2_equipo2: n(data.set2_equipo2),
+    set3_equipo1: n(data.set3_equipo1),
+    set3_equipo2: n(data.set3_equipo2),
   };
+
+  try {
+    await axios.put(
+      `${process.env.REACT_APP_API_URL}/partidos-grupo/${partido.id}`,
+      payload
+    );
+
+    alert('Resultado guardado');
+
+    // Opción A: refrescar la lista para ver puntos/estado actualizados
+    const res = await axios.get(
+      `${process.env.REACT_APP_API_URL}/torneos/${torneoId}/grupos`
+    );
+    setGrupos(res.data.grupos || []);
+
+    // Opción B (opcional): limpiar inputs de ese partido
+    setResultados((prev) => ({ ...prev, [partido.id]: {} }));
+  } catch (err) {
+    console.error('Error al guardar resultado:', err);
+    alert('Error al guardar resultado');
+  }
+};
 
   return (
     <>
@@ -64,12 +92,12 @@ function CargarResultado() {
 
         <div className="navbar-links">
           <Link to="/crear-torneo">Crear Torneo</Link>
+          <Link to="/torneosllaveorg">Torneos</Link>
           <Link to="/ranking">Ranking</Link>
-          <Link to="/subir-multimedia">Multimedia</Link>
           <Link to="/cargar-resultado" className={isActive('/crear-torneo') ? 'active-link' : ''}>
             Resultados
           </Link>
-          <Link to="/cargar-transmision">Transmisión</Link>
+    
         </div>
       </nav>
 

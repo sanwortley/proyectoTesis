@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png'; // Asegurate de tener la ruta correcta
+import useLogout from '../hooks/useLogout';
 
 function HomeJugador() {
+  const logout = useLogout();
   return (
     <>
       <nav className="navbar">
@@ -10,8 +12,7 @@ function HomeJugador() {
           <Link to="/torneosLlave">Torneos</Link>  
           <Link to="/inscripcion">Inscripcion</Link>
           <Link to="/ranking">Ranking</Link>
-          <Link to="/multimedia">Multimedia</Link>
-          <Link to="/cargar-transmision">Transmisión</Link>
+          <button className="logout-btn" onClick={logout}>Cerrar sesión</button>
         </div>
       </nav>
 

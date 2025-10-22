@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS
   partido, 
   inscripcion, 
   equipo, 
+  audit_log_ingresos,
   jugador, 
   torneo, 
   categoria 
@@ -108,23 +109,78 @@ CREATE TABLE partidos_grupo (
 
 -- Partidos de eliminación directa
 CREATE TABLE partidos_llave (
-  id SERIAL PRIMARY KEY,
-  id_torneo INT NOT NULL,
-  ronda VARCHAR(20) NOT NULL,
-  equipo1_id INT NOT NULL,
-  equipo2_id INT NOT NULL,
-  set1_equipo1 INT,
-  set1_equipo2 INT,
-  set2_equipo1 INT,
-  set2_equipo2 INT,
-  set3_equipo1 INT,
-  set3_equipo2 INT,
-  estado VARCHAR(20) DEFAULT 'no_iniciado',
-  FOREIGN KEY (id_torneo) REFERENCES torneo(id_torneo) ON DELETE CASCADE,
-  FOREIGN KEY (equipo1_id) REFERENCES equipo(id_equipo),
-  FOREIGN KEY (equipo2_id) REFERENCES equipo(id_equipo)
+    id              SERIAL PRIMARY KEY,
+
+    -- Referencia al torneo
+    id_torneo       INT NOT NULL
+                    REFERENCES torneo(id_torneo)
+                    ON DELETE CASCADE,
+
+    -- Ronda del cuadro
+    ronda           VARCHAR(20) NOT NULL
+                    CHECK (ronda IN ('OCTAVOS', 'CUARTOS', 'SEMIS', 'FINAL')),
+
+    -- Posición del partido dentro de la ronda
+    orden           INT NOT NULL,
+
+    -- Equipos participantes
+    equipo1_id      INT REFERENCES equipo(id_equipo) ON DELETE SET NULL,
+    equipo2_id      INT REFERENCES equipo(id_equipo) ON DELETE SET NULL,
+
+    -- Resultados por set
+    set1_equipo1    INT,
+    set1_equipo2    INT,
+    set2_equipo1    INT,
+    set2_equipo2    INT,
+    set3_equipo1    INT,
+    set3_equipo2    INT,
+
+    -- Estado del partido
+    estado          VARCHAR(20) NOT NULL DEFAULT 'no_iniciado'
+                    CHECK (estado IN ('no_iniciado', 'en_juego', 'finalizado')),
+
+    -- Ganador del partido
+    ganador_id      INT REFERENCES equipo(id_equipo) ON DELETE SET NULL,
+
+    -- Enlace al partido siguiente en la llave
+    next_match_id   INT REFERENCES partidos_llave(id) ON DELETE SET NULL,
+    next_slot       SMALLINT CHECK (next_slot IN (1, 2)), -- 1 = equipo1, 2 = equipo2
+
+    -- Timestamps
+    created_at      TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMP NOT NULL DEFAULT NOW(),
+
+    -- Reglas básicas
+    CONSTRAINT ck_equipos_distintos CHECK (
+        equipo1_id IS NULL OR equipo2_id IS NULL OR equipo1_id <> equipo2_id
+    ),
+    CONSTRAINT ck_sets_no_negativos CHECK (
+        COALESCE(set1_equipo1,0) >= 0 AND COALESCE(set1_equipo2,0) >= 0 AND
+        COALESCE(set2_equipo1,0) >= 0 AND COALESCE(set2_equipo2,0) >= 0 AND
+        COALESCE(set3_equipo1,0) >= 0 AND COALESCE(set3_equipo2,0) >= 0
+    )
 );
 
+-- Índices para búsqueda rápida
+CREATE UNIQUE INDEX IF NOT EXISTS ux_llave_torneo_ronda_orden
+    ON partidos_llave (id_torneo, ronda, orden);
+
+CREATE INDEX IF NOT EXISTS ix_llave_torneo_ronda
+    ON partidos_llave (id_torneo, ronda, orden);
+
+  CREATE TABLE audit_log_ingresos (
+  id BIGSERIAL PRIMARY KEY,
+  jugador_id INT REFERENCES jugador(id_jugador) ON DELETE SET NULL,
+  "timestamp" TIMESTAMPTZ NOT NULL DEFAULT now(),
+  ip INET,
+  user_agent TEXT,
+  exitoso BOOLEAN NOT NULL,
+  motivo VARCHAR(100)
+);
+
+-- Índices útiles
+CREATE INDEX IF NOT EXISTS idx_audit_jugador_timestamp ON audit_log_ingresos (jugador_id, "timestamp" DESC);
+CREATE INDEX IF NOT EXISTS idx_audit_ip_timestamp      ON audit_log_ingresos (ip, "timestamp" DESC);
 -- Tabla de control para el último ID generado
 CREATE TABLE control_torneo_id (
   ultimo_id INT NOT NULL

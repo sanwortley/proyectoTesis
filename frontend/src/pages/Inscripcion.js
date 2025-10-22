@@ -120,8 +120,6 @@ function Inscripcion() {
           <Link to="/torneosllave">Torneos</Link>
           <Link to="/inscripcion" className={isActive('/inscripcion') ? 'active-link' : ''}>Inscripción</Link>
           <Link to="/ranking">Ranking</Link>
-          <Link to="/multimedia">Multimedia</Link>
-          <Link to="/transmision">Transmisión</Link>
         </div>
       </nav>
   

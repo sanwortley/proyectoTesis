@@ -196,10 +196,10 @@ function CrearTorneo() {
                 <Link to="/crear-torneo" className={isActive('/crear-torneo') ? 'active-link' : ''}>
                     Crear Torneo
                 </Link>
+                <Link to="/torneosllaveorg">Torneos</Link>
                 <Link to="/ranking">Ranking</Link>
-                <Link to="/subir-multimedia">Multimedia</Link>
+
                 <Link to="/cargar-resultado">Resultados</Link>
-                <Link to="/cargar-transmision">Transmisión</Link>
               </div>
             </nav>
   
