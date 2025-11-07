@@ -1,0 +1,202 @@
+/* Contenedor general: “invertido” (las rondas convergen al centro) */
+.bracket.inverted{
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 28px;
+  width: 100%;
+  overflow-x: auto;
+  padding: 8px 4px 24px;
+}
+
+/* Columna (ronda) */
+.round{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 260px;
+}
+
+.round-title{
+  text-align:center;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing:.5px;
+  color: #ffd34d;
+}
+
+/* Grid vertical de la ronda */
+.round-grid{
+  display: grid;
+  gap: 18px;
+}
+
+/* Tarjeta de partido */
+.match{
+  position: relative;
+  background: #151515;
+  border: 2px solid rgba(255, 204, 0, .35);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.35);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  column-gap: 12px;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+
+.match:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 10px 18px rgba(0,0,0,.45);
+  border-color: rgba(255, 204, 0, .6);
+}
+
+/* Estado */
+.match.finalizado{ border-color: #ffd34d; }
+.match.en_juego{ border-color: #ffdf80; }
+.match.no_iniciado{ opacity: .95; }
+
+/* Equipos */
+.team{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #0f0f0f;
+}
+
+.team.win{
+  outline: 2px solid #ffd34d;
+  background: #121212;
+}
+
+.team.win .name{
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+
+.team .name{
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 75%;
+}
+
+.team .score{
+  font-variant-numeric: tabular-nums;
+  opacity: .9;
+}
+
+/* “vs” centrado */
+.vs-badge{
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 204, 0, .6);
+  color: #ffcf3a;
+  background: rgba(255, 204, 0, .08);
+  justify-self: center;
+  position: relative;
+  z-index: 2;
+  min-width: 28px;
+  text-align: center;
+}
+
+/* Apagar pseudo-elementos viejos de VS */
+.match .vs::before,
+.match .vs::after,
+.match .vs-badge::before,
+.match .vs-badge::after,
+.match-vs::before,
+.match-vs::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Conectores entre rondas */
+.connector{
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 60%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.connector .h-line{
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 14px;
+  height: 0;
+  border-top: 2px solid rgba(255, 204, 0, .45);
+}
+
+.connector .v-line{
+  position: absolute;
+  right: 0;
+  width: 0;
+  height: 50%;
+  border-right: 2px solid rgba(255, 204, 0, .45);
+}
+
+.connector .v-line.down{ top: 50%; }
+.connector .v-line.up  { bottom: 50%; }
+
+/* Centrar “FINAL” cuando sea la única columna */
+.bracket.center-single{
+  place-content: center;
+}
+
+/* Scroll más suave y discreto */
+.bracket.inverted{
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 204, 0, .3) transparent;
+}
+.bracket.inverted::-webkit-scrollbar{ height: 8px; }
+.bracket.inverted::-webkit-scrollbar-thumb{
+  background: rgba(255, 204, 0, .3);
+  border-radius: 8px;
+}
+
+/* Título de ronda fijo */
+.round-title{
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  backdrop-filter: blur(2px);
+}
+
+/* =========================
+   Conectores lado DERECHO
+   ========================= */
+.bracket.inverted .round:last-child .match .connector{
+  left: -14px;
+  right: auto;
+  transform: translateY(-50%) scaleX(-1);
+}
+
+/* Responsive compacto */
+@media (max-width: 980px){
+  .round{ min-width: 220px; }
+  .round-grid{ gap: 14px; }
+  .match{ padding: 12px 12px; border-radius: 12px; }
+  .team{ padding: 7px 8px; }
+  .vs-badge{ font-size: 11px; padding: 3px 6px; }
+  .connector{ width: 12px; right: -12px; }
+  .bracket.inverted .round:last-child .match .connector{ left: -12px; }
+}
+
+@media (max-width: 720px){
+  .round{ min-width: 200px; }
+  .match{ grid-template-columns: 1fr auto 1fr; column-gap: 10px; }
+  .team .name{ max-width: 70%; }
+}

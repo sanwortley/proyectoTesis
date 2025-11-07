@@ -1,14 +1,17 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+// src/pages/Inscripcion.jsx
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useLocation } from 'react-router-dom';
-import axios from 'axios';
-import logo from '../assets/logo.png';
+import api from '../api/axios'; // <= usa la instancia con baseURL '/api'
 import '../style.css';
 
 function Inscripcion() {
- 
   const navigate = useNavigate();
+  const location = useLocation();
+  const isActive = (path) => location.pathname === path;
+
+  const { jugador } = useAuth(); // { id, nombre, apellido, email, role, token }
+
   const [jugadores, setJugadores] = useState([]);
   const [torneos, setTorneos] = useState([]);
   const [jugador2Id, setJugador2Id] = useState('');
@@ -19,65 +22,62 @@ function Inscripcion() {
   const [torneoLleno, setTorneoLleno] = useState(false);
   const [jugador1Inscripto, setJugador1Inscripto] = useState(false);
   const [jugador2Inscripto, setJugador2Inscripto] = useState(false);
-  const location = useLocation();
 
-  const isActive = (path) => location.pathname === path;
-  const { jugador } = useAuth();
-  
+  // 🚧 Si no hay token, mandá a login (evita entrar sin sesión)
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/jugadores`)
-      .then(res => {
-        console.log("Jugadores cargados:", res.data); // DEBUG opcional
-        setJugadores(res.data);
-      })
-      .catch(() => console.error('Error al cargar jugadores'));
+    if (!jugador?.token) navigate('/login', { replace: true });
+  }, [jugador?.token, navigate]);
 
-    axios.get(`${process.env.REACT_APP_API_URL}/torneos`)
-      .then(res => {
+  // Cargar listas
+  useEffect(() => {
+    (async () => {
+      try {
+        const [resJug, resTor] = await Promise.all([
+          api.get('/jugadores'),
+          api.get('/torneos'),
+        ]);
+
+        setJugadores(resJug.data || []);
+
         const hoy = new Date();
-        const torneosAbiertos = res.data.filter(t => new Date(t.fecha_cierre_inscripcion) >= hoy);
+        const torneosAbiertos = (resTor.data || []).filter(
+          (t) => new Date(t.fecha_cierre_inscripcion) >= hoy
+        );
         setTorneos(torneosAbiertos);
-      })
-      .catch(() => console.error('Error al cargar torneos'));
+      } catch (e) {
+        console.error('Error cargando listas:', e);
+      }
+    })();
   }, []);
 
+  // Verificaciones dinámicas (cupo + ya inscriptos)
   useEffect(() => {
-    const verificarEstado = async () => {
-      if (!torneoId || !jugador || !jugador2Id) return;
-  
+    (async () => {
+      if (!torneoId || !jugador?.id || !jugador2Id) return;
       try {
-        const resInscripcion = await axios.post(`${process.env.REACT_APP_API_URL}/verificar-inscripcion`, {
-          jugador1_id: jugador.id_jugador,
+        const resInscripcion = await api.post('/verificar-inscripcion', {
+          jugador1_id: jugador.id,   // 👈 ID REAL DEL CONTEXTO
           jugador2_id: jugador2Id,
-          id_torneo: torneoId
+          id_torneo: torneoId,
         });
-  
-      
-        setJugador1Inscripto(resInscripcion.data.jugador1Inscripto);
-        setJugador2Inscripto(resInscripcion.data.jugador2Inscripto);
-  
-        const resCupo = await axios.get(`${process.env.REACT_APP_API_URL}/torneos/${torneoId}/verificar-cupo`);
-        setTorneoLleno(resCupo.data.lleno);
+
+        setJugador1Inscripto(!!resInscripcion.data?.jugador1Inscripto);
+        setJugador2Inscripto(!!resInscripcion.data?.jugador2Inscripto);
+
+        const resCupo = await api.get(`/torneos/${torneoId}/verificar-cupo`);
+        setTorneoLleno(!!resCupo.data?.lleno);
       } catch (err) {
         console.error('Error al verificar inscripción o cupo:', err);
       }
-    };
-  
-    verificarEstado();
-  }, [jugador2Id, torneoId, jugador]);
+    })();
+  }, [jugador?.id, jugador2Id, torneoId]);
 
-
-  if (!jugador) {
-    return (
-      <div className="no-logueado-container">
-        <h2>No estás logueado</h2>
-        <p>Por favor, iniciá sesión para poder inscribirte en un torneo.</p>
-        <Link to="/" className="volver-login-boton">Volver al login</Link>
-      </div>
-    );
-  }
-
-
+  // Nombre completo del principal desde contexto
+  const nombreCompleto = useMemo(() => {
+    const n = jugador?.nombre?.trim() || '';
+    const a = jugador?.apellido?.trim() || '';
+    return `${n} ${a}`.trim() || '—';
+  }, [jugador]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -86,63 +86,51 @@ function Inscripcion() {
     setLoading(true);
 
     try {
-      const res = await axios.post(`${process.env.REACT_APP_API_URL}/inscripcion`, {
-        jugador1_id: jugador.id_jugador,
+      await api.post('/inscripcion', {
+        jugador1_id: jugador.id,  // 👈 ID REAL
         jugador2_id: jugador2Id,
-        id_torneo: torneoId
+        id_torneo: torneoId,
       });
 
-      setMensaje(res.data.mensaje || 'Inscripción exitosa');
+      setMensaje('Inscripción exitosa');
       setJugador2Id('');
       setTorneoId('');
-
-      setTimeout(() => {
-        navigate('/home-jugador');
-      }, 2000);
+      setTimeout(() => navigate('/home-jugador', { replace: true }), 1200);
     } catch (err) {
-      console.error('Error al inscribirse:', err.response?.data || err.message);
-      setError(err.response?.data?.error || 'Error al inscribirse');
+      console.error('Error al inscribirse:', err?.response?.data || err.message);
+      setError(err?.response?.data?.error || 'Error al inscribirse');
     } finally {
       setLoading(false);
     }
   };
 
+  // Guard “no logueado” (si por algún motivo se llega sin token)
+  if (!jugador?.token) {
+    return (
+      <div className="no-logueado-container">
+        <h2>No estás logueado</h2>
+        <p>Por favor, iniciá sesión para poder inscribirte en un torneo.</p>
+        <Link to="/login" className="volver-login-boton">Ir al login</Link>
+      </div>
+    );
+  }
+
   return (
     <>
-      <nav className="navbar">
-        <div className="navbar-logo-container">
-          <Link to="/home-jugador">
-            <img src={logo} alt="Logo" className="navbar-logo" />
-          </Link>
-        </div>
-  
-        <div className="navbar-links">
-          <Link to="/torneosllave">Torneos</Link>
-          <Link to="/inscripcion" className={isActive('/inscripcion') ? 'active-link' : ''}>Inscripción</Link>
-          <Link to="/ranking">Ranking</Link>
-        </div>
-      </nav>
-  
+      
+
       <form onSubmit={handleSubmit} className="inscripcion-form">
         <h2 className="inscripcion-titulo">Inscribite al Torneo</h2>
-  
+
         {mensaje && <p className="success">{mensaje}</p>}
         {error && <p className="error">{error}</p>}
         {torneoLleno && <p className="error">Este torneo ya está lleno.</p>}
         {jugador1Inscripto && <p className="error">Ya estás inscripto en este torneo.</p>}
         {jugador2Inscripto && <p className="error">El jugador seleccionado como compañero ya está inscripto en este torneo.</p>}
-  
-        {jugador && (
-          <>
-            <label className="inscripcion-label">Jugador principal:</label>
-            <input
-              className="inscripcion-input"
-              value={`${jugador.nombre_jugador} ${jugador.apellido_jugador}`}
-              disabled
-            />
-          </>
-        )}
-  
+
+        <label className="inscripcion-label">Jugador principal:</label>
+        <input className="inscripcion-input" value={nombreCompleto} disabled />
+
         <label className="inscripcion-label">Compañero:</label>
         <select
           className="inscripcion-select"
@@ -153,8 +141,9 @@ function Inscripcion() {
           <option value="">Seleccioná compañero</option>
           {jugadores
             .filter(j =>
-              j.id_jugador !== jugador?.id_jugador &&
-              j.rol?.toLowerCase() === 'jugador'
+              // excluye al propio jugador (tu lista viene con id_jugador)
+              j.id_jugador !== jugador.id &&
+              (j.rol?.toLowerCase?.() === 'jugador')
             )
             .map(j => (
               <option key={j.id_jugador} value={j.id_jugador}>
@@ -162,7 +151,7 @@ function Inscripcion() {
               </option>
             ))}
         </select>
-  
+
         <label className="inscripcion-label">Torneo:</label>
         <select
           className="inscripcion-select"
@@ -177,18 +166,17 @@ function Inscripcion() {
             </option>
           ))}
         </select>
-  
+
         <button
           className="inscripcion-boton"
           type="submit"
           disabled={loading || jugador1Inscripto || jugador2Inscripto || torneoLleno}
-          >
+        >
           {loading ? 'Inscribiendo...' : 'Inscribirse'}
         </button>
       </form>
     </>
   );
-  
 }
 
 export default Inscripcion;

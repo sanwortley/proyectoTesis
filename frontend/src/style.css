@@ -1545,3 +1545,193 @@ select:focus {
     height: 60px;
   }
 }
+
+/* ===== Bracket invertido (derecha → izquierda) ===== */
+.bracket-container{
+  display:flex; gap:28px; align-items:flex-start;
+}
+.bracket-container.invert{
+  flex-direction: row-reverse;          /* invierte el sentido de la llave */
+}
+.bracket-round{ min-width:280px; }
+.bracket-round-title{
+  text-align:center; color:#ffcc00; font-weight:700; margin-bottom:6px;
+}
+.bracket-matches{
+  display:grid; gap:18px;
+}
+
+/* ===== Card de partido + VS centrado ===== */
+.match-card{
+  position:relative;
+  padding:10px 12px;
+  border:1px solid #2a2a2a;
+  border-radius:14px;
+  background:#121212;
+}
+.match-vs{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  border:1.5px solid rgba(255,204,0,.6);
+  border-radius:999px; padding:3px 8px;
+  font-weight:800; letter-spacing:.6px;
+  color:#ffcc00; background:rgba(0,0,0,.55);
+  pointer-events:none; user-select:none;
+}
+
+.match-team{
+  display:flex; justify-content:space-between; align-items:center;
+  gap:12px; padding:8px 10px; border-radius:10px;
+}
+.match-team .team-name{ font-weight:600; }
+.match-team .team-score{ opacity:.9; }
+
+/* ganador resaltado */
+.match-team.win{
+  outline:2px solid #ffcc00;
+  background:rgba(255,204,0,.08);
+}
+
+/* estados */
+.match-card.no_iniciado{ opacity:.85; }
+.match-card.en_juego{ box-shadow:0 0 0 2px rgba(255,204,0,.25) inset; }
+.match-card.finalizado{ opacity:1; }
+
+/* ===== Conectores simples (llave invertida) =====
+   Dibujamos un “brazo” hacia la izquierda para unir con la siguiente ronda.
+   Si querés conectores perfectos según alturas variables, después los
+   pasamos a SVG. Esto te da una guía visual prolija ya mismo.
+*/
+/*.bracket-container.invert .bracket-round:not(:last-child) .match-card::after{
+  content:"";
+  position:absolute;
+  top:50%; right:100%;
+  width:24px; height:2px;
+  background:#2a2a2a;
+  transform:translateY(-50%);
+}
+.bracket-container.invert .bracket-round:not(:last-child) .match-card::before{
+  content:"";
+  position:absolute;
+  top:50%; right:calc(100% + 24px - 1px);
+  width:12px; height:28px;
+  border-left:2px solid #2a2a2a;
+  border-bottom:2px solid #2a2a2a;
+  border-radius:0 0 0 10px;
+  transform:translateY(-50%);
+}
+
+/* Ajuste cuando solo hay FINAL (centrado) */
+/*.bracket-container.center-single{
+  justify-content:center;
+}*/
+
+
+/* Columna de partidos dentro de cada ronda */
+/* --- Tamaños consistentes por match para armar parejas --- */
+:root {
+  --match-h: 96px;          /* alto de cada tarjeta (ajustá a gusto) */
+  --gap-v: 28px;            /* separación vertical entre tarjetas */
+  --conn-w: 32px;           /* largo del conector horizontal */
+  --gold: #f7c600;
+}
+
+.bracket-matches { gap: var(--gap-v); }
+
+/* tarjetas */
+.match-card { height: var(--match-h); }
+
+.bracket-matches {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Tarjeta del partido */
+.match-card {
+  position: relative;
+  background: #141414;
+  border: 2px solid rgba(247,198,0,0.6);
+  border-radius: 14px;
+  padding: 10px 12px;
+  width: 240px;
+  box-shadow: 0 0 10px rgba(247,198,0,0.12);
+}
+
+.match-card.finalizado {
+  border-color: #f7c600;
+  box-shadow: 0 0 14px rgba(247,198,0,0.25);
+}
+
+.match-team {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 0;
+  color: #eee;
+  font-weight: 600;
+}
+
+.match-team.team1 {
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.match-team.win .team-name { color: #f7c600; }
+
+.team-name { flex: 1; text-align: left; }
+.team-score { min-width: 44px; text-align: right; color: #f7c600; }
+
+/* “vs” centrado */
+.match-vs {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  font-size: 11px;
+  background: #000;
+  color: #f7c600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(247,198,0,0.4);
+  opacity: .9;
+}
+
+/* ===== Conectores (salen a la derecha de cada match si hay otra ronda) ===== */
+/* conector horizontal a la ronda siguiente */
+.bracket-round:not(:last-child) .match-card::after {
+  content: "";
+  position: absolute;
+  right: calc(-1 * var(--conn-w));
+  top: 50%;
+  width: var(--conn-w);
+  height: 2px;
+  background: rgba(247,198,0,0.6);
+}
+
+
+/* Líneas verticales para unir dos partidos consecutivos hacia el siguiente “slot” */
+.bracket-round:not(:last-child) .match-card[data-index]:nth-child(odd)::before,
+.bracket-round:not(:last-child) .match-card[data-index]:nth-child(even)::before {
+  content: "";
+  position: absolute;
+  right: -32px;
+  width: 2px;
+  background: rgba(247,198,0,0.6);
+}
+
+/* El de arriba baja medio bloque + la mitad del gap; el de abajo sube igual */
+.bracket-round:not(:last-child) .match-card[data-index]:nth-child(odd)::before {
+  top: 50%;
+  height: calc((var(--match-h) + var(--gap-v)) / 2);
+}
+.bracket-round:not(:last-child) .match-card[data-index]:nth-child(even)::before {
+  bottom: 50%;
+  height: calc((var(--match-h) + var(--gap-v)) / 2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .bracket-container { gap: 40px; }
+  .match-card { width: 210px; }
+  .bracket-round { min-width: 210px; }
+}

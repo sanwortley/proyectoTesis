@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import logo from '../assets/logo.png'; 
-import { Link } from 'react-router-dom';
 import '../style.css';
 import { useLocation } from 'react-router-dom';
 
@@ -26,8 +24,6 @@ function CrearTorneo() {
   const [torneoConGrupos, setTorneoConGrupos] = useState(null);
 
   const location = useLocation();
-
-  const isActive = (path) => location.pathname === path;
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/categorias`)
@@ -185,24 +181,7 @@ function CrearTorneo() {
 
   return (
     <>
-      <nav className="navbar">
-          <div className="navbar-logo-container">
-            <Link to="/home-organizador">
-            <img src={logo} alt="Logo" className="navbar-logo" />
-            </Link>
-          </div>
-
-              <div className="navbar-links">
-                <Link to="/crear-torneo" className={isActive('/crear-torneo') ? 'active-link' : ''}>
-                    Crear Torneo
-                </Link>
-                <Link to="/torneosllaveorg">Torneos</Link>
-                <Link to="/ranking">Ranking</Link>
-
-                <Link to="/cargar-resultado">Resultados</Link>
-              </div>
-            </nav>
-  
+    
       <div className="contenedor-crear-torneo">
         {/* FORMULARIO */}
         <div className="formulario-lado">

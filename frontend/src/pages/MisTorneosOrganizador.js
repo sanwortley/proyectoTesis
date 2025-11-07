@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import logo from '../assets/logo.png';
 import { Link } from 'react-router-dom';
 import '../style.css';
 
@@ -16,12 +15,7 @@ function MisTorneosOrganizador() {
 
   return (
     <>
-      <nav className="navbar">
-        <Link to="/home-organizador">
-          <img src={logo} alt="Logo" className="navbar-logo" />
-        </Link>
-      </nav>
-
+     
       <div className="crear-torneo-container">
         <h2>Mis Torneos</h2>
 

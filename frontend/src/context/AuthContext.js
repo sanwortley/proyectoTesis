@@ -1,16 +1,26 @@
-// src/context/AuthContext.js
-import { createContext, useState, useContext } from 'react';
+// src/context/AuthContext.jsx
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-const AuthContext = createContext();
+const AuthCtx = createContext(null);
+export const useAuth = () => useContext(AuthCtx);
 
-export const AuthProvider = ({ children }) => {
-  const [jugador, setJugador] = useState(null); // { rol: 'jugador' | 'organizador' }
+export function AuthProvider({ children }) {
+  // 👇 leer localStorage en el inicializador evita el 1er render "null"
+  const [jugador, setJugador] = useState(() => {
+    try {
+      const raw = localStorage.getItem("user");
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  });
 
-  return (
-    <AuthContext.Provider value={{ jugador, setJugador }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+  // Persistir cambios
+  useEffect(() => {
+    if (jugador) localStorage.setItem("user", JSON.stringify(jugador));
+    else localStorage.removeItem("user");
+  }, [jugador]);
 
-export const useAuth = () => useContext(AuthContext);
+  const value = useMemo(() => ({ jugador, setJugador }), [jugador]);
+  return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
+}
