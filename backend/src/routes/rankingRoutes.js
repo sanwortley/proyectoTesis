@@ -315,14 +315,20 @@ router.post('/torneos/:id/generar-ranking', async (req, res) => {
   }
 });
 
-router.get("/ranking", async (req, res) => {
-  const { categoria } = req.query;
-
-  if (!categoria) {
-    return res.json([]); // no mostrar nada hasta elegir categoría
-  }
-
+router.get('/ranking', async (req, res) => {
   try {
+    const { categoria } = req.query;
+
+    // No mostrar nada hasta que el front elija una categoría
+    if (!categoria) {
+      return res.json([]);
+    }
+
+    const catNum = Number(categoria);
+    if (Number.isNaN(catNum)) {
+      return res.status(400).json({ error: 'Categoría inválida' });
+    }
+
     const result = await pool.query(
       `
       SELECT id,
@@ -332,18 +338,19 @@ router.get("/ranking", async (req, res) => {
              ultima_pareja,
              torneo_participado,
              fase_llegada,
-             puntos
+             puntos,
+             categoria
       FROM ranking_jugador
       WHERE categoria = $1
       ORDER BY puntos DESC, apellido ASC, nombre ASC
-    `,
-      [categoria]
+      `,
+      [catNum]
     );
 
     return res.json(result.rows);
   } catch (err) {
-    console.error("[GET /ranking] Error al obtener ranking:", err);
-    res.status(500).json({ error: "Error al obtener ranking" });
+    console.error('[GET /ranking] Error al obtener ranking:', err);
+    res.status(500).json({ error: 'Error al obtener ranking' });
   }
 });
 
