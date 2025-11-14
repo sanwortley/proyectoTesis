@@ -1,53 +1,83 @@
 // src/pages/CargarResultado.js
-import { useEffect, useMemo, useState } from 'react';
-import axios from 'axios';
-import '../style.css';
+import { useEffect, useMemo, useState } from "react";
+import axios from "axios";
+import "../style.css";
 
-function n(v) {
-  return v === '' || v == null ? null : Number(v);
+/** ✅ Valida un set de pádel:
+ * - Gana quien llega al menos a 6
+ * - Si gana con 6: el otro tiene entre 0 y 4 (6–0 a 6–4)
+ * - Si gana con 7: solo se acepta 7–5 o 7–6
+ * - No se permiten negativos, ni > 7
+ * - Ambos vacíos (null) => se ignora ese set
+ */
+function validarSetPadel(a, b) {
+  // Ambos vacíos → set no jugado, se permite
+  if (a == null && b == null) return true;
+
+  // Uno solo cargado → no permitimos
+  if (a == null || b == null) return false;
+
+  const na = Number(a);
+  const nb = Number(b);
+
+  if (!Number.isFinite(na) || !Number.isFinite(nb)) return false;
+  if (na < 0 || nb < 0) return false;
+
+  const max = Math.max(na, nb);
+  const min = Math.min(na, nb);
+
+  // El ganador tiene que llegar al menos a 6
+  if (max < 6) return false;
+
+  if (max === 6) {
+    // 6–0 a 6–4
+    return min >= 0 && min <= 4;
+  }
+
+  if (max === 7) {
+    // Solo 7–5 o 7–6
+    return min === 5 || min === 6;
+  }
+
+  // Nada > 7
+  return false;
 }
 
-const RONDAS_ORDENADAS = ['OCTAVOS', 'CUARTOS', 'SEMIS', 'FINAL'];
+function n(v) {
+  return v === "" || v == null ? null : Number(v);
+}
+
+const RONDAS_ORDENADAS = ["OCTAVOS", "CUARTOS", "SEMIS", "FINAL"];
 
 export default function CargarResultado() {
-  const API = process.env.REACT_APP_API_URL || '';
+  const API = process.env.REACT_APP_API_URL || "";
 
   const [torneos, setTorneos] = useState([]);
-  const [torneoId, setTorneoId] = useState('');
-  const [modo, setModo] = useState('grupos'); // 'grupos' | 'playoff'
+  const [torneoId, setTorneoId] = useState("");
+  const [modo, setModo] = useState("grupos");
 
-  // ======== GRUPOS ========
   const [grupos, setGrupos] = useState([]);
-  // valores de inputs (fase grupos)
   const [resultadosGrupos, setResultadosGrupos] = useState({});
-
-  // Flag: ¿todos los partidos de grupos finalizados?
   const [gruposCompletos, setGruposCompletos] = useState(false);
 
-  // ======== PLAY-OFFS ========
-  // rondas: { CUARTOS: [...], SEMIS: [...], FINAL: [...] }
   const [rondasPO, setRondasPO] = useState({});
-  // valores de inputs (play-off)
   const [resultadosPO, setResultadosPO] = useState({});
   const [loadingPO, setLoadingPO] = useState(false);
-  const [errorPO, setErrorPO] = useState('');
+  const [errorPO, setErrorPO] = useState("");
 
-  // ---------------------------
-  // CARGA INICIAL: TORNEOS
-  // ---------------------------
+  // =======================
+  // CARGA TORNEOS
+  // =======================
   useEffect(() => {
     axios
       .get(`${API}/torneos`)
       .then((res) => setTorneos(res.data || []))
-      .catch((err) => {
-        console.error('Error al cargar torneos', err);
-        setTorneos([]);
-      });
+      .catch(() => setTorneos([]));
   }, [API]);
 
-  // ---------------------------
-  // CARGA DE GRUPOS + PLAYOFF AL CAMBIAR TORNEO
-  // ---------------------------
+  // =======================
+  // CARGAR GRUPOS Y PLAYOFF
+  // =======================
   useEffect(() => {
     if (!torneoId) {
       setGrupos([]);
@@ -58,106 +88,91 @@ export default function CargarResultado() {
       return;
     }
 
-    // Grupos
+    // --- GRUPOS ---
     axios
       .get(`${API}/torneos/${torneoId}/grupos`)
       .then((res) => {
         const data = res.data?.grupos || [];
         setGrupos(data);
 
-        // Pre-cargar los inputs con los sets ya guardados
         const next = {};
         data.forEach((g) => {
-          (g.partidos || []).forEach((p) => {
+          g.partidos?.forEach((p) => {
             next[p.id] = {
-              set1_equipo1: p.set1_equipo1 ?? '',
-              set1_equipo2: p.set1_equipo2 ?? '',
-              set2_equipo1: p.set2_equipo1 ?? '',
-              set2_equipo2: p.set2_equipo2 ?? '',
-              set3_equipo1: p.set3_equipo1 ?? '',
-              set3_equipo2: p.set3_equipo2 ?? ''
+              set1_equipo1: p.set1_equipo1 ?? "",
+              set1_equipo2: p.set1_equipo2 ?? "",
+              set2_equipo1: p.set2_equipo1 ?? "",
+              set2_equipo2: p.set2_equipo2 ?? "",
+              set3_equipo1: p.set3_equipo1 ?? "",
+              set3_equipo2: p.set3_equipo2 ?? ""
             };
           });
         });
         setResultadosGrupos(next);
 
-        // Calcular si están completos
         const completos =
           data.length > 0 &&
           data.every(
             (g) =>
               (g.partidos?.length ?? 0) > 0 &&
-              g.partidos.every((p) => p.estado === 'finalizado')
+              g.partidos.every((p) => p.estado === "finalizado")
           );
+
         setGruposCompletos(completos);
+
+        // ⭐ GENERAR PLAYOFF AUTOMÁTICO CUANDO SE COMPLETAN
+        if (completos) {
+          axios.post(`${API}/torneos/${torneoId}/playoff`).catch(() => {});
+        }
       })
-      .catch((err) => {
-        console.error('Error al obtener grupos', err);
+      .catch(() => {
         setGrupos([]);
         setResultadosGrupos({});
         setGruposCompletos(false);
       });
 
-    // Play-offs
+    // --- PLAYOFF ---
     setLoadingPO(true);
-    setErrorPO('');
+    setErrorPO("");
     axios
       .get(`${API}/torneos/${torneoId}/playoff`)
       .then((res) => {
         const r = res.data?.rondas || {};
         setRondasPO(r);
 
-        // Pre-cargar inputs con lo guardado
         const nextPO = {};
-        Object.values(r).forEach((arr) => {
+        Object.values(r).forEach((arr) =>
           arr.forEach((m) => {
             nextPO[m.id] = {
-              set1_equipo1: m.set1_equipo1 ?? '',
-              set1_equipo2: m.set1_equipo2 ?? '',
-              set2_equipo1: m.set2_equipo1 ?? '',
-              set2_equipo2: m.set2_equipo2 ?? '',
-              set3_equipo1: m.set3_equipo1 ?? '',
-              set3_equipo2: m.set3_equipo2 ?? ''
+              set1_equipo1: m.set1_equipo1 ?? "",
+              set1_equipo2: m.set1_equipo2 ?? "",
+              set2_equipo1: m.set2_equipo1 ?? "",
+              set2_equipo2: m.set2_equipo2 ?? "",
+              set3_equipo1: m.set3_equipo1 ?? "",
+              set3_equipo2: m.set3_equipo2 ?? ""
             };
-          });
-        });
+          })
+        );
         setResultadosPO(nextPO);
       })
-      .catch((err) => {
-        console.error('Error al obtener play-off', err);
+      .catch(() => {
         setRondasPO({});
         setResultadosPO({});
-        setErrorPO('No se pudieron cargar las llaves');
+        setErrorPO("No se pudieron cargar las llaves");
       })
       .finally(() => setLoadingPO(false));
   }, [API, torneoId]);
 
-  // ---------------------------
-  // HANDLERS: INPUTS
-  // ---------------------------
-  const handleInputGrupo = (partidoId, campo, valor) => {
+  // =======================
+  // HANDLER GRUPOS
+  // =======================
+  const handleInputGrupo = (id, campo, valor) => {
     setResultadosGrupos((prev) => ({
       ...prev,
-      [partidoId]: {
-        ...(prev[partidoId] || {}),
-        [campo]: valor
-      }
+      [id]: { ...(prev[id] || {}), [campo]: valor }
     }));
   };
 
-  const handleInputPO = (partidoId, campo, valor) => {
-    setResultadosPO((prev) => ({
-      ...prev,
-      [partidoId]: {
-        ...(prev[partidoId] || {}),
-        [campo]: valor
-      }
-    }));
-  };
-
-  // ---------------------------
-  // GUARDAR: GRUPOS
-  // ---------------------------
   const guardarResultadoGrupo = async (partido) => {
     const data = resultadosGrupos[partido.id] || {};
     const payload = {
@@ -169,51 +184,78 @@ export default function CargarResultado() {
       set3_equipo2: n(data.set3_equipo2)
     };
 
+    // ✅ Validar sets con reglas de pádel
+    const sets = [
+      [payload.set1_equipo1, payload.set1_equipo2],
+      [payload.set2_equipo1, payload.set2_equipo2],
+      [payload.set3_equipo1, payload.set3_equipo2]
+    ];
+
+    for (let i = 0; i < sets.length; i++) {
+      const [a, b] = sets[i];
+      if (!validarSetPadel(a, b)) {
+        alert(
+          `Set ${i + 1}: poné bien el resultado (ej: 6-4, 7-5 o 7-6, sin negativos ni 6-5).`
+        );
+        return;
+      }
+    }
+
     try {
       await axios.put(`${API}/partidos-grupo/${partido.id}`, payload);
-      // refrescar grupos
+
       const res = await axios.get(`${API}/torneos/${torneoId}/grupos`);
       const dataG = res.data?.grupos || [];
       setGrupos(dataG);
 
-      // rehidratar inputs con valores guardados
       const next = {};
-      dataG.forEach((g) => {
-        (g.partidos || []).forEach((p) => {
+      dataG.forEach((g) =>
+        g.partidos?.forEach((p) => {
           next[p.id] = {
-            set1_equipo1: p.set1_equipo1 ?? '',
-            set1_equipo2: p.set1_equipo2 ?? '',
-            set2_equipo1: p.set2_equipo1 ?? '',
-            set2_equipo2: p.set2_equipo2 ?? '',
-            set3_equipo1: p.set3_equipo1 ?? '',
-            set3_equipo2: p.set3_equipo2 ?? ''
+            set1_equipo1: p.set1_equipo1 ?? "",
+            set1_equipo2: p.set1_equipo2 ?? "",
+            set2_equipo1: p.set2_equipo1 ?? "",
+            set2_equipo2: p.set2_equipo2 ?? "",
+            set3_equipo1: p.set3_equipo1 ?? "",
+            set3_equipo2: p.set3_equipo2 ?? ""
           };
-        });
-      });
+        })
+      );
       setResultadosGrupos(next);
 
-      // recalcular completos
       const completos =
         dataG.length > 0 &&
         dataG.every(
           (g) =>
             (g.partidos?.length ?? 0) > 0 &&
-            g.partidos.every((p) => p.estado === 'finalizado')
+            g.partidos.every((p) => p.estado === "finalizado")
         );
+
       setGruposCompletos(completos);
 
-      alert('Resultado guardado (grupos)');
+      // ⭐ SI SE COMPLETÓ TODO → GENERAR PLAYOFF SOLO
+      if (completos) {
+        await axios.post(`${API}/torneos/${torneoId}/playoff`);
+      }
+
+      alert("Resultado guardado");
     } catch (err) {
-      console.error('Error al guardar resultado de grupo:', err);
-      alert('Error al guardar resultado');
+      console.error(err);
+      alert("Error guardando resultado");
     }
   };
 
-  // ---------------------------
-  // GUARDAR: PLAY-OFF
-  // ---------------------------
+  // =======================
+  // HANDLER PLAYOFF
+  // =======================
+  const handleInputPO = (id, campo, valor) => {
+    setResultadosPO((prev) => ({
+      ...prev,
+      [id]: { ...(prev[id] || {}), [campo]: valor }
+    }));
+  };
+
   const guardarResultadoPO = async (match) => {
-    if (!torneoId) return;
     const data = resultadosPO[match.id] || {};
     const payload = {
       set1_equipo1: n(data.set1_equipo1),
@@ -224,80 +266,56 @@ export default function CargarResultado() {
       set3_equipo2: n(data.set3_equipo2)
     };
 
+    // ✅ Validar sets con reglas de pádel
+    const sets = [
+      [payload.set1_equipo1, payload.set1_equipo2],
+      [payload.set2_equipo1, payload.set2_equipo2],
+      [payload.set3_equipo1, payload.set3_equipo2]
+    ];
+
+    for (let i = 0; i < sets.length; i++) {
+      const [a, b] = sets[i];
+      if (!validarSetPadel(a, b)) {
+        alert(
+          `Set ${i + 1}: poné bien el resultado (ej: 6-4, 7-5 o 7-6, sin negativos ni 6-5).`
+        );
+        return;
+      }
+    }
+
     try {
-      await axios.put(
-        `${API}/torneos/${torneoId}/playoff/partidos/${match.id}`,
-        payload
+      // ⭐ RUTA CORRECTA (usa PATCH del backend)
+      await axios.patch(`${API}/partidos-llave/${match.id}/resultado`, payload);
+
+      const res = await axios.get(`${API}/torneos/${torneoId}/playoff`);
+      const r = res.data?.rondas || {};
+      setRondasPO(r);
+
+      const nextPO = {};
+      Object.values(r).forEach((arr) =>
+        arr.forEach((m) => {
+          nextPO[m.id] = {
+            set1_equipo1: m.set1_equipo1 ?? "",
+            set1_equipo2: m.set1_equipo2 ?? "",
+            set2_equipo1: m.set2_equipo1 ?? "",
+            set2_equipo2: m.set2_equipo2 ?? "",
+            set3_equipo1: m.set3_equipo1 ?? "",
+            set3_equipo2: m.set3_equipo2 ?? ""
+          };
+        })
       );
-
-      // refrescar play-off
-      const res = await axios.get(`${API}/torneos/${torneoId}/playoff`);
-      const r = res.data?.rondas || {};
-      setRondasPO(r);
-
-      // rehidratar inputs con valores guardados
-      const nextPO = {};
-      Object.values(r).forEach((arr) => {
-        arr.forEach((m) => {
-          nextPO[m.id] = {
-            set1_equipo1: m.set1_equipo1 ?? '',
-            set1_equipo2: m.set1_equipo2 ?? '',
-            set2_equipo1: m.set2_equipo1 ?? '',
-            set2_equipo2: m.set2_equipo2 ?? '',
-            set3_equipo1: m.set3_equipo1 ?? '',
-            set3_equipo2: m.set3_equipo2 ?? ''
-          };
-        });
-      });
       setResultadosPO(nextPO);
 
-      alert('Resultado guardado (play-off)');
+      alert("Resultado guardado (play-off)");
     } catch (err) {
-      console.error('Error al guardar resultado de play-off:', err);
-      alert('Error al guardar resultado de play-off');
+      console.error(err);
+      alert("Error guardando resultado");
     }
   };
 
-  // ---------------------------
-  // GENERAR PLAY-OFF (BOTÓN)
-  // ---------------------------
-  const generarPlayoff = async () => {
-    if (!torneoId) return;
-    try {
-      await axios.post(`${API}/torneos/${torneoId}/playoff`);
-      // recargar llaves
-      const res = await axios.get(`${API}/torneos/${torneoId}/playoff`);
-      const r = res.data?.rondas || {};
-      setRondasPO(r);
-
-      // precargar inputs de PO
-      const nextPO = {};
-      Object.values(r).forEach((arr) => {
-        arr.forEach((m) => {
-          nextPO[m.id] = {
-            set1_equipo1: m.set1_equipo1 ?? '',
-            set1_equipo2: m.set1_equipo2 ?? '',
-            set2_equipo1: m.set2_equipo1 ?? '',
-            set2_equipo2: m.set2_equipo2 ?? '',
-            set3_equipo1: m.set3_equipo1 ?? '',
-            set3_equipo2: m.set3_equipo2 ?? ''
-          };
-        });
-      });
-      setResultadosPO(nextPO);
-
-      // cambiar a pestaña Play-off para verlo
-      setModo('playoff');
-      alert('Play-off generado');
-    } catch (err) {
-      console.error('Error al generar play-off:', err?.response?.data || err);
-      alert(err?.response?.data?.error || 'No se pudo generar el play-off');
-    }
-  };
-
-  // ---------------------------
-  // DERIVADOS
-  // ---------------------------
+  // =======================
+  // RENDER
+  // =======================
   const torneoSeleccionado = useMemo(
     () => torneos.find((t) => String(t.id_torneo) === String(torneoId)) || null,
     [torneos, torneoId]
@@ -307,7 +325,6 @@ export default function CargarResultado() {
     <div className="cargar-resultado-container">
       <h2 className="titulo">Cargar Resultados</h2>
 
-      {/* Selección de Torneo */}
       <label className="inscripcion-label">Seleccioná torneo:</label>
       <select
         className="inscripcion-select"
@@ -322,50 +339,30 @@ export default function CargarResultado() {
         ))}
       </select>
 
-      {/* Toggle modo */}
-      <div style={{ marginTop: 12, marginBottom: 20, display: 'flex', gap: 8 }}>
+      <div style={{ marginTop: 12, marginBottom: 20, display: "flex", gap: 8 }}>
         <button
-          className={modo === 'grupos' ? 'boton-fase activo' : 'boton-fase'}
-          onClick={() => setModo('grupos')}
+          className={modo === "grupos" ? "boton-fase activo" : "boton-fase"}
+          onClick={() => setModo("grupos")}
         >
           Fase de grupos
         </button>
         <button
-          className={modo === 'playoff' ? 'boton-fase activo' : 'boton-fase'}
-          onClick={() => setModo('playoff')}
+          className={modo === "playoff" ? "boton-fase activo" : "boton-fase"}
+          onClick={() => setModo("playoff")}
         >
           Play-off
         </button>
       </div>
 
       {/* ======================= */}
-      {/*     FASE DE GRUPOS      */}
+      {/* FASE DE GRUPOS */}
       {/* ======================= */}
-      {modo === 'grupos' && (
+      {modo === "grupos" && (
         <>
-          {/* Aviso + botón de generar play-off */}
-          {torneoId && (
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 12 }}>
-              {!gruposCompletos ? (
-                <div className="banner-aviso">🕒 Cargá todos los resultados para habilitar el play-off.</div>
-              ) : (
-                <div className="banner-aviso" style={{ background: '#0c5' }}>
-                  ✅ Todos los partidos de grupos están finalizados.
-                </div>
-              )}
-              <button
-                className="boton-fase"
-                onClick={generarPlayoff}
-                disabled={!gruposCompletos}
-                title={!gruposCompletos ? 'Faltan cerrar partidos de grupos' : 'Generar Play-off'}
-              >
-                Generar Play-off
-              </button>
-            </div>
-          )}
-
           {!torneoId ? (
-            <div className="mensaje-sin-grupos">Elegí un torneo para cargar resultados.</div>
+            <div className="mensaje-sin-grupos">
+              Elegí un torneo para cargar resultados.
+            </div>
           ) : grupos.length === 0 ? (
             <div className="mensaje-sin-grupos">
               Este torneo no tiene grupos generados.
@@ -382,54 +379,81 @@ export default function CargarResultado() {
                       const val = resultadosGrupos[p.id] || {};
                       return (
                         <div key={p.id} className={`partido-card ${p.estado}`}>
-                          <h4 className="partido-vs">{p.equipo1} vs {p.equipo2}</h4>
+                          <h4 className="partido-vs">
+                            {p.equipo1} vs {p.equipo2}
+                          </h4>
 
                           <div className="inputs-sets">
                             <div>
-                              <label>Sets {p.equipo1}</label>
+                              <label>{p.equipo1}</label>
                               <input
                                 type="number"
-                                value={val.set1_equipo1 ?? ''}
+                                value={val.set1_equipo1 ?? ""}
                                 onChange={(e) =>
-                                  handleInputGrupo(p.id, 'set1_equipo1', e.target.value)
+                                  handleInputGrupo(
+                                    p.id,
+                                    "set1_equipo1",
+                                    e.target.value
+                                  )
                                 }
                               />
                               <input
                                 type="number"
-                                value={val.set2_equipo1 ?? ''}
+                                value={val.set2_equipo1 ?? ""}
                                 onChange={(e) =>
-                                  handleInputGrupo(p.id, 'set2_equipo1', e.target.value)
+                                  handleInputGrupo(
+                                    p.id,
+                                    "set2_equipo1",
+                                    e.target.value
+                                  )
                                 }
                               />
                               <input
                                 type="number"
-                                value={val.set3_equipo1 ?? ''}
+                                value={val.set3_equipo1 ?? ""}
                                 onChange={(e) =>
-                                  handleInputGrupo(p.id, 'set3_equipo1', e.target.value)
+                                  handleInputGrupo(
+                                    p.id,
+                                    "set3_equipo1",
+                                    e.target.value
+                                  )
                                 }
                               />
                             </div>
+
                             <div>
-                              <label>Sets {p.equipo2}</label>
+                              <label>{p.equipo2}</label>
                               <input
                                 type="number"
-                                value={val.set1_equipo2 ?? ''}
+                                value={val.set1_equipo2 ?? ""}
                                 onChange={(e) =>
-                                  handleInputGrupo(p.id, 'set1_equipo2', e.target.value)
+                                  handleInputGrupo(
+                                    p.id,
+                                    "set1_equipo2",
+                                    e.target.value
+                                  )
                                 }
                               />
                               <input
                                 type="number"
-                                value={val.set2_equipo2 ?? ''}
+                                value={val.set2_equipo2 ?? ""}
                                 onChange={(e) =>
-                                  handleInputGrupo(p.id, 'set2_equipo2', e.target.value)
+                                  handleInputGrupo(
+                                    p.id,
+                                    "set2_equipo2",
+                                    e.target.value
+                                  )
                                 }
                               />
                               <input
                                 type="number"
-                                value={val.set3_equipo2 ?? ''}
+                                value={val.set3_equipo2 ?? ""}
                                 onChange={(e) =>
-                                  handleInputGrupo(p.id, 'set3_equipo2', e.target.value)
+                                  handleInputGrupo(
+                                    p.id,
+                                    "set3_equipo2",
+                                    e.target.value
+                                  )
                                 }
                               />
                             </div>
@@ -453,12 +477,14 @@ export default function CargarResultado() {
       )}
 
       {/* ======================= */}
-      {/*        PLAY-OFFS        */}
+      {/* PLAYOFF */}
       {/* ======================= */}
-      {modo === 'playoff' && (
+      {modo === "playoff" && (
         <>
           {!torneoId ? (
-            <div className="mensaje-playoff">Elegí un torneo para cargar play-off.</div>
+            <div className="mensaje-playoff">
+              Elegí un torneo para cargar play-off.
+            </div>
           ) : loadingPO ? (
             <div className="mensaje-playoff">Cargando llaves…</div>
           ) : errorPO ? (
@@ -469,83 +495,110 @@ export default function CargarResultado() {
             </div>
           ) : (
             <div className="playoff-editor">
-              {RONDAS_ORDENADAS.filter((r) => rondasPO[r]?.length).map((ronda) => (
-                <div key={ronda} className="grupo-tarjeta">
-                  <h3 className="grupo-titulo">{ronda}</h3>
+              {RONDAS_ORDENADAS.filter((r) => rondasPO[r]?.length).map(
+                (ronda) => (
+                  <div key={ronda} className="grupo-tarjeta">
+                    <h3 className="grupo-titulo">{ronda}</h3>
 
-                  <div className="grupo-partidos">
-                    {rondasPO[ronda].map((m) => {
-                      const val = resultadosPO[m.id] || {};
-                      return (
-                        <div key={m.id} className={`partido-card ${m.estado}`}>
-                          <h4 className="partido-vs">
-                            {m.equipo1_nombre || '—'} <span style={{ opacity: 0.6 }}>vs</span> {m.equipo2_nombre || '—'}
-                          </h4>
+                    <div className="grupo-partidos">
+                      {rondasPO[ronda].map((m) => {
+                        const val = resultadosPO[m.id] || {};
+                        return (
+                          <div key={m.id} className={`partido-card ${m.estado}`}>
+                            <h4 className="partido-vs">
+                              {m.equipo1_nombre || "—"} vs{" "}
+                              {m.equipo2_nombre || "—"}
+                            </h4>
 
-                          <div className="inputs-sets">
-                            <div>
-                              <label>Sets {m.equipo1_nombre || '—'}</label>
-                              <input
-                                type="number"
-                                value={val.set1_equipo1 ?? ''}
-                                onChange={(e) =>
-                                  handleInputPO(m.id, 'set1_equipo1', e.target.value)
-                                }
-                              />
-                              <input
-                                type="number"
-                                value={val.set2_equipo1 ?? ''}
-                                onChange={(e) =>
-                                  handleInputPO(m.id, 'set2_equipo1', e.target.value)
-                                }
-                              />
-                              <input
-                                type="number"
-                                value={val.set3_equipo1 ?? ''}
-                                onChange={(e) =>
-                                  handleInputPO(m.id, 'set3_equipo1', e.target.value)
-                                }
-                              />
+                            <div className="inputs-sets">
+                              <div>
+                                <label>{m.equipo1_nombre || "—"}</label>
+                                <input
+                                  type="number"
+                                  value={val.set1_equipo1 ?? ""}
+                                  onChange={(e) =>
+                                    handleInputPO(
+                                      m.id,
+                                      "set1_equipo1",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                                <input
+                                  type="number"
+                                  value={val.set2_equipo1 ?? ""}
+                                  onChange={(e) =>
+                                    handleInputPO(
+                                      m.id,
+                                      "set2_equipo1",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                                <input
+                                  type="number"
+                                  value={val.set3_equipo1 ?? ""}
+                                  onChange={(e) =>
+                                    handleInputPO(
+                                      m.id,
+                                      "set3_equipo1",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </div>
+
+                              <div>
+                                <label>{m.equipo2_nombre || "—"}</label>
+                                <input
+                                  type="number"
+                                  value={val.set1_equipo2 ?? ""}
+                                  onChange={(e) =>
+                                    handleInputPO(
+                                      m.id,
+                                      "set1_equipo2",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                                <input
+                                  type="number"
+                                  value={val.set2_equipo2 ?? ""}
+                                  onChange={(e) =>
+                                    handleInputPO(
+                                      m.id,
+                                      "set2_equipo2",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                                <input
+                                  type="number"
+                                  value={val.set3_equipo2 ?? ""}
+                                  onChange={(e) =>
+                                    handleInputPO(
+                                      m.id,
+                                      "set3_equipo2",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </div>
                             </div>
 
-                            <div>
-                              <label>Sets {m.equipo2_nombre || '—'}</label>
-                              <input
-                                type="number"
-                                value={val.set1_equipo2 ?? ''}
-                                onChange={(e) =>
-                                  handleInputPO(m.id, 'set1_equipo2', e.target.value)
-                                }
-                              />
-                              <input
-                                type="number"
-                                value={val.set2_equipo2 ?? ''}
-                                onChange={(e) =>
-                                  handleInputPO(m.id, 'set2_equipo2', e.target.value)
-                                }
-                              />
-                              <input
-                                type="number"
-                                value={val.set3_equipo2 ?? ''}
-                                onChange={(e) =>
-                                  handleInputPO(m.id, 'set3_equipo2', e.target.value)
-                                }
-                              />
-                            </div>
+                            <button
+                              className="btn-guardar"
+                              onClick={() => guardarResultadoPO(m)}
+                            >
+                              Guardar
+                            </button>
                           </div>
-
-                          <button
-                            className="btn-guardar"
-                            onClick={() => guardarResultadoPO(m)}
-                          >
-                            Guardar
-                          </button>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              )}
             </div>
           )}
         </>

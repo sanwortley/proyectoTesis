@@ -9,6 +9,8 @@ import routes from './routes/index.js';
 import auditoriaRoutes from './routes/auditoria.js';
 import authRoutes from './routes/auth.js';
 import playoffroutes from './routes/playoffroutes.js'
+import rankingRoutes from './routes/rankingRoutes.js'
+import torneoRoutes from './routes/torneosRoutes.js'
 
 dotenv.config();
 
@@ -22,6 +24,10 @@ app.use('/api', routes);
 app.use('/api', auditoriaRoutes);
 app.use('/api', authRoutes);
 app.use('/api', playoffroutes)
+app.use('/api', rankingRoutes)
+app.use('/api', torneoRoutes)
+
+
 console.log('[ROUTES] playoff montada');
 
 

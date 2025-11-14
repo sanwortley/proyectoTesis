@@ -1,35 +1,83 @@
 // utils/generarGrupos.js
 
-export function generarGruposAleatorios(equipos, tamanioGrupo = 3) {
+export function generarGruposAleatorios(equipos) {
+  const total = equipos.length;
   const mezclados = [...equipos].sort(() => Math.random() - 0.5);
-  const grupos = [];
+  let grupos = [];
 
-  const totalEquipos = mezclados.length;
-
-  // Caso especial: solo 2 equipos → final directa
-  if (totalEquipos === 2) {
-    return [mezclados]; // 1 grupo con 2 equipos
+  // ========================
+  // 1) CASOS ESTÁNDAR
+  // ========================
+  if (total === 2) {
+    // Final directa
+    return [mezclados];
   }
 
+  if (total === 4) {
+    // 1 grupo → pasan 4 → semis
+    return [mezclados];
+  }
+
+  if (total === 8) {
+    // 2 grupos de 4 → pasan 2 de cada grupo → SEMIS
+    return cortarEnGrupos(mezclados, 2, 4);
+  }
+
+  if (total === 16) {
+    // 4 grupos de 4 → pasan 2 → CUARTOS
+    return cortarEnGrupos(mezclados, 4, 4);
+  }
+
+  // ========================
+  // 2) CASOS INTERMEDIOS: 6–7–10–12–14 equipos
+  // Siempre maximizar equilibrio
+  // ========================
+
+  if (total === 6 || total === 7) {
+    // 2 grupos lo más parejo posible (3-3 o 4-3)
+    return cortarParejo(mezclados, 2);
+  }
+
+  if (total === 10 || total === 11 || total === 12) {
+    // 3 grupos (4-4-2 o 4-4-3)
+    return cortarParejo(mezclados, 3);
+  }
+
+  if (total === 14 || total === 15) {
+    // 4 grupos (4-4-3-3 o 4-4-4-2)
+    return cortarParejo(mezclados, 4);
+  }
+
+  // ========================
+  // 3) Fallback raro → distribuir lo más parejo posible
+  // ========================
+  return cortarParejo(mezclados, Math.ceil(total / 4));
+}
+
+
+// ==========================================
+// Helpers
+// ==========================================
+
+// Corta en N grupos con tamaño fijo
+function cortarEnGrupos(lista, cantidad, tamanio) {
+  const grupos = [];
   let i = 0;
-  while (i < totalEquipos) {
-    // Si quedan 4 o 5 equipos al final, hacer 2 grupos: uno de 3 y otro de 2
-    if (totalEquipos - i === 5) {
-      grupos.push(mezclados.slice(i, i + 3));
-      grupos.push(mezclados.slice(i + 3, i + 5));
-      break;
-    }
+  for (let g = 0; g < cantidad; g++) {
+    grupos.push(lista.slice(i, i + tamanio));
+    i += tamanio;
+  }
+  return grupos;
+}
 
-    // Si quedan exactamente 4, hacer 2 grupos de 2
-    if (totalEquipos - i === 4) {
-      grupos.push(mezclados.slice(i, i + 2));
-      grupos.push(mezclados.slice(i + 2, i + 4));
-      break;
-    }
+// Corta lo más parejo posible en N grupos
+function cortarParejo(lista, cantidadGrupos) {
+  const grupos = Array.from({ length: cantidadGrupos }, () => []);
+  let idx = 0;
 
-    // Grupo estándar de 3
-    grupos.push(mezclados.slice(i, i + tamanioGrupo));
-    i += tamanioGrupo;
+  for (const item of lista) {
+    grupos[idx].push(item);
+    idx = (idx + 1) % cantidadGrupos;
   }
 
   return grupos;

@@ -1735,3 +1735,84 @@ select:focus {
   .match-card { width: 210px; }
   .bracket-round { min-width: 210px; }
 }
+
+
+/*   RANKING    */
+
+/* Contenedor general del ranking */
+.ranking-card {
+  background: #111;          /* menos negro puro */
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* Título y subtítulo ya los tenés, estos son detalles opcionales */
+.page-title {
+  color: #ffd666;            /* dorado más suave */
+  font-size: 2.4rem;
+  margin-bottom: 0.25rem;
+}
+
+.page-subtitle {
+  color: #d1d1d1;
+  font-size: 0.95rem;
+}
+
+/* Wrapper de tabla para scroll horizontal si hace falta */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Tabla */
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+/* Header de la tabla */
+.ranking-table thead th {
+  background: #181818;
+  color: #f7f7f7;
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid #333;
+  font-weight: 600;
+}
+
+/* Celdas generales */
+.ranking-table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid #222;
+  color: #f1f1f1;
+}
+
+/* Número de posición y puntos en dorado suave */
+.ranking-table td:first-child,
+.ranking-points {
+  font-weight: 600;
+  color: #f3c86b;
+}
+
+/* Zebra suave */
+.ranking-table tbody tr:nth-child(odd) {
+  background: #101010;
+}
+
+.ranking-table tbody tr:nth-child(even) {
+  background: #181818;
+}
+
+/* Hover sutil */
+.ranking-table tbody tr:hover {
+  background: #222;
+}
+
+/* Leyenda de puntos */
+.ranking-legend {
+  margin-top: 14px;
+  font-size: 0.85rem;
+  color: #b8b8b8;
+}
