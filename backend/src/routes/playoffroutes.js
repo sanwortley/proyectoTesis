@@ -10,7 +10,13 @@ const router = Router();
  * Devuelve el bracket agrupado por ronda.
  */
 router.get("/torneos/:id/playoff", async (req, res) => {
-  const { id } = req.params;
+  const id = Number(req.params.id);
+
+  if (Number.isNaN(id)) {
+    console.error("[GET playoff] ID inválido:", req.params.id);
+    return res.status(400).json({ error: "ID inválido" });
+  }
+
   try {
     const { rows } = await pool.query(
       `
@@ -40,12 +46,14 @@ router.get("/torneos/:id/playoff", async (req, res) => {
       acc[r.ronda].push(r);
       return acc;
     }, {});
-    res.json({ torneo_id: Number(id), rondas });
+
+    res.json({ torneo_id: id, rondas });
   } catch (err) {
     console.error("[GET playoff] error:", err);
     res.status(500).json({ error: "No se pudo obtener el play-off" });
   }
 });
+
 
 /**
  * POST /torneos/:id/playoff

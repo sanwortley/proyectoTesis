@@ -668,7 +668,14 @@ router.put('/partidos-grupo/:id', async (req, res) => {
 
 // GET llaves por torneo
 router.get('/torneos/:idTorneo/playoff', async (req, res) => {
-  const { idTorneo } = req.params;
+  const rawId = req.params.idTorneo;
+  const idTorneo = Number(rawId);
+
+  if (Number.isNaN(idTorneo)) {
+    console.error('[PLAYOFF GET] ID de torneo inválido:', rawId);
+    return res.status(400).json({ error: 'ID de torneo inválido' });
+  }
+
   try {
     const { rows } = await pool.query(`
       SELECT

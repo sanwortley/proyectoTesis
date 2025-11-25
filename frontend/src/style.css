@@ -1816,3 +1816,139 @@ select:focus {
   font-size: 0.85rem;
   color: #b8b8b8;
 }
+
+/* =========================================================
+   AJUSTE LIMPIO PARA EL RECUADRO DE LOS NOMBRES DE LOS GRUPOS
+   (Fase de grupos) – aplica a ambos estilos de tarjeta
+   ========================================================= */
+/* ====== AJUSTE VISUAL DE LOS TÍTULOS DE GRUPO ====== */
+
+/* ============================
+   GRUPOS – TABLAS Y PARTIDOS
+   ============================ */
+
+/* grilla de grupos */
+.grupos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 24px;
+}
+
+/* tarjeta de cada grupo */
+.grupo-tarjeta {
+  background-color: #111;
+  color: #ffd700;
+  border-radius: 16px;
+  padding: 22px 18px 18px;
+  border: 1px solid #333;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+  text-align: center;              /* para centrar el título píldora */
+}
+
+/* título “Grupo A / Grupo B” como píldora centrada */
+.titulo-grupo {
+  display: inline-block;
+  padding: 6px 20px;
+  margin-bottom: 18px;
+  background-color: #000;
+  border-radius: 999px;
+  border: 2px solid #ffd700;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* tabla de posiciones dentro de la tarjeta */
+.tabla-grupo {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+.encabezado-tabla {
+  background-color: #000;
+  color: #ffcc00;
+}
+
+.encabezado-tabla th {
+  padding: 8px;
+  border: 1px solid #333;
+}
+
+.fila-equipo td {
+  padding: 8px;
+  border: 1px solid #333;
+  color: #ffd700;
+  text-align: center;
+}
+
+.fila-equipo:nth-child(even) {
+  background-color: #141414;
+}
+
+.fila-equipo:nth-child(odd) {
+  background-color: #0d0d0d;
+}
+
+.equipo-nombre {
+  font-weight: 600;
+  color: #ffcc00;
+}
+
+/* subtítulo “Partidos” */
+.subtitulo-partidos {
+  color: #b3b3b3;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 10px 0;
+  text-align: left;
+}
+
+/* tarjetas de partidos del grupo */
+.partidos-contenedor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.partido-card {
+  background-color: #1f1f1f;
+  border-radius: 10px;
+  padding: 10px 14px;
+  border-left: 3px solid #444;
+  color: #eee;
+}
+
+.partido-no-iniciado { border-left-color: #ff9800; }
+.partido-iniciado   { border-left-color: #00bcd4; }
+.partido-finalizado { border-left-color: #4caf50; }
+
+.equipos-y-sets {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.equipos-nombres {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+}
+
+.sets-partido {
+  display: flex;
+  flex-direction: column;
+  font-weight: 700;
+  color: #ffd700;
+  text-align: right;
+  gap: 4px;
+}
+
+.estado-texto {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: #9ca3af;
+  margin-top: 4px;
+}

@@ -1,4 +1,6 @@
-/* Contenedor general: “invertido” (las rondas convergen al centro) */
+/* =========================
+   CONTENEDOR GENERAL PLAYOFF
+   ========================= */
 .bracket.inverted{
   display: grid;
   grid-auto-flow: column;
@@ -7,9 +9,23 @@
   width: 100%;
   overflow-x: auto;
   padding: 8px 4px 24px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 204, 0, .3) transparent;
 }
 
-/* Columna (ronda) */
+.bracket.inverted::-webkit-scrollbar{ height: 8px; }
+.bracket.inverted::-webkit-scrollbar-thumb{
+  background: rgba(255, 204, 0, .3);
+  border-radius: 8px;
+}
+
+.bracket.center-single{
+  place-content: center;
+}
+
+/* =========================
+   COLUMNAS / RONDAS
+   ========================= */
 .round{
   display: flex;
   flex-direction: column;
@@ -23,15 +39,71 @@
   margin-bottom: 10px;
   letter-spacing:.5px;
   color: #ffd34d;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  backdrop-filter: blur(2px);
 }
 
-/* Grid vertical de la ronda */
+/* Layout vertical de la ronda */
 .round-grid{
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;  /* espacio entre cada par de partidos */
+}
+
+/* Cada par de partidos (ej. 2 cuartos que llevan a 1 semi) */
+.match-pair{
+  position: relative;
+  display: flex;
+  flex-direction: column;
   gap: 18px;
 }
 
-/* Tarjeta de partido */
+/* Aseguramos que los partidos de un par puedan dibujar su rayita */
+.match-pair .match{
+  position: relative;
+}
+
+/* Rayita desde cada partido hacia el centro (a la derecha) */
+.match-pair .match::after{
+  content: "";
+  position: absolute;
+  right: -14px;              /* sale 14px hacia afuera */
+  top: 50%;
+  width: 14px;               /* llega justo hasta el palito vertical */
+  height: 2px;
+  background: #ffd34d;
+}
+
+/* Palito vertical centrado entre las 2 llaves */
+.match-pair::before{
+  content: "";
+  position: absolute;
+  right: -14px;              /* mismo x que las rayitas anteriores */
+  top: 50%;
+  transform: translateY(-50%);
+  height: calc(100% - 32px); /* un poco más corto que todo el alto para que
+                                quede lindo entre las dos tarjetas */
+  width: 2px;
+  background: #ffd34d;
+}
+
+/* Rayita que va desde el centro hacia la siguiente ronda */
+.match-pair::after{
+  content: "";
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  transform: translate(100%, -50%);
+  width: 28px;               /* cruza el gap hacia la siguiente columna */
+  height: 2px;
+  background: #ffd34d;
+}
+
+/* =========================
+   TARJETA DE PARTIDO
+   ========================= */
 .match{
   position: relative;
   background: #151515;
@@ -52,12 +124,14 @@
   border-color: rgba(255, 204, 0, .6);
 }
 
-/* Estado */
+/* Estado visual opcional */
 .match.finalizado{ border-color: #ffd34d; }
 .match.en_juego{ border-color: #ffdf80; }
 .match.no_iniciado{ opacity: .95; }
 
-/* Equipos */
+/* =========================
+   EQUIPOS
+   ========================= */
 .team{
   display: flex;
   justify-content: space-between;
@@ -108,91 +182,36 @@
   text-align: center;
 }
 
-/* Apagar pseudo-elementos viejos de VS */
+/* =========================
+   APAGAR COSAS VIEJAS
+   ========================= */
+
 .match .vs::before,
 .match .vs::after,
 .match .vs-badge::before,
 .match .vs-badge::after,
 .match-vs::before,
-.match-vs::after {
-  content: none !important;
+.match-vs::after{
   display: none !important;
+  content: none !important;
 }
 
-/* Conectores entre rondas */
-.connector{
-  position: absolute;
-  right: -14px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 14px;
-  height: 60%;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.connector .h-line{
-  position: absolute;
-  right: 0;
-  top: 50%;
-  width: 14px;
-  height: 0;
-  border-top: 2px solid rgba(255, 204, 0, .45);
-}
-
+.connector,
+.connector .h-line,
 .connector .v-line{
-  position: absolute;
-  right: 0;
-  width: 0;
-  height: 50%;
-  border-right: 2px solid rgba(255, 204, 0, .45);
-}
-
-.connector .v-line.down{ top: 50%; }
-.connector .v-line.up  { bottom: 50%; }
-
-/* Centrar “FINAL” cuando sea la única columna */
-.bracket.center-single{
-  place-content: center;
-}
-
-/* Scroll más suave y discreto */
-.bracket.inverted{
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 204, 0, .3) transparent;
-}
-.bracket.inverted::-webkit-scrollbar{ height: 8px; }
-.bracket.inverted::-webkit-scrollbar-thumb{
-  background: rgba(255, 204, 0, .3);
-  border-radius: 8px;
-}
-
-/* Título de ronda fijo */
-.round-title{
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  backdrop-filter: blur(2px);
+  display: none !important;
+  content: none !important;
 }
 
 /* =========================
-   Conectores lado DERECHO
+   RESPONSIVE
    ========================= */
-.bracket.inverted .round:last-child .match .connector{
-  left: -14px;
-  right: auto;
-  transform: translateY(-50%) scaleX(-1);
-}
-
-/* Responsive compacto */
 @media (max-width: 980px){
   .round{ min-width: 220px; }
-  .round-grid{ gap: 14px; }
+  .round-grid{ gap: 26px; }
   .match{ padding: 12px 12px; border-radius: 12px; }
   .team{ padding: 7px 8px; }
   .vs-badge{ font-size: 11px; padding: 3px 6px; }
-  .connector{ width: 12px; right: -12px; }
-  .bracket.inverted .round:last-child .match .connector{ left: -12px; }
 }
 
 @media (max-width: 720px){
