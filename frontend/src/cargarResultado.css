@@ -1,0 +1,229 @@
+/* src/cargarResultado.css */
+
+/* Contenedor Principal */
+.cargar-resultado-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #0a0a0a;
+    color: #eee;
+    font-family: 'Poppins', sans-serif;
+    min-height: 80vh;
+}
+
+/* Título */
+.titulo {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #ffd700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 40px;
+    border-bottom: 2px solid #333;
+    padding-bottom: 20px;
+}
+
+/* Select de Torneo */
+.inscripcion-label {
+    display: block;
+    font-size: 1.1rem;
+    color: #ffd700;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.inscripcion-select {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 20px;
+    background-color: #1a1a1a;
+    color: #fff;
+    border: 1px solid #444;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 30px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.inscripcion-select:focus {
+    border-color: #ffd700;
+}
+
+/* Botones de Fase (Grupos / Playoff) */
+.boton-fase {
+    background-color: transparent;
+    color: #888;
+    border: 1px solid #444;
+    padding: 10px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.boton-fase:hover {
+    background-color: #1a1a1a;
+    color: #ffd700;
+    border-color: #ffd700;
+}
+
+.boton-fase.activo {
+    background-color: #ffd700;
+    color: #000;
+    border-color: #ffd700;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+/* Botón Generar Ranking */
+.boton-generar-ranking {
+    background-color: #1a1a1a;
+    color: #4caf50;
+    border: 1px solid #4caf50;
+    padding: 10px 20px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.boton-generar-ranking:hover {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+/* Mensajes de estado vacío */
+.mensaje-sin-grupos,
+.mensaje-playoff,
+.error {
+    text-align: center;
+    padding: 40px;
+    background-color: #111;
+    border-radius: 12px;
+    border: 1px dashed #444;
+    color: #888;
+    font-size: 1.1rem;
+    margin-top: 20px;
+}
+
+.error {
+    border-color: #ff4d4d;
+    color: #ff4d4d;
+}
+
+/* Grid de Grupos / Tarjetas */
+.grupos-grid,
+.playoff-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.grupo-tarjeta {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.grupo-titulo {
+    font-size: 1.4rem;
+    color: #ffd700;
+    margin-bottom: 20px;
+    border-left: 4px solid #ffd700;
+    padding-left: 15px;
+    text-transform: uppercase;
+}
+
+/* Tabla de Resultados */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.tabla-resultados {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+.tabla-resultados th {
+    text-align: left;
+    padding: 15px;
+    color: #888;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    border-bottom: 1px solid #333;
+}
+
+.tabla-resultados td {
+    padding: 15px;
+    border-bottom: 1px solid #222;
+    vertical-align: middle;
+}
+
+.col-partido {
+    width: 40%;
+    color: #fff;
+    font-weight: 500;
+    font-size: 1.05rem;
+}
+
+.separador-vs {
+    color: #ffd700;
+    margin: 0 8px;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+.col-set {
+    width: 15%;
+    white-space: nowrap;
+}
+
+.col-accion {
+    width: 15%;
+    text-align: right;
+}
+
+/* Inputs de Sets */
+.tabla-input {
+    width: 35px;
+    height: 35px;
+    text-align: center;
+    background-color: #000;
+    border: 1px solid #444;
+    color: #ffd700;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 1rem;
+    margin: 0 4px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.tabla-input:focus {
+    border-color: #ffd700;
+}
+
+/* Botón Guardar (Icono) */
+.btn-icon-guardar {
+    background-color: #ffd700;
+    color: #000;
+    border: none;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-icon-guardar:hover {
+    background-color: #e0a800;
+}

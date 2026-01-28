@@ -26,7 +26,7 @@ export default function Navbar() {
     stored =
       JSON.parse(localStorage.getItem('user')) ??
       JSON.parse(localStorage.getItem('jugador'));
-  } catch {}
+  } catch { }
 
   const role = String(
     ctxUser?.role ?? stored?.role ?? stored?.rol ?? 'invitado'
@@ -37,8 +37,8 @@ export default function Navbar() {
 
   const homeByRole =
     role === 'organizador' ? '/home'
-  : role === 'jugador'     ? '/home'
-  : '/home';
+      : role === 'jugador' ? '/home'
+        : '/home';
 
   return (
     <nav className="navbar">
@@ -62,6 +62,7 @@ export default function Navbar() {
         {role === 'jugador' && (
           <>
             <Link to="/inscripcion" className={isActive('/inscripcion')}>Inscripción</Link>
+            <Link to="/perfil" className={isActive('/perfil')}>Mi Perfil</Link>
             <button className="logout-btn" onClick={ctxLogout}>Cerrar sesión</button>
           </>
         )}
@@ -71,7 +72,9 @@ export default function Navbar() {
           <>
             <Link to="/crear-torneo" className={isActive('/crear-torneo')}>Crear Torneo</Link>
             <Link to="/cargar-resultado" className={isActive('/cargar-resultado')}>Resultados</Link>
+            <Link to="/admin/jugadores" className={isActive('/admin/jugadores')}>Jugadores</Link>
             <Link to="/dashboard" className={isActive('/dashboard')}>Dashboard</Link>
+            <Link to="/perfil" className={isActive('/perfil')}>Mi Perfil</Link>
             <button className="logout-btn" onClick={ctxLogout}>Cerrar sesión</button>
           </>
         )}

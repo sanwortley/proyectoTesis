@@ -1,24 +1,27 @@
-// src/pages/Ranking.js
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { formatName } from '../utils/formatName';
 import '../style.css';
-
-// Ajustá estos values para que coincidan con tu tabla "categoria"
-// (id_categoria = 4..8 por ejemplo)
-const CATEGORIAS = [
-  { value: '',  label: 'Todas las categorías' },
-  { value: 3,   label: '4ta' },
-  { value: 4,   label: '5ta' },
-  { value: 5,   label: '6ta' },
-  { value: 6,   label: '7ma' },
-  { value: 7    ,   label: '8va' },
-];
+import '../ranking.css'; // New refined styles
 
 function Ranking() {
   const [ranking, setRanking] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError]   = useState('');
-  const [categoria, setCategoria] = useState('');   // id numérico en string
+  const [error, setError] = useState('');
+  const [categoria, setCategoria] = useState('');
+  const [categorias, setCategorias] = useState([]);
+
+  useEffect(() => {
+    const fetchCategorias = async () => {
+      try {
+        const res = await axios.get('/api/categorias');
+        setCategorias(res.data || []);
+      } catch (err) {
+        console.error('Error al cargar categorías', err);
+      }
+    };
+    fetchCategorias();
+  }, []);
 
   useEffect(() => {
     const fetchRanking = async () => {
@@ -28,7 +31,6 @@ function Ranking() {
 
         const params = {};
         if (categoria) {
-          // mandamos número, porque en la BD categoria es INTEGER
           params.categoria = Number(categoria);
         }
 
@@ -47,88 +49,94 @@ function Ranking() {
 
   return (
     <div className="app-root">
-      <main className="page-container">
-        <section className="page-header">
-          <h1 className="page-title">Ranking de Jugadores</h1>
-          <p className="page-subtitle">
-            Lista de todos los jugadores con su última pareja, torneo jugado, fase alcanzada y puntos.
+      <main className="ranking-page">
+        <header className="ranking-header">
+          <h1 className="ranking-title">Ranking de Jugadores</h1>
+          <p className="ranking-subtitle">
+            Explorá el desempeño de los mejores jugadores. Puntos basados en fase alcanzada y bonus por victorias.
           </p>
-        </section>
+        </header>
 
         {/* Filtro por categoría */}
-        <section className="card ranking-card" style={{ marginBottom: 16 }}>
-          <div className="card-body" style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-            <label className="inscripcion-label">Filtrar por categoría:</label>
-            <select
-              className="inscripcion-select"
-              value={categoria}
-              onChange={(e) => setCategoria(e.target.value)}
-              style={{ maxWidth: 250 }}
-            >
-              {CATEGORIAS.map((cat) => (
-                <option key={cat.value === '' ? 'all' : cat.value} value={cat.value}>
-                  {cat.label}
-                </option>
-              ))}
-            </select>
-          </div>
+        <section className="filter-section">
+          <label className="filter-label">Filtrar por categoría:</label>
+          <select
+            className="filter-select"
+            value={categoria}
+            onChange={(e) => setCategoria(e.target.value)}
+          >
+            <option value="">Todas las categorías</option>
+            {categorias.map((cat) => (
+              <option key={cat.id_categoria} value={cat.id_categoria}>
+                {cat.nombre}
+              </option>
+            ))}
+          </select>
         </section>
 
-        <section className="card ranking-card">
+        <section className="ranking-content">
           {loading && (
-            <div className="card-body center-text">
-              <p>Cargando ranking...</p>
+            <div className="ranking-loader">
+              <div className="spinner"></div>
+              <p>Actualizando ranking...</p>
             </div>
           )}
 
           {error && !loading && (
-            <div className="card-body error-text">
-              <p>{error}</p>
+            <div className="empty-state">
+              <span className="empty-state-icon">⚠️</span>
+              <p className="error-text">{error}</p>
             </div>
           )}
 
           {!loading && !error && ranking.length === 0 && (
-            <div className="card-body center-text">
-              <p>
+            <div className="empty-state">
+              <span className="empty-state-icon">🏆</span>
+              <p className="empty-state-text">
                 {categoria
-                  ? 'Ranking no disponible aún para esta categoría.'
-                  : 'Aún no hay jugadores cargados en el ranking.'}
+                  ? 'No hay registros de ranking para esta categoría todavía.'
+                  : 'El ranking se está calculando. ¡Vuelve pronto!'}
               </p>
             </div>
           )}
 
           {!loading && !error && ranking.length > 0 && (
-            <div className="card-body">
+            <>
               <div className="table-wrapper">
-                <table className="ranking-table">
+                <table className="pro-ranking-table">
                   <thead>
                     <tr>
                       <th>#</th>
                       <th>Jugador</th>
                       <th>Última pareja</th>
-                      <th>Ultimo torneo</th>
-                      <th>Fase alcanzada</th>
-                      <th>Puntos</th>
+                      <th>Último torneo</th>
+                      <th>Fase</th>
+                      <th style={{ textAlign: 'right' }}>Puntos</th>
                     </tr>
                   </thead>
                   <tbody>
                     {ranking.map((row, index) => (
                       <tr key={row.id || index}>
-                        <td>{index + 1}</td>
-                        <td>{row.nombre} {row.apellido}</td>
+                        <td className="pos-cell">{index + 1}</td>
+                        <td className="player-name-cell">{formatName(row.nombre, row.apellido, row.apodo)}</td>
                         <td>{row.ultima_pareja || '-'}</td>
                         <td>{row.torneo_participado || '-'}</td>
-                        <td>{row.fase_llegada || '-'}</td>
-                        <td className="ranking-points">{row.puntos ?? 0}</td>
+                        <td>
+                          {row.fase_llegada ? (
+                            <span className="fase-badge">{row.fase_llegada}</span>
+                          ) : '-'}
+                        </td>
+                        <td className="pts-cell">{row.puntos ?? 0}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <p className="ranking-legend">
-                Puntos de referencia: 2000 (campeón) · 1000 (subcampeón) · 500 (semis) · 200 (cuartos) · 100 (octavos) · 50 (16avos)
-              </p>
-            </div>
+              <footer className="legend-section">
+                <strong>Referencia de Puntos (Base):</strong> Campeón (2000), Subcampeón (1200), Semis (720), Cuartos (360), Octavos (180).
+                Incluye bonus por partidos ganados, sets y efectividad en grupos.
+              </footer>
+            </>
           )}
         </section>
       </main>
@@ -137,3 +145,4 @@ function Ranking() {
 }
 
 export default Ranking;
+

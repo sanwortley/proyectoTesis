@@ -19,6 +19,14 @@ const app = express();
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
+// Servir carpetas estáticas (uploads)
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+// app.mjs está en src/, uploads está en ../uploads
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 // Montaje de rutas
 app.use('/api', routes);
 app.use('/api', auditoriaRoutes);
@@ -35,7 +43,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
   console.log('[ROUTES] auditoria montada');
-  
+
 });
 
 

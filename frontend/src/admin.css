@@ -1,0 +1,232 @@
+/* Admin CSS - Dark Pro Theme */
+
+.admin-container {
+    background-color: #0a0a0a;
+    min-height: 100vh;
+    color: #e0e0e0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.admin-container h2 {
+    color: #ffd700;
+    text-transform: uppercase;
+    border-bottom: 2px solid #333;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+}
+
+/* Search Bar */
+.search-container {
+    background-color: #1a1a1a;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.search-input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    width: 100%;
+    padding: 8px;
+    outline: none;
+}
+
+.search-icon {
+    font-size: 20px;
+    margin-right: 12px;
+    color: #ffd700;
+}
+
+/* Table Styling */
+.table-responsive {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    border: 1px solid #333;
+}
+
+.pro-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #111;
+}
+
+.pro-table thead tr {
+    background-color: #000;
+    border-bottom: 2px solid #ffd700;
+}
+
+.pro-table th {
+    color: #ffd700;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 14px;
+    padding: 18px 15px;
+    text-align: left;
+    letter-spacing: 0.5px;
+}
+
+.pro-table td {
+    padding: 15px;
+    border-bottom: 1px solid #222;
+    color: #ccc;
+    vertical-align: middle;
+}
+
+.pro-table tbody tr {
+    background-color: #111;
+    color: #e0e0e0;
+}
+
+.pro-table tbody tr:nth-child(even) {
+    background-color: #1a1a1a;
+}
+
+.pro-table tbody tr:hover {
+    background-color: #252525;
+    transition: background-color 0.2s;
+}
+
+.pro-table td {
+    border-bottom: 1px solid #333;
+    color: #ccc;
+}
+
+/* Action Buttons */
+.btn-action {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    margin-right: 8px;
+    text-transform: uppercase;
+}
+
+.btn-edit {
+    background-color: transparent;
+    border: 1px solid #555;
+    color: #ddd;
+}
+
+.btn-edit:hover {
+    border-color: #ffd700;
+    color: #ffd700;
+    background-color: rgba(255, 215, 0, 0.1);
+}
+
+.btn-delete {
+    background-color: transparent;
+    border: 1px solid #555;
+    color: #ff4d4d;
+}
+
+.btn-delete:hover {
+    background-color: rgba(255, 77, 77, 0.1);
+    border-color: #ff4d4d;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    /* Ensure it's on top of everything */
+}
+
+.modal-content {
+    background-color: #1a1a1a;
+    padding: 25px;
+    /* Reduced padding */
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 80vh;
+    /* Reduced height to avoid touching edges */
+    overflow-y: auto;
+    border: 2px solid #ffd700;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
+    position: relative;
+}
+
+.modal-content h3 {
+    color: #ffd700;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #aaa;
+    font-size: 13px;
+}
+
+.modal-input {
+    width: 100%;
+    background-color: #0a0a0a;
+    border: 1px solid #333;
+    padding: 12px;
+    color: white;
+    border-radius: 6px;
+    outline: none;
+    font-family: inherit;
+}
+
+.modal-input:focus {
+    border-color: #ffd700;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.btn-save {
+    flex: 1;
+    background-color: #ffd700;
+    color: black;
+    border: none;
+    padding: 12px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    flex: 1;
+    background-color: transparent;
+    color: #ccc;
+    border: 1px solid #333;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-cancel:hover {
+    background-color: #222;
+}

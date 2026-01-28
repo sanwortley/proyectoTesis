@@ -1,7 +1,7 @@
 // src/pages/CargarResultado.js
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import "../style.css";
+import "../cargarResultado.css";
 
 /** ✅ Valida un set de pádel:
  * - Gana quien llega al menos a 6
@@ -122,7 +122,7 @@ export default function CargarResultado() {
 
         // ⭐ GENERAR PLAYOFF AUTOMÁTICO CUANDO SE COMPLETAN
         if (completos) {
-          axios.post(`${API}/torneos/${torneoId}/playoff`).catch(() => {});
+          axios.post(`${API}/torneos/${torneoId}/playoff`).catch(() => { });
         }
       })
       .catch(() => {
@@ -339,7 +339,7 @@ export default function CargarResultado() {
         ))}
       </select>
 
-      <div style={{ marginTop: 12, marginBottom: 20, display: "flex", gap: 8 }}>
+      <div style={{ marginTop: 12, marginBottom: 20, display: "flex", gap: 12, alignItems: 'center' }}>
         <button
           className={modo === "grupos" ? "boton-fase activo" : "boton-fase"}
           onClick={() => setModo("grupos")}
@@ -352,6 +352,24 @@ export default function CargarResultado() {
         >
           Play-off
         </button>
+
+        {torneoId && (
+          <button
+            className="boton-generar-ranking"
+            style={{ marginLeft: 'auto', backgroundColor: '#28a745', color: 'white' }}
+            onClick={async () => {
+              try {
+                const res = await axios.post(`${API}/torneos/${torneoId}/generar-ranking`);
+                alert(`Ranking actualizado: ${res.data.jugadores_procesados} jugadores procesados.`);
+              } catch (err) {
+                console.error(err);
+                alert(err.response?.data?.error || "Error al generar el ranking.");
+              }
+            }}
+          >
+            Actualizar Ranking del Torneo
+          </button>
+        )}
       </div>
 
       {/* ======================= */}
@@ -373,101 +391,90 @@ export default function CargarResultado() {
                 <div key={grupo.id_grupo} className="grupo-tarjeta">
                   <h3 className="grupo-titulo">{grupo.nombre}</h3>
 
-                  <h4 className="grupo-subtitulo">Partidos</h4>
-                  <div className="grupo-partidos">
-                    {grupo.partidos.map((p) => {
-                      const val = resultadosGrupos[p.id] || {};
-                      return (
-                        <div key={p.id} className={`partido-card ${p.estado}`}>
-                          <h4 className="partido-vs">
-                            {p.equipo1} vs {p.equipo2}
-                          </h4>
-
-                          <div className="inputs-sets">
-                            <div>
-                              <label>{p.equipo1}</label>
-                              <input
-                                type="number"
-                                value={val.set1_equipo1 ?? ""}
-                                onChange={(e) =>
-                                  handleInputGrupo(
-                                    p.id,
-                                    "set1_equipo1",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                              <input
-                                type="number"
-                                value={val.set2_equipo1 ?? ""}
-                                onChange={(e) =>
-                                  handleInputGrupo(
-                                    p.id,
-                                    "set2_equipo1",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                              <input
-                                type="number"
-                                value={val.set3_equipo1 ?? ""}
-                                onChange={(e) =>
-                                  handleInputGrupo(
-                                    p.id,
-                                    "set3_equipo1",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </div>
-
-                            <div>
-                              <label>{p.equipo2}</label>
-                              <input
-                                type="number"
-                                value={val.set1_equipo2 ?? ""}
-                                onChange={(e) =>
-                                  handleInputGrupo(
-                                    p.id,
-                                    "set1_equipo2",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                              <input
-                                type="number"
-                                value={val.set2_equipo2 ?? ""}
-                                onChange={(e) =>
-                                  handleInputGrupo(
-                                    p.id,
-                                    "set2_equipo2",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                              <input
-                                type="number"
-                                value={val.set3_equipo2 ?? ""}
-                                onChange={(e) =>
-                                  handleInputGrupo(
-                                    p.id,
-                                    "set3_equipo2",
-                                    e.target.value
-                                  )
-                                }
-                              />
-                            </div>
-                          </div>
-
-                          <button
-                            className="btn-guardar"
-                            onClick={() => guardarResultadoGrupo(p)}
-                          >
-                            Guardar
-                          </button>
-                        </div>
-                      );
-                    })}
+                  <div className="table-responsive">
+                    <table className="tabla-resultados">
+                      <thead>
+                        <tr>
+                          <th className="col-partido">Partido</th>
+                          <th className="col-set">Set 1</th>
+                          <th className="col-set">Set 2</th>
+                          <th className="col-set">Set 3</th>
+                          <th className="col-accion"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {grupo.partidos.map((p) => {
+                          const val = resultadosGrupos[p.id] || {};
+                          return (
+                            <tr key={p.id}>
+                              <td className="col-partido">
+                                {p.equipo1} <span className="separador-vs">vs</span> {p.equipo2}
+                              </td>
+                              <td className="col-set">
+                                <input
+                                  className="tabla-input"
+                                  type="text"
+                                  placeholder="-"
+                                  value={val.set1_equipo1 ?? ""}
+                                  onChange={(e) => handleInputGrupo(p.id, "set1_equipo1", e.target.value)}
+                                />
+                                -
+                                <input
+                                  className="tabla-input"
+                                  type="text"
+                                  placeholder="-"
+                                  value={val.set1_equipo2 ?? ""}
+                                  onChange={(e) => handleInputGrupo(p.id, "set1_equipo2", e.target.value)}
+                                />
+                              </td>
+                              <td className="col-set">
+                                <input
+                                  className="tabla-input"
+                                  type="text"
+                                  placeholder="-"
+                                  value={val.set2_equipo1 ?? ""}
+                                  onChange={(e) => handleInputGrupo(p.id, "set2_equipo1", e.target.value)}
+                                />
+                                -
+                                <input
+                                  className="tabla-input"
+                                  type="text"
+                                  placeholder="-"
+                                  value={val.set2_equipo2 ?? ""}
+                                  onChange={(e) => handleInputGrupo(p.id, "set2_equipo2", e.target.value)}
+                                />
+                              </td>
+                              <td className="col-set">
+                                <input
+                                  className="tabla-input"
+                                  type="text"
+                                  placeholder="-"
+                                  value={val.set3_equipo1 ?? ""}
+                                  onChange={(e) => handleInputGrupo(p.id, "set3_equipo1", e.target.value)}
+                                />
+                                -
+                                <input
+                                  className="tabla-input"
+                                  type="text"
+                                  placeholder="-"
+                                  value={val.set3_equipo2 ?? ""}
+                                  onChange={(e) => handleInputGrupo(p.id, "set3_equipo2", e.target.value)}
+                                />
+                              </td>
+                              <td className="col-accion">
+                                <button
+                                  className="btn-icon-guardar"
+                                  title="Guardar resultado"
+                                  onClick={() => guardarResultadoGrupo(p)}
+                                >
+                                  Guardar
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               ))}
@@ -500,101 +507,90 @@ export default function CargarResultado() {
                   <div key={ronda} className="grupo-tarjeta">
                     <h3 className="grupo-titulo">{ronda}</h3>
 
-                    <div className="grupo-partidos">
-                      {rondasPO[ronda].map((m) => {
-                        const val = resultadosPO[m.id] || {};
-                        return (
-                          <div key={m.id} className={`partido-card ${m.estado}`}>
-                            <h4 className="partido-vs">
-                              {m.equipo1_nombre || "—"} vs{" "}
-                              {m.equipo2_nombre || "—"}
-                            </h4>
-
-                            <div className="inputs-sets">
-                              <div>
-                                <label>{m.equipo1_nombre || "—"}</label>
-                                <input
-                                  type="number"
-                                  value={val.set1_equipo1 ?? ""}
-                                  onChange={(e) =>
-                                    handleInputPO(
-                                      m.id,
-                                      "set1_equipo1",
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                                <input
-                                  type="number"
-                                  value={val.set2_equipo1 ?? ""}
-                                  onChange={(e) =>
-                                    handleInputPO(
-                                      m.id,
-                                      "set2_equipo1",
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                                <input
-                                  type="number"
-                                  value={val.set3_equipo1 ?? ""}
-                                  onChange={(e) =>
-                                    handleInputPO(
-                                      m.id,
-                                      "set3_equipo1",
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                              </div>
-
-                              <div>
-                                <label>{m.equipo2_nombre || "—"}</label>
-                                <input
-                                  type="number"
-                                  value={val.set1_equipo2 ?? ""}
-                                  onChange={(e) =>
-                                    handleInputPO(
-                                      m.id,
-                                      "set1_equipo2",
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                                <input
-                                  type="number"
-                                  value={val.set2_equipo2 ?? ""}
-                                  onChange={(e) =>
-                                    handleInputPO(
-                                      m.id,
-                                      "set2_equipo2",
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                                <input
-                                  type="number"
-                                  value={val.set3_equipo2 ?? ""}
-                                  onChange={(e) =>
-                                    handleInputPO(
-                                      m.id,
-                                      "set3_equipo2",
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                              </div>
-                            </div>
-
-                            <button
-                              className="btn-guardar"
-                              onClick={() => guardarResultadoPO(m)}
-                            >
-                              Guardar
-                            </button>
-                          </div>
-                        );
-                      })}
+                    <div className="table-responsive">
+                      <table className="tabla-resultados">
+                        <thead>
+                          <tr>
+                            <th className="col-partido">Cruce</th>
+                            <th className="col-set">Set 1</th>
+                            <th className="col-set">Set 2</th>
+                            <th className="col-set">Set 3</th>
+                            <th className="col-accion"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {rondasPO[ronda].map((m) => {
+                            const val = resultadosPO[m.id] || {};
+                            return (
+                              <tr key={m.id}>
+                                <td className="col-partido">
+                                  {m.equipo1_nombre || "—"} <span className="separador-vs">vs</span> {m.equipo2_nombre || "—"}
+                                </td>
+                                <td className="col-set">
+                                  <input
+                                    className="tabla-input"
+                                    type="text"
+                                    placeholder="-"
+                                    value={val.set1_equipo1 ?? ""}
+                                    onChange={(e) => handleInputPO(m.id, "set1_equipo1", e.target.value)}
+                                  />
+                                  -
+                                  <input
+                                    className="tabla-input"
+                                    type="text"
+                                    placeholder="-"
+                                    value={val.set1_equipo2 ?? ""}
+                                    onChange={(e) => handleInputPO(m.id, "set1_equipo2", e.target.value)}
+                                  />
+                                </td>
+                                <td className="col-set">
+                                  <input
+                                    className="tabla-input"
+                                    type="text"
+                                    placeholder="-"
+                                    value={val.set2_equipo1 ?? ""}
+                                    onChange={(e) => handleInputPO(m.id, "set2_equipo1", e.target.value)}
+                                  />
+                                  -
+                                  <input
+                                    className="tabla-input"
+                                    type="text"
+                                    placeholder="-"
+                                    value={val.set2_equipo2 ?? ""}
+                                    onChange={(e) => handleInputPO(m.id, "set2_equipo2", e.target.value)}
+                                  />
+                                </td>
+                                <td className="col-set">
+                                  <input
+                                    className="tabla-input"
+                                    type="text"
+                                    placeholder="-"
+                                    value={val.set3_equipo1 ?? ""}
+                                    onChange={(e) => handleInputPO(m.id, "set3_equipo1", e.target.value)}
+                                  />
+                                  -
+                                  <input
+                                    className="tabla-input"
+                                    type="text"
+                                    placeholder="-"
+                                    value={val.set3_equipo2 ?? ""}
+                                    onChange={(e) => handleInputPO(m.id, "set3_equipo2", e.target.value)}
+                                  />
+                                </td>
+                                <td className="col-accion">
+                                  <button
+                                    className="btn-icon-guardar"
+                                    title="Guardar resultado"
+                                    onClick={() => guardarResultadoPO(m)}
+                                  >
+                                    Guardar
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 )

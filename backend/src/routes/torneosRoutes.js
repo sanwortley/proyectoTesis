@@ -28,14 +28,21 @@ function puntosPorFase(fase) {
 export async function generarRankingTorneo(client, torneoId) {
   const id = Number(torneoId);
 
-  // 1) Verificar torneo (nombre + categoria)
+  // 1) Verificar torneo (nombre + categoria_id + formato)
   const tRes = await client.query(
-    "SELECT nombre_torneo, categoria FROM torneo WHERE id_torneo = $1",
+    "SELECT nombre_torneo, categoria_id, formato_categoria FROM torneo WHERE id_torneo = $1",
     [id]
   );
   if (!tRes.rowCount) throw new Error("TORNEO_NO_ENCONTRADO");
+
   const nombreTorneo = tRes.rows[0].nombre_torneo;
-  const categoriaTorneo = tRes.rows[0].categoria; // para ranking por categoría
+  const categoriaTorneoId = tRes.rows[0].categoria_id; // FK a categoria
+  const formatoTorneo = tRes.rows[0].formato_categoria;
+
+  // 🔒 Solo generamos ranking para torneos de CATEGORÍA FIJA
+  if (!categoriaTorneoId || formatoTorneo !== "categoria_fija") {
+    throw new Error("TORNEO_SIN_CATEGORIA_PARA_RANKING");
+  }
 
   // 🔒 NUEVO: evitar duplicar ranking para el mismo torneo
   const yaRes = await client.query(
@@ -47,7 +54,6 @@ export async function generarRankingTorneo(client, torneoId) {
     [nombreTorneo]
   );
   if (yaRes.rows[0].cant > 0) {
-    // Torneo ya fue tenido en cuenta antes → no sumo de nuevo
     return {
       ok: true,
       torneo_id: id,
@@ -107,8 +113,7 @@ export async function generarRankingTorneo(client, torneoId) {
      ====================================================== */
 
   function calcularSets(a1, a2, a3, b1, b2, b3) {
-    let s1 = 0,
-      s2 = 0;
+    let s1 = 0, s2 = 0;
     const sets = [
       [a1, a2],
       [b1, b2],
@@ -137,7 +142,7 @@ export async function generarRankingTorneo(client, torneoId) {
 
   let equipoCampeon = null;
   let equipoSubcampeon = null;
-  let campeonFinal2CeroId = null; // para bonus extra
+  let campeonFinal2CeroId = null;
 
   if (finalRes.rowCount) {
     const f = finalRes.rows[0];
@@ -147,7 +152,6 @@ export async function generarRankingTorneo(client, torneoId) {
         f.equipo1_id === equipoCampeon ? f.equipo2_id : f.equipo1_id;
     }
 
-    // ¿ganó la final 2-0?
     if (equipoCampeon) {
       const { s1, s2 } = calcularSets(
         f.set1_equipo1,
@@ -173,8 +177,7 @@ export async function generarRankingTorneo(client, torneoId) {
   }
 
   /* ======================================================
-     6) Calcular la MÁXIMA ronda en la que apareció cada equipo
-        (para fase alcanzada: octavos, cuartos, semis, final)
+     6) Máxima ronda alcanzada
      ====================================================== */
   const rondasRes = await client.query(
     `
@@ -213,182 +216,22 @@ export async function generarRankingTorneo(client, torneoId) {
     mapaRonda.set(row.equipo_id, Number(row.max_ronda));
   }
 
-  // Helper de fase por equipo según playoff
   function fasePorEquipo(idEquipo) {
     if (equipoCampeon && idEquipo === equipoCampeon) return "campeon";
     if (equipoSubcampeon && idEquipo === equipoSubcampeon) return "subcampeon";
 
     const maxRonda = mapaRonda.get(idEquipo) || 0;
-
     switch (maxRonda) {
-      case 4:
-        return "final"; // por seguridad
-      case 3:
-        return "semifinal";
-      case 2:
-        return "cuartos";
-      case 1:
-        return "octavos";
-      default:
-        return "fase de grupos";
+      case 4: return "final";
+      case 3: return "semifinal";
+      case 2: return "cuartos";
+      case 1: return "octavos";
+      default: return "fase de grupos";
     }
   }
 
   /* ======================================================
-     6.1) Posiciones de grupo (para bonus 1° / 2° de zona)
-     ====================================================== */
-  const posRes = await client.query(
-    `
-      SELECT eg.equipo_id,
-             g.id_grupo,
-             g.nombre AS grupo_nombre,
-             RANK() OVER (
-               PARTITION BY g.id_grupo
-               ORDER BY eg.puntos DESC,
-                        (eg.sets_favor - eg.sets_contra) DESC,
-                        eg.sets_favor DESC
-             ) AS pos
-      FROM equipos_grupo eg
-      JOIN grupos g ON g.id_grupo = eg.grupo_id
-      WHERE g.id_torneo = $1
-    `,
-    [id]
-  );
-
-  const mapaPosGrupo = new Map(); // equipo_id -> { pos, grupo_id }
-  for (const row of posRes.rows) {
-    mapaPosGrupo.set(row.equipo_id, {
-      pos: Number(row.pos),
-      grupo_id: row.id_grupo,
-    });
-  }
-
-  /* ======================================================
-     6.2) Estadísticas por equipo (partidos, sets, bonus)
-          - Fase de grupos
-          - Playoff
-     ====================================================== */
-
-  // Estructura de stats
-  const stats = new Map();
-  function ensureStats(equipoId) {
-    if (!equipoId) return null;
-    if (!stats.has(equipoId)) {
-      stats.set(equipoId, {
-        jugoAlgo: false,
-        pjTotal: 0,
-        ganadosTotal: 0,
-        perdidosTotal: 0,
-        setsFavor: 0,
-        setsContra: 0,
-        // Grupo
-        pjGrupo: 0,
-        perdioAlgunoGrupo: false,
-        // Perfect / invicto
-        perdioSet: false,
-        perdioPartido: false,
-        // Dif de sets por partido
-        dif2Count: 0,
-        dif3Count: 0,
-      });
-    }
-    return stats.get(equipoId);
-  }
-
-  function procesarMatch(equipoId, setsGanados, setsPerdidos, esGrupo) {
-    if (!equipoId) return;
-    const st = ensureStats(equipoId);
-    st.jugoAlgo = true;
-    st.pjTotal += 1;
-    st.setsFavor += setsGanados;
-    st.setsContra += setsPerdidos;
-
-    if (setsGanados > setsPerdidos) {
-      st.ganadosTotal += 1;
-    } else {
-      st.perdidosTotal += 1;
-    }
-
-    if (esGrupo) {
-      st.pjGrupo += 1;
-      if (setsGanados < setsPerdidos) {
-        st.perdioAlgunoGrupo = true;
-      }
-    }
-
-    if (setsPerdidos > 0) st.perdioSet = true;
-    if (setsGanados <= setsPerdidos) st.perdioPartido = true;
-
-    const diff = setsGanados - setsPerdidos;
-    if (diff >= 2 && diff < 3) st.dif2Count += 1;
-    if (diff >= 3) st.dif3Count += 1;
-  }
-
-  // 6.2.a) Partidos de GRUPOS
-  const partidosGrupoRes = await client.query(
-    `
-      SELECT pg.id,
-             pg.grupo_id,
-             pg.equipo1_id,
-             pg.equipo2_id,
-             pg.set1_equipo1, pg.set1_equipo2,
-             pg.set2_equipo1, pg.set2_equipo2,
-             pg.set3_equipo1, pg.set3_equipo2,
-             pg.estado
-      FROM partidos_grupo pg
-      JOIN grupos g ON g.id_grupo = pg.grupo_id
-      WHERE g.id_torneo = $1
-        AND LOWER(TRIM(pg.estado)) = 'finalizado'
-    `,
-    [id]
-  );
-
-  for (const p of partidosGrupoRes.rows) {
-    const { s1, s2 } = calcularSets(
-      p.set1_equipo1,
-      p.set1_equipo2,
-      p.set2_equipo1,
-      p.set2_equipo2,
-      p.set3_equipo1,
-      p.set3_equipo2
-    );
-    if (p.equipo1_id) procesarMatch(p.equipo1_id, s1, s2, true);
-    if (p.equipo2_id) procesarMatch(p.equipo2_id, s2, s1, true);
-  }
-
-  // 6.2.b) Partidos de PLAYOFF
-  const partidosLlaveRes = await client.query(
-    `
-      SELECT id,
-             ronda,
-             equipo1_id,
-             equipo2_id,
-             set1_equipo1, set1_equipo2,
-             set2_equipo1, set2_equipo2,
-             set3_equipo1, set3_equipo2,
-             estado
-      FROM partidos_llave
-      WHERE id_torneo = $1
-        AND LOWER(TRIM(estado)) = 'finalizado'
-    `,
-    [id]
-  );
-
-  for (const p of partidosLlaveRes.rows) {
-    const { s1, s2 } = calcularSets(
-      p.set1_equipo1,
-      p.set1_equipo2,
-      p.set2_equipo1,
-      p.set2_equipo2,
-      p.set3_equipo1,
-      p.set3_equipo2
-    );
-    if (p.equipo1_id) procesarMatch(p.equipo1_id, s1, s2, false);
-    if (p.equipo2_id) procesarMatch(p.equipo2_id, s2, s1, false);
-  }
-
-  /* ======================================================
-     7) Pre-cargar datos de jugadores
+     7) Jugadores
      ====================================================== */
   const idsJugadoresSet = new Set();
   for (const eq of equipos) {
@@ -396,14 +239,6 @@ export async function generarRankingTorneo(client, torneoId) {
     if (eq.jugador2_id) idsJugadoresSet.add(eq.jugador2_id);
   }
   const idsJugadores = Array.from(idsJugadoresSet);
-  if (idsJugadores.length === 0) {
-    return {
-      ok: true,
-      torneo_id: id,
-      torneo: nombreTorneo,
-      jugadores_procesados: 0,
-    };
-  }
 
   const jugRes = await client.query(
     `
@@ -413,180 +248,92 @@ export async function generarRankingTorneo(client, torneoId) {
     `,
     [idsJugadores]
   );
+
   const mapaJugadores = new Map();
   for (const j of jugRes.rows) {
     mapaJugadores.set(j.id_jugador, j);
   }
 
   /* ======================================================
-     8) Recorrer equipos y actualizar ranking_jugador
-        (ACUMULATIVO y por CATEGORÍA)
+     8) Ranking (SOLO cambio categoria_id → categoria)
      ====================================================== */
   let jugadoresProcesados = 0;
 
   for (const eq of equipos) {
     const fase = fasePorEquipo(eq.id_equipo);
-    const puntosFase = puntosPorFase(fase);
-
-    const st = stats.get(eq.id_equipo) || {
-      jugoAlgo: false,
-      pjTotal: 0,
-      ganadosTotal: 0,
-      perdidosTotal: 0,
-      setsFavor: 0,
-      setsContra: 0,
-      pjGrupo: 0,
-      perdioAlgunoGrupo: false,
-      perdioSet: false,
-      perdioPartido: false,
-      dif2Count: 0,
-      dif3Count: 0,
-    };
-
-    // Puntos por partidos y sets
-    let puntosExtra = 0;
-    puntosExtra += st.ganadosTotal * 100;
-    puntosExtra += st.perdidosTotal * 25;
-    puntosExtra += st.setsFavor * 15;
-    puntosExtra += st.setsContra * 5;
-    puntosExtra += st.dif2Count * 20;
-    puntosExtra += st.dif3Count * 40;
-
-    // Bonus por posición de grupo
-    const posInfo = mapaPosGrupo.get(eq.id_equipo);
-    if (posInfo) {
-      if (posInfo.pos === 1) puntosExtra += 150;
-      else if (posInfo.pos === 2) puntosExtra += 50;
-    }
-
-    // Bonus invicto en grupos
-    if (st.pjGrupo > 0 && !st.perdioAlgunoGrupo) {
-      puntosExtra += 200;
-    }
-
-    // Bonus "perfecto 2-0" en todo el torneo
-    if (st.jugoAlgo && !st.perdioSet && !st.perdioPartido) {
-      puntosExtra += 300;
-    }
-
-    // Bonus campeón ganó la final 2-0
-    if (campeonFinal2CeroId && eq.id_equipo === campeonFinal2CeroId) {
-      puntosExtra += 100;
-    }
-
-    const puntosTotalesEquipo = puntosFase + puntosExtra;
+    const puntosTotalesEquipo = puntosPorFase(fase);
 
     const j1 = eq.jugador1_id ? mapaJugadores.get(eq.jugador1_id) : null;
     const j2 = eq.jugador2_id ? mapaJugadores.get(eq.jugador2_id) : null;
 
-    // ==== jugador 1 ====
     if (j1) {
-      const ultimaPareja = j2 ? j2.apellido_jugador : null;
       const r1 = await client.query(
         "SELECT id, puntos FROM ranking_jugador WHERE jugador_id = $1 AND categoria = $2",
-        [eq.jugador1_id, categoriaTorneo]
+        [eq.jugador1_id, categoriaTorneoId]
       );
 
       if (r1.rowCount) {
-        const nuevoTotal = (r1.rows[0].puntos || 0) + puntosTotalesEquipo;
         await client.query(
           `
-            UPDATE ranking_jugador
-            SET nombre = $1,
-                apellido = $2,
-                ultima_pareja = $3,
-                torneo_participado = $4,
-                fase_llegada = $5,
-                puntos = $6,
-                categoria = $7,
-                updated_at = NOW()
-            WHERE id = $8
+          UPDATE ranking_jugador
+          SET puntos = puntos + $1,
+              updated_at = NOW()
+          WHERE id = $2
           `,
-          [
-            j1.nombre_jugador,
-            j1.apellido_jugador,
-            ultimaPareja,
-            nombreTorneo,
-            fase,
-            nuevoTotal,
-            categoriaTorneo,
-            r1.rows[0].id,
-          ]
+          [puntosTotalesEquipo, r1.rows[0].id]
         );
       } else {
         await client.query(
           `
-            INSERT INTO ranking_jugador
-              (jugador_id, nombre, apellido, ultima_pareja,
-               torneo_participado, fase_llegada, puntos, categoria)
-            VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+          INSERT INTO ranking_jugador
+            (jugador_id, nombre, apellido, torneo_participado, fase_llegada, puntos, categoria)
+          VALUES ($1,$2,$3,$4,$5,$6,$7)
           `,
           [
             eq.jugador1_id,
             j1.nombre_jugador,
             j1.apellido_jugador,
-            ultimaPareja,
             nombreTorneo,
             fase,
             puntosTotalesEquipo,
-            categoriaTorneo,
+            categoriaTorneoId,
           ]
         );
       }
       jugadoresProcesados++;
     }
 
-    // ==== jugador 2 ====
     if (j2) {
-      const ultimaPareja = j1 ? j1.apellido_jugador : null;
       const r2 = await client.query(
         "SELECT id, puntos FROM ranking_jugador WHERE jugador_id = $1 AND categoria = $2",
-        [eq.jugador2_id, categoriaTorneo]
+        [eq.jugador2_id, categoriaTorneoId]
       );
 
       if (r2.rowCount) {
-        const nuevoTotal = (r2.rows[0].puntos || 0) + puntosTotalesEquipo;
         await client.query(
           `
-            UPDATE ranking_jugador
-            SET nombre = $1,
-                apellido = $2,
-                ultima_pareja = $3,
-                torneo_participado = $4,
-                fase_llegada = $5,
-                puntos = $6,
-                categoria = $7,
-                updated_at = NOW()
-            WHERE id = $8
+          UPDATE ranking_jugador
+          SET puntos = puntos + $1,
+              updated_at = NOW()
+          WHERE id = $2
           `,
-          [
-            j2.nombre_jugador,
-            j2.apellido_jugador,
-            ultimaPareja,
-            nombreTorneo,
-            fase,
-            nuevoTotal,
-            categoriaTorneo,
-            r2.rows[0].id,
-          ]
+          [puntosTotalesEquipo, r2.rows[0].id]
         );
       } else {
         await client.query(
           `
-            INSERT INTO ranking_jugador
-              (jugador_id, nombre, apellido, ultima_pareja,
-               torneo_participado, fase_llegada, puntos, categoria)
-            VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+          INSERT INTO ranking_jugador
+            (jugador_id, nombre, apellido, torneo_participado, fase_llegada, puntos, categoria)
+          VALUES ($1,$2,$3,$4,$5,$6,$7)
           `,
           [
             eq.jugador2_id,
             j2.nombre_jugador,
             j2.apellido_jugador,
-            ultimaPareja,
             nombreTorneo,
             fase,
             puntosTotalesEquipo,
-            categoriaTorneo,
+            categoriaTorneoId,
           ]
         );
       }
@@ -601,6 +348,7 @@ export async function generarRankingTorneo(client, torneoId) {
     jugadores_procesados: jugadoresProcesados,
   };
 }
+
 
 /* ==========================================
    POST /api/torneos/:id/generar-ranking
@@ -636,6 +384,11 @@ router.post("/torneos/:id/generar-ranking", async (req, res) => {
         .status(400)
         .json({ error: "No hay equipos participantes en este torneo" });
     }
+    if (err.message === "TORNEO_SIN_CATEGORIA_PARA_RANKING") {
+      return res
+        .status(400)
+        .json({ error: "El ranking solo está definido para torneos de categoría fija" });
+    }
 
     res
       .status(500)
@@ -647,7 +400,7 @@ router.post("/torneos/:id/generar-ranking", async (req, res) => {
 
 /* ==========================================
    GET /api/ranking
-   - Soporta ?categoria=4 para filtrar
+   - Soporta ?categoria=4 para filtrar (id_categoria)
    ========================================== */
 router.get("/ranking", async (req, res) => {
   try {
@@ -662,13 +415,13 @@ router.get("/ranking", async (req, res) => {
              torneo_participado,
              fase_llegada,
              puntos,
-             categoria
+             categoria_id AS categoria
       FROM ranking_jugador
     `;
     const params = [];
 
     if (categoria) {
-      sql += " WHERE categoria = $1";
+      sql += " WHERE categoria_id = $1";
       params.push(Number(categoria));
     }
 

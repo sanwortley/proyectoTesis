@@ -8,7 +8,7 @@ export default function LayoutBase({ children }) {
   return (
     <>
       {!hide && <Navbar />}
-      <main className="main-container">{children}</main>
+      <main className="layout-content">{children}</main>
     </>
   );
 }
