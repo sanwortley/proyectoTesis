@@ -160,7 +160,9 @@ function Home() {
     const getId = (namePart) => {
         if (!categorias.length) return null;
         const found = categorias.find(c => c.nombre.toLowerCase().includes(namePart.toLowerCase()));
-        return found ? found.id_categoria : null;
+        // IMPORTANTE: El ranking se guarda por valor numérico (2, 4...) en la BB, 
+        // NO por ID autoincremental. Debemos retornar 'valor_numerico'.
+        return found ? found.valor_numerico : null;
     };
 
     return (

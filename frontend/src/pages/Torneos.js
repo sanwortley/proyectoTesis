@@ -9,6 +9,8 @@ import '../style.css';
 import PlayoffBrackets from '../components/PlayoffBrackets';
 import '../components/playoff.css';
 
+import TeamAvatar from '../components/TeamAvatar';
+
 const PERMISSIONS = {
   organizador: ['playoff.generar', 'torneos.crear'],
   jugador: [],
@@ -172,13 +174,32 @@ export default function Torneos() {
     sumaValorSeleccionado
   ]);
 
-  // Torneo actual = el más reciente dentro de los filtrados
-  const torneoActual = useMemo(() => {
-    if (!torneosFiltrados.length) return null;
+  // Ordenar torneos filtrados por fecha (descendente)
+  const torneosOrdenados = useMemo(() => {
     return [...torneosFiltrados].sort(
       (a, b) => new Date(b.fecha_inicio) - new Date(a.fecha_inicio)
-    )[0];
+    );
   }, [torneosFiltrados]);
+
+  // Estado para seleccionar torneo específico (si hay varios)
+  const [selectedTorneoId, setSelectedTorneoId] = useState(null);
+
+  // Efecto para autoseleccionar el primero al cambiar la lista
+  useEffect(() => {
+    if (torneosOrdenados.length > 0) {
+      // Si no hay seleccionado, o el seleccionado ya no está en la lista filter, elegir el primero
+      if (!selectedTorneoId || !torneosOrdenados.find(t => t.id_torneo === selectedTorneoId)) {
+        setSelectedTorneoId(torneosOrdenados[0].id_torneo);
+      }
+    } else {
+      setSelectedTorneoId(null);
+    }
+  }, [torneosOrdenados, selectedTorneoId]);
+
+  // Torneo actual derivado del seleccionado
+  const torneoActual = useMemo(() => {
+    return torneosOrdenados.find(t => t.id_torneo === selectedTorneoId) || null;
+  }, [torneosOrdenados, selectedTorneoId]);
   const hayTorneo = Boolean(torneoActual);
 
 
@@ -188,10 +209,12 @@ export default function Torneos() {
 
   // Cargar grupos del torneo actual
   useEffect(() => {
-    if (!torneoActual) {
-      setGrupos([]);
-      return;
-    }
+    // Resetear estados al cambiar de torneo
+    setGrupos([]);
+    setPlayoff(null);
+    setErrorPlayoff('');
+
+    if (!torneoActual) return;
 
     axios
       .get(`/api/torneos/${torneoActual.id_torneo}/grupos`)
@@ -211,12 +234,7 @@ export default function Torneos() {
     setGruposCompletos(completos);
   }, [grupos]);
 
-  // Limpiar cuando cambia categoría o mes
-  useEffect(() => {
-    setGrupos([]);
-    setPlayoff(null);
-    setErrorPlayoff('');
-  }, [categoriaSeleccionada, mesSeleccionado]);
+  // (Efecto de limpieza eliminado para evitar race conditions con la carga de datos)
 
   // Leer/Generar playoff (estrategia unificada)
   useEffect(() => {
@@ -315,84 +333,138 @@ export default function Torneos() {
         <div className="torneo-selector-container">
           <div className={`torneo-selector ${torneoActual ? 'has-torneo' : 'no-torneo'}`}>
 
-            <select
-              value={categoriaSeleccionada}
-              onChange={(e) => setCategoriaSeleccionada(e.target.value)}
-            >
-              <option value="">Todas las categorías</option>
+            {/* Fila superior: Categoría y Selector de Torneos */}
+            <div className="tournament-controls-row" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', flexWrap: 'wrap', marginBottom: '20px' }}>
+              <select
+                value={categoriaSeleccionada}
+                onChange={(e) => setCategoriaSeleccionada(e.target.value)}
+                style={{ margin: 0 }} /* Override default margin if any */
+              >
+                <option value="">Todas las categorías</option>
+                {sumaOptions.length > 0 && <option value="SUMA">Todos los torneos SUMA</option>}
+                {sumaOptions.map((suma) => (
+                  <option key={suma} value={`SUMA_${suma}`}>SUMA {suma}</option>
+                ))}
+                {categorias.map((cat) => (
+                  <option key={cat.id_categoria} value={cat.nombre}>{cat.nombre}</option>
+                ))}
+              </select>
 
-              {/* Opción general: todos los SUMA */}
-              {sumaOptions.length > 0 && (
-                <option value="SUMA">Todos los torneos SUMA</option>
-              )}
-
-              {/* Opciones SUMA por valor */}
-              {sumaOptions.map((suma) => (
-                <option key={suma} value={`SUMA_${suma}`}>
-                  SUMA {suma}
-                </option>
-              ))}
-
-              {/* Categorías fijas (4ta, 5ta, etc.) */}
-              {categorias.map((cat) => (
-                <option key={cat.id_categoria} value={cat.nombre}>
-                  {cat.nombre}
-                </option>
-              ))}
-            </select>
-
-            {/* Info del torneo actual (fechas + formato) */}
-            <div className={`torneo-info-header ${torneoActual ? '' : 'is-empty'}`}>
-              {torneoActual && (
-                <>
-                  <p className="fecha-torneo-info">
-                    <strong>
-                      {new Date(torneoActual.fecha_inicio).toLocaleDateString()}
-                    </strong>{' '}
-                    al{' '}
-                    <strong>
-                      {new Date(torneoActual.fecha_fin).toLocaleDateString()}
-                    </strong>
-                  </p>
-
-                  <p className="formato-torneo-info">
-                    {torneoActual.formato_categoria === 'suma'
-                      ? `Formato: SUMA ${torneoActual.suma_categoria}`
-                      : `Categoría: ${getCategoriaNombre(
-                        categorias,
-                        torneoActual.categoria_id
-                      )}`}
-                  </p>
-                </>
+              {/* Selector de Torneos (si hay varios) */}
+              {categoriaSeleccionada && torneosOrdenados.length > 1 && (
+                <div className="multi-tournament-selector" style={{ display: 'flex', gap: '8px', background: 'rgba(255,255,255,0.05)', padding: '4px', borderRadius: '20px' }}>
+                  {torneosOrdenados.map(t => (
+                    <button
+                      key={t.id_torneo}
+                      onClick={() => setSelectedTorneoId(t.id_torneo)}
+                      style={{
+                        padding: '6px 14px',
+                        borderRadius: '16px',
+                        border: 'none',
+                        background: selectedTorneoId === t.id_torneo ? '#ffd700' : 'transparent',
+                        color: selectedTorneoId === t.id_torneo ? '#000' : '#888',
+                        fontWeight: selectedTorneoId === t.id_torneo ? 'bold' : 'normal',
+                        cursor: 'pointer',
+                        fontSize: '0.85rem',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      {t.modalidad === 'liga' ? '🏆 LIGA' : '⚡ FINDE'} {new Date(t.fecha_inicio).getDate()}/{new Date(t.fecha_inicio).getMonth() + 1}
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
 
+            {/* SI NO HAY CATEGORÍA SELECCIONADA, SOLICITARLO */}
+            {!categoriaSeleccionada ? (
+              <div style={{ textAlign: 'center', padding: '40px', color: '#888', fontStyle: 'italic' }}>
+                Seleccione una categoría para ver los torneos disponibles.
+              </div>
+            ) : (
+              <>
+                {/* Info del torneo actual */}
+                <div className={`torneo-info-header ${torneoActual ? '' : 'is-empty'}`} style={{ maxWidth: '600px', margin: '0 auto 20px auto' }}>
+                  {torneoActual && (
+                    <>
+                      <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                        {torneoActual.modalidad === 'liga' ? (
+                          <span className="badge-modality badge-liga">LIGA</span>
+                        ) : (
+                          <span className="badge-modality badge-weekend">FIN DE SEMANA</span>
+                        )}
+                      </div>
 
-            <button
-              className={
-                `boton-fase ${fase === 'grupos' ? 'activo' : ''} ${!hayTorneo ? 'disabled' : ''}`
-              }
-              onClick={() => hayTorneo && setFase('grupos')}
-              disabled={!hayTorneo}
-            >
-              Fase de grupos
-            </button>
+                      <p className="fecha-torneo-info" style={{ fontSize: '1.1rem' }}>
+                        <strong>
+                          {new Date(torneoActual.fecha_inicio).toLocaleDateString()}
+                        </strong>{' '}
+                        al{' '}
+                        <strong>
+                          {torneoActual.fecha_fin ? new Date(torneoActual.fecha_fin).toLocaleDateString() : '???'}
+                        </strong>
+                      </p>
 
-            <button
-              className={
-                `boton-fase ${fase === 'playoffs' ? 'activo' : ''} ${!hayTorneo ? 'disabled' : ''}`
-              }
-              onClick={() => hayTorneo && setFase('playoffs')}
-              disabled={!hayTorneo}
-            >
-              Play-offs
-            </button>
+                      <p className="formato-torneo-info" style={{ fontSize: '1rem', color: '#eaebec' }}>
+                        {torneoActual.formato_categoria === 'suma'
+                          ? `Formato: SUMA ${torneoActual.suma_categoria}`
+                          : `Categoría: ${getCategoriaNombre(categorias, torneoActual.categoria_id)}`}
+                      </p>
+
+                      {torneoActual.modalidad === 'liga' && torneoActual.dias_juego && (
+                        <p style={{ textAlign: 'center', fontSize: '0.9rem', color: '#ffd700', marginTop: '5px' }}>
+                          📅 Días: {torneoActual.dias_juego}
+                        </p>
+                      )}
+                    </>
+                  )}
+                </div>
+
+
+                {/* Selectores de Fase (Tabs) */}
+                <div className="phase-selector-container" style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginBottom: '20px' }}>
+                  <button
+                    className={`boton-fase ${fase === 'grupos' ? 'activo' : ''}`}
+                    onClick={() => hayTorneo && setFase('grupos')}
+                    disabled={!hayTorneo}
+                    style={{
+                      flex: '0 1 auto',
+                      minWidth: '150px',
+                      borderRadius: '8px',
+                      background: fase === 'grupos' ? '#ffd700' : '#222',
+                      color: fase === 'grupos' ? '#000' : '#888',
+                      border: fase === 'grupos' ? 'none' : '1px solid #444',
+                      opacity: !hayTorneo ? 0.5 : 1
+                    }}
+                  >
+                    Fase de grupos
+                  </button>
+
+                  <button
+                    className={`boton-fase ${fase === 'playoffs' ? 'activo' : ''}`}
+                    onClick={() => hayTorneo && setFase('playoffs')}
+                    disabled={!hayTorneo}
+                    style={{
+                      flex: '0 1 auto',
+                      minWidth: '150px',
+                      borderRadius: '8px',
+                      background: fase === 'playoffs' ? '#ffd700' : '#222',
+                      color: fase === 'playoffs' ? '#000' : '#888',
+                      border: fase === 'playoffs' ? 'none' : '1px solid #444',
+                      opacity: !hayTorneo ? 0.5 : 1
+                    }}
+                  >
+                    Play-offs
+                  </button>
+                </div>
+              </>
+            )}
 
           </div>
         </div>
 
         {/* ===== FASE DE GRUPOS ===== */}
-        {fase === 'grupos' ? (
+        {categoriaSeleccionada && (fase === 'grupos' ? (
           !torneoActual ? (
             <div className="mensaje-sin-grupos">
               No hay torneos para la selección actual.
@@ -419,12 +491,16 @@ export default function Torneos() {
                     <table className="grupo-tabla">
                       <thead>
                         <tr className="grupo-tabla-encabezado">
-                          <th>#</th>
-                          <th>Equipo</th>
-                          <th>PJ</th>
-                          <th>PTS</th>
-                          <th>Sets +</th>
-                          <th>Sets -</th>
+                          <th title="Posición">Pos</th>
+                          <th title="Equipo">Equipo</th>
+                          <th title="Puntos">Pts</th>
+                          <th title="Partidos Jugados">J</th>
+                          <th title="Sets a Favor">F</th>
+                          <th title="Sets en Contra">C</th>
+                          <th title="Diferencia de Sets">DS</th>
+                          <th title="Games a Favor">GF</th>
+                          <th title="Games en Contra">GC</th>
+                          <th title="Diferencia de Games">DG</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -433,14 +509,19 @@ export default function Torneos() {
                             key={e.equipo_id}
                             className="grupo-tabla-fila"
                           >
-                            <td>{i + 1}</td>
-                            <td className="grupo-equipo-nombre">
-                              {e.nombre_equipo}
+                            <td><span className={`pos-rank pos-${i + 1}`}>{i + 1}</span></td>
+                            <td className="grupo-equipo-nombre" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                              <TeamAvatar foto1={e.foto1} foto2={e.foto2} />
+                              <span>{e.nombre_equipo}</span>
                             </td>
+                            <td><strong>{e.puntos}</strong></td>
                             <td>{e.partidos_jugados}</td>
-                            <td>{e.puntos}</td>
                             <td>{e.sets_favor}</td>
                             <td>{e.sets_contra}</td>
+                            <td>{e.sets_favor - e.sets_contra}</td>
+                            <td>{e.games_favor ?? 0}</td>
+                            <td>{e.games_contra ?? 0}</td>
+                            <td>{(e.games_favor ?? 0) - (e.games_contra ?? 0)}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -457,15 +538,31 @@ export default function Torneos() {
                         const setsCargados =
                           p.set1_equipo1 !== null &&
                           p.set1_equipo2 !== null;
+
+                        // Buscar datos de los equipos para las fotos
+                        const eq1 = grupo.equipos.find(t => t.equipo_id === p.equipo1_id);
+                        const eq2 = grupo.equipos.find(t => t.equipo_id === p.equipo2_id);
+
                         return (
                           <div
                             key={p.id}
                             className={`grupo-partido-card ${estadoClass}`}
                           >
                             <div className="grupo-partido-detalle">
+                              {p.fecha && (
+                                <div style={{ fontSize: '0.8rem', color: '#ffd700', marginBottom: '4px', textAlign: 'center' }}>
+                                  {new Date(p.fecha).toLocaleDateString()}
+                                </div>
+                              )}
                               <div className="grupo-equipos">
-                                <div>{p.equipo1}</div>
-                                <div>{p.equipo2}</div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <TeamAvatar foto1={eq1?.foto1} foto2={eq1?.foto2} size={28} />
+                                  {p.equipo1}
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <TeamAvatar foto1={eq2?.foto1} foto2={eq2?.foto2} size={28} />
+                                  {p.equipo2}
+                                </div>
                               </div>
                               {setsCargados ? (
                                 <div className="grupo-sets">
@@ -545,8 +642,8 @@ export default function Torneos() {
               </>
             )}
           </div>
-        )}
-      </div>
+        ))}
+      </div >
     </>
   );
 }

@@ -1,8 +1,11 @@
 // src/components/PlayoffBrackets.js
 import React, { useMemo } from "react";
+import TeamAvatar from "./TeamAvatar";
 
 // rounds prop: { OCTAVOS:[...], CUARTOS:[...], SEMIS:[...], FINAL:[...] }
 export default function PlayoffBrackets({ rounds = {} }) {
+  // ... (helpers)
+
   // ---------- Helpers ----------
 
   // Reordena prevRound (ej: CUARTOS) en función de nextRound (ej: SEMIS)
@@ -123,14 +126,20 @@ export default function PlayoffBrackets({ rounds = {} }) {
         className={`match ${m.estado || ""}`}
       >
         <div className={`team ${win1 ? "win" : ""}`}>
-          <span className="name">{m.equipo1_nombre || "—"}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <TeamAvatar foto1={m.eq1_foto1} foto2={m.eq1_foto2} size={24} />
+            <span className="name">{m.equipo1_nombre || "—"}</span>
+          </div>
           <span className="score">{sets1}</span>
         </div>
 
         <div className="vs-badge">vs</div>
 
         <div className={`team ${win2 ? "win" : ""}`}>
-          <span className="name">{m.equipo2_nombre || "—"}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <TeamAvatar foto1={m.eq2_foto1} foto2={m.eq2_foto2} size={24} />
+            <span className="name">{m.equipo2_nombre || "—"}</span>
+          </div>
           <span className="score">{sets2}</span>
         </div>
       </div>

@@ -67,7 +67,7 @@ function Ranking() {
           >
             <option value="">Todas las categorías</option>
             {categorias.map((cat) => (
-              <option key={cat.id_categoria} value={cat.id_categoria}>
+              <option key={cat.id_categoria} value={cat.valor_numerico}>
                 {cat.nombre}
               </option>
             ))}

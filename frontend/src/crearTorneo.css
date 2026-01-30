@@ -313,3 +313,26 @@
     color: #888;
     border: 1px solid #444;
 }
+/* Badges para Modalidad */
+.badge-modality {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.badge-liga {
+    background-color: #ffd700;
+    color: #000;
+    border: 1px solid #e0a800;
+}
+
+.badge-weekend {
+    background-color: #2196f3;
+    color: #fff;
+    border: 1px solid #1976d2;
+}

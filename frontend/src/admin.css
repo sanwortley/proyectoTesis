@@ -230,3 +230,48 @@
 .btn-cancel:hover {
     background-color: #222;
 }
+
+/* Fixed Layout for Players Table (contain-text) */
+.pro-table.contain-text {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.pro-table.contain-text th,
+.pro-table.contain-text td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+.col-nombre {
+    width: 14%;
+}
+
+.col-apellido {
+    width: 14%;
+}
+
+.col-apodo {
+    width: 10%;
+}
+
+.col-email {
+    width: 24%;
+}
+
+.col-rol {
+    width: 10%;
+}
+
+.col-categoria {
+    width: 14%;
+}
+
+.col-actions {
+    width: 200px;
+    text-align: center;
+    overflow: visible !important;
+    /* Allow buttons to show tooltips if needed, but mainly to avoid cutting off button edges */
+}

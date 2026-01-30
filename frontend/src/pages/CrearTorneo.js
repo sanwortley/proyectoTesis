@@ -11,8 +11,11 @@ function CrearTorneo() {
   const [max_equipos, setMaxEquipos] = useState('');
   const [idCategoria, setIdCategoria] = useState('');
 
-  const [formatoCategoria, setFormatoCategoria] = useState('categoria_fija'); // nuevo
-  const [sumaCategoria, setSumaCategoria] = useState('');                     // nuevo
+  const [formatoCategoria, setFormatoCategoria] = useState('categoria_fija');
+  const [sumaCategoria, setSumaCategoria] = useState('');
+
+  const [modalidad, setModalidad] = useState('fin_de_semana'); // nuevo
+  const [diasJuego, setDiasJuego] = useState('');              // nuevo
 
   const [categorias, setCategorias] = useState([]);
   const [mensaje, setMensaje] = useState('');
@@ -52,13 +55,21 @@ function CrearTorneo() {
       setError('Indicá el valor de SUMA para el torneo');
       return;
     }
+    // Validar dias de juego si es liga
+    if (modalidad === 'liga' && !diasJuego.trim()) {
+      setError('Indicá los días de juego para la Liga');
+      return;
+    }
 
     try {
       // 👇 YA NO PEDIMOS /torneos/nuevo-id, lo genera la DB
       await axios.post(`${process.env.REACT_APP_API_URL}/torneos`, {
         nombre_torneo,
         fecha_inicio: fechaInicio,
-        fecha_fin: fechaFin,
+        nombre_torneo,
+        fecha_inicio: fechaInicio,
+        fecha_fin: modalidad === 'liga' ? null : fechaFin,
+        fecha_cierre_inscripcion,
         fecha_cierre_inscripcion,
         max_equipos: parseInt(max_equipos, 10),
         formato_categoria: formatoCategoria,
@@ -70,6 +81,8 @@ function CrearTorneo() {
           formatoCategoria === 'suma'
             ? parseInt(sumaCategoria, 10) || null
             : null,
+        modalidad,
+        dias_juego: modalidad === 'liga' ? diasJuego : null
       });
 
       setMensaje('Torneo creado con éxito');
@@ -81,6 +94,8 @@ function CrearTorneo() {
       setIdCategoria('');
       setFormatoCategoria('categoria_fija');
       setSumaCategoria('');
+      setModalidad('fin_de_semana');
+      setDiasJuego('');
 
       obtenerTorneos();
     } catch (err) {
@@ -191,6 +206,8 @@ function CrearTorneo() {
           formEdit.formato_categoria === 'suma'
             ? parseInt(formEdit.suma_categoria, 10) || null
             : null,
+        modalidad: formEdit.modalidad,
+        dias_juego: formEdit.modalidad === 'liga' ? formEdit.dias_juego : null
       };
 
       await axios.put(
@@ -260,6 +277,8 @@ function CrearTorneo() {
       formato_categoria: t.formato_categoria || 'categoria_fija',
       categoria_id: t.categoria_id || '',
       suma_categoria: t.suma_categoria || '',
+      modalidad: t.modalidad || 'fin_de_semana', // nuevo
+      dias_juego: t.dias_juego || ''             // nuevo
     });
   };
 
@@ -290,13 +309,17 @@ function CrearTorneo() {
               required
             />
 
-            <label>Fecha de finalización del torneo</label>
-            <input
-              type="date"
-              value={fechaFin}
-              onChange={(e) => setFechaFin(e.target.value)}
-              required
-            />
+            {modalidad !== 'liga' && (
+              <>
+                <label>Fecha de finalización del torneo</label>
+                <input
+                  type="date"
+                  value={fechaFin}
+                  onChange={(e) => setFechaFin(e.target.value)}
+                  required={modalidad !== 'liga'}
+                />
+              </>
+            )}
 
             <label>Fecha de cierre de inscripción</label>
             <input
@@ -313,6 +336,42 @@ function CrearTorneo() {
               onChange={(e) => setMaxEquipos(e.target.value)}
               required
             />
+
+            {/* Modalidad: Fin de semana o Liga */}
+            <label>Modalidad</label>
+            <select
+              value={modalidad}
+              onChange={(e) => setModalidad(e.target.value)}
+            >
+              <option value="fin_de_semana">Fin de Semana (Viernes/Sábado/Domingo)</option>
+              <option value="liga">Liga / Fechas (Días específicos)</option>
+            </select>
+
+            {modalidad === 'liga' && (
+              <div className="dias-juego-selector">
+                <label>Días de Juego:</label>
+                <div className="checkboxes-dias">
+                  {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'].map(dia => (
+                    <label key={dia} style={{ display: 'inline-block', marginRight: '10px' }}>
+                      <input
+                        type="checkbox"
+                        value={dia}
+                        checked={diasJuego.includes(dia)}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (diasJuego.includes(val)) {
+                            setDiasJuego(prev => prev.split(',').filter(d => d !== val).join(','));
+                          } else {
+                            setDiasJuego(prev => prev ? prev + ',' + val : val);
+                          }
+                        }}
+                      />
+                      {dia}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Formato: categoría fija o SUMA */}
             <label>Formato del torneo</label>
@@ -378,6 +437,20 @@ function CrearTorneo() {
                 <p>
                   <strong>Máx equipos:</strong> {t.max_equipos}
                 </p>
+
+                <div style={{ marginBottom: '10px' }}>
+                  {t.modalidad === 'liga' ? (
+                    <span className="badge-modality badge-liga">LIGA</span>
+                  ) : (
+                    <span className="badge-modality badge-weekend">FIN DE SEMANA</span>
+                  )}
+                </div>
+
+                {t.modalidad === 'liga' && (
+                  <p>
+                    <strong>Días:</strong> {t.dias_juego}
+                  </p>
+                )}
 
                 <p>
                   <strong>Formato:</strong>{' '}
@@ -490,6 +563,28 @@ function CrearTorneo() {
             }
             placeholder="Máx equipos"
           />
+
+          <label>Modalidad</label>
+          <select
+            value={formEdit.modalidad || 'fin_de_semana'}
+            onChange={(e) =>
+              setFormEdit({ ...formEdit, modalidad: e.target.value })
+            }
+          >
+            <option value="fin_de_semana">Fin de Semana</option>
+            <option value="liga">Liga / Fechas</option>
+          </select>
+
+          {formEdit.modalidad === 'liga' && (
+            <input
+              type="text"
+              placeholder="Días de juego"
+              value={formEdit.dias_juego || ''}
+              onChange={(e) =>
+                setFormEdit({ ...formEdit, dias_juego: e.target.value })
+              }
+            />
+          )}
 
           <label>Formato del torneo</label>
           <select

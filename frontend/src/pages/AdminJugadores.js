@@ -218,26 +218,26 @@ export default function AdminJugadores() {
             )}
 
             <div className="table-responsive">
-                <table className="pro-table">
+                <table className="pro-table contain-text">
                     <thead>
                         <tr>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
-                            <th>Apodo</th>
-                            <th>Email</th>
-                            <th>Rol</th>
-                            <th>Categoría</th>
-                            <th>Acciones</th>
+                            <th className="col-nombre">Nombre</th>
+                            <th className="col-apellido">Apellido</th>
+                            <th className="col-apodo">Apodo</th>
+                            <th className="col-email">Email</th>
+                            <th className="col-rol">Rol</th>
+                            <th className="col-categoria">Categoría</th>
+                            <th className="col-actions">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredJugadores.map((j) => (
                             <tr key={j.id_jugador}>
-                                <td>{j.nombre_jugador}</td>
-                                <td>{j.apellido_jugador}</td>
-                                <td><span style={{ color: '#ffd700' }}>{j.apodo || '-'}</span></td>
-                                <td>{j.email || '-'}</td>
-                                <td>
+                                <td className="col-nombre">{j.nombre_jugador}</td>
+                                <td className="col-apellido">{j.apellido_jugador}</td>
+                                <td className="col-apodo"><span style={{ color: '#ffd700' }}>{j.apodo || '-'}</span></td>
+                                <td className="col-email" title={j.email}>{j.email || '-'}</td>
+                                <td className="col-rol">
                                     <span style={{
                                         backgroundColor: j.rol === 'organizador' ? '#ffd700' : 'transparent',
                                         color: j.rol === 'organizador' ? 'black' : 'inherit',
@@ -246,8 +246,8 @@ export default function AdminJugadores() {
                                         {j.rol}
                                     </span>
                                 </td>
-                                <td>{j.categoria_nombre || '-'}</td>
-                                <td>
+                                <td className="col-categoria">{j.categoria_nombre || '-'}</td>
+                                <td className="col-actions">
                                     <button
                                         className="btn-action btn-edit"
                                         onClick={() => handleEditClick(j)}

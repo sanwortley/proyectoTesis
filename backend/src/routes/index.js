@@ -398,10 +398,34 @@ router.put('/jugadores/:id', verificarToken, upload.single('foto_perfil'), async
 
     if (nombre_jugador) { fields.push(`nombre_jugador=$${idx++}`); values.push(nombre_jugador); }
     if (apellido_jugador) { fields.push(`apellido_jugador=$${idx++}`); values.push(apellido_jugador); }
-    if (apodo !== undefined) { fields.push(`apodo=$${idx++}`); values.push(apodo); } // permite borrar apodo enviando ''
+    if (apodo !== undefined) {
+      if (apodo === 'null' || apodo === '') {
+        fields.push(`apodo=$${idx++}`);
+        values.push(null);
+      } else {
+        fields.push(`apodo=$${idx++}`);
+        values.push(apodo);
+      }
+    }
     if (email) { fields.push(`email=$${idx++}`); values.push(email); }
-    if (telefono !== undefined) { fields.push(`telefono=$${idx++}`); values.push(telefono); }
-    if (categoria_id) { fields.push(`categoria_id=$${idx++}`); values.push(categoria_id); }
+    if (telefono !== undefined) {
+      if (telefono === 'null' || telefono === '') {
+        fields.push(`telefono=$${idx++}`);
+        values.push(null);
+      } else {
+        fields.push(`telefono=$${idx++}`);
+        values.push(telefono);
+      }
+    }
+    if (categoria_id !== undefined) {
+      if (categoria_id === 'null' || categoria_id === '') {
+        fields.push(`categoria_id=$${idx++}`);
+        values.push(null);
+      } else {
+        fields.push(`categoria_id=$${idx++}`);
+        values.push(categoria_id);
+      }
+    }
 
     // Si viene foto
     if (req.file) {
@@ -501,7 +525,7 @@ router.post('/torneos', async (req, res) => {
   } = req.body;
 
   // Validaciones básicas
-  if (!nombre_torneo || !formato_categoria || !fecha_inicio || !fecha_fin || !fecha_cierre_inscripcion || !max_equipos) {
+  if (!nombre_torneo || !formato_categoria || !fecha_inicio || !fecha_cierre_inscripcion || !max_equipos) {
     return res.status(400).json({ error: 'Faltan campos obligatorios para crear el torneo' });
   }
 
@@ -532,21 +556,25 @@ router.post('/torneos', async (req, res) => {
         max_equipos,
         categoria_id,
         formato_categoria,
-        suma_categoria
+        suma_categoria,
+        modalidad,
+        dias_juego
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING id_torneo
     `;
 
     const params = [
       nombre_torneo,
       fecha_inicio,
-      fecha_fin,
+      req.body.fecha_fin || null,
       cierre,
       max_equipos,
       formato_categoria === 'categoria_fija' ? categoria_id : null,
       formato_categoria,
-      formato_categoria === 'suma' ? suma_categoria : null
+      formato_categoria === 'suma' ? suma_categoria : null,
+      req.body.modalidad || 'fin_de_semana',
+      req.body.dias_juego || null
     ];
 
     const { rows } = await client.query(insertTorneo, params);
@@ -1071,7 +1099,12 @@ router.post('/torneos/:id/generar-grupos', async (req, res) => {
       return res.status(400).json({ error: 'Se necesitan al menos 2 equipos para generar partidos' });
     }
 
+    // 🔍 0) Chequear modalidad
+    const tInfo = await client.query('SELECT modalidad FROM torneo WHERE id_torneo = $1', [id]);
+    const modalidad = tInfo.rows[0]?.modalidad || 'fin_de_semana';
+
     if (equipos.length === 2) {
+      // (Misma lógica existente para 2 equipos - FINAL)
       await client.query(
         `
         INSERT INTO partidos_llave (id_torneo, ronda, orden, equipo1_id, equipo2_id, estado)
@@ -1084,35 +1117,152 @@ router.post('/torneos/:id/generar-grupos', async (req, res) => {
       return res.json({ mensaje: 'Partido final generado (solo 2 equipos)' });
     }
 
-    const grupos = generarGruposAleatorios(equipos);
-    const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let grupos = [];
 
-    for (let i = 0; i < grupos.length; i++) {
-      const nombreGrupo = `Grupo ${letras[i]}`;
-
+    // SI ES LIGA => 1 Solo Grupo con TODOS + Generación de Fixture con Fechas
+    if (modalidad === 'liga') {
+      const nombreGrupo = "Liga Única";
       const grupoRes = await client.query(
         `INSERT INTO grupos (id_torneo, nombre) VALUES ($1, $2) RETURNING id_grupo`,
         [id, nombreGrupo]
       );
       const grupoId = grupoRes.rows[0].id_grupo;
 
-      for (const equipo of grupos[i]) {
+      // Insertar equipos en el grupo
+      for (const equipo of equipos) {
         await client.query(
           `INSERT INTO equipos_grupo (grupo_id, equipo_id) VALUES ($1, $2)`,
           [grupoId, equipo.id_equipo]
         );
       }
 
-      const participantes = grupos[i];
-      for (let j = 0; j < participantes.length; j++) {
-        for (let k = j + 1; k < participantes.length; k++) {
+      // --- LOGICA DE FIXTURE (ROUND ROBIN) ---
+      // Algoritmo de Berger o similar
+      let listaEquipos = [...equipos];
+      if (listaEquipos.length % 2 !== 0) {
+        listaEquipos.push(null); // Dummy para fecha libre
+      }
+      const numRondas = listaEquipos.length - 1;
+      const partPorFecha = listaEquipos.length / 2;
+
+      // Obtener info del torneo para fechas
+      const tRes = await client.query('SELECT fecha_inicio, dias_juego FROM torneo WHERE id_torneo = $1', [id]);
+      const fechaInicio = new Date(tRes.rows[0].fecha_inicio);
+      // dias_juego viene como "Lunes,Miércoles" o IDs de día. Asumiremos string con nombres en español o inglés por ahora.
+      // Parsear días de juego:
+      const diasStr = tRes.rows[0].dias_juego || "";
+      // Mapa de dias: 0=Domingo, 1=Lunes...
+      const mapDias = {
+        'domingo': 0, 'sunday': 0, 'sun': 0,
+        'lunes': 1, 'monday': 1, 'mon': 1,
+        'martes': 2, 'tuesday': 2, 'tue': 2,
+        'miercoles': 3, 'miércoles': 3, 'wednesday': 3, 'wed': 3,
+        'jueves': 4, 'thursday': 4, 'thu': 4,
+        'viernes': 5, 'friday': 5, 'fri': 5,
+        'sabado': 6, 'sábado': 6, 'saturday': 6, 'sat': 6
+      };
+
+      let diasSeleccionados = [];
+      diasStr.toLowerCase().split(/[\s,y]+/).forEach(ws => { // split por espacio, coma o 'y'
+        const clean = ws.trim();
+        if (mapDias.hasOwnProperty(clean)) diasSeleccionados.push(mapDias[clean]);
+        // Fallback por si mandan numeros '1,3'
+        else if (!isNaN(clean)) diasSeleccionados.push(parseInt(clean) % 7);
+      });
+      // Si no pudo parsear nada, default a Viernes(5)
+      if (diasSeleccionados.length === 0) diasSeleccionados = [5];
+      diasSeleccionados = [...new Set(diasSeleccionados)].sort(); // Unicos y ordenados
+
+      let currentDate = new Date(fechaInicio);
+
+      // Ajustar currentDate al primer dia valido >= fechaInicio
+      while (!diasSeleccionados.includes(currentDate.getDay())) {
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+
+      let fechaUltimoPartido = new Date(currentDate);
+
+      for (let r = 0; r < numRondas; r++) {
+        // Generar partidos de la ronda R
+        for (let i = 0; i < partPorFecha; i++) {
+          const e1 = listaEquipos[i];
+          const e2 = listaEquipos[listaEquipos.length - 1 - i];
+
+          if (e1 && e2) { // Si ninguno es el dummy
+            // Alternar localía (simple)
+            const local = (r % 2 === 0) ? e1 : e2;
+            const visit = (r % 2 === 0) ? e2 : e1;
+
+            await client.query(
+              `INSERT INTO partidos_grupo (grupo_id, equipo1_id, equipo2_id, fecha) VALUES ($1, $2, $3, $4)`,
+              [grupoId, local.id_equipo, visit.id_equipo, currentDate]
+            );
+          }
+        }
+
+        fechaUltimoPartido = new Date(currentDate);
+
+        // Mover fecha al siguiente dia valido
+        // Buscar el siguiente dia en la lista que sea > currentDay
+        // o dar la vuelta a la semana
+        let dayFound = false;
+        let checkDate = new Date(currentDate);
+        checkDate.setDate(checkDate.getDate() + 1);
+
+        // Loop seguro (max 7 dias)
+        for (let d = 0; d < 7; d++) {
+          if (diasSeleccionados.includes(checkDate.getDay())) {
+            currentDate = new Date(checkDate);
+            dayFound = true;
+            break;
+          }
+          checkDate.setDate(checkDate.getDate() + 1);
+        }
+
+        // Rotar array para siguiente ronda (dejando fijo al primero)
+        // [0, 1, 2, 3] -> [0, 3, 1, 2]
+        const fijo = listaEquipos[0];
+        const resto = listaEquipos.slice(1);
+        const lastObj = resto.pop();
+        resto.unshift(lastObj);
+        listaEquipos = [fijo, ...resto];
+      }
+
+      // Actualizar Fecha Fin del Torneo
+      await client.query('UPDATE torneo SET fecha_fin = $1 WHERE id_torneo = $2', [fechaUltimoPartido, id]);
+
+    } else {
+      // SI ES FIN DE SEMANA => Generar grupos aleatorios (o mantener lógica vieja)
+      // (Aquí va el código original de generación de grupos múltiples)
+      const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const gruposList = generarGruposAleatorios(equipos); // Ya importada
+
+      for (let i = 0; i < gruposList.length; i++) {
+        const nombreGrupo = `Grupo ${letras[i]}`;
+        const grupoRes = await client.query(
+          `INSERT INTO grupos (id_torneo, nombre) VALUES ($1, $2) RETURNING id_grupo`,
+          [id, nombreGrupo]
+        );
+        const grupoId = grupoRes.rows[0].id_grupo;
+
+        for (const equipo of gruposList[i]) {
           await client.query(
-            `
-            INSERT INTO partidos_grupo (grupo_id, equipo1_id, equipo2_id)
-            VALUES ($1, $2, $3)
-            `,
-            [grupoId, participantes[j].id_equipo, participantes[k].id_equipo]
+            `INSERT INTO equipos_grupo (grupo_id, equipo_id) VALUES ($1, $2)`,
+            [grupoId, equipo.id_equipo]
           );
+        }
+
+        const participantes = gruposList[i];
+        for (let j = 0; j < participantes.length; j++) {
+          for (let k = j + 1; k < participantes.length; k++) {
+            await client.query(
+              `
+              INSERT INTO partidos_grupo (grupo_id, equipo1_id, equipo2_id)
+              VALUES ($1, $2, $3)
+              `,
+              [grupoId, participantes[j].id_equipo, participantes[k].id_equipo]
+            );
+          }
         }
       }
     }
@@ -1147,6 +1297,8 @@ router.get('/torneos/:id/grupos', async (req, res) => {
         t.nombre_torneo AS nombre_torneo,
         t.formato_categoria,
         t.suma_categoria,
+        t.modalidad,
+        t.dias_juego,
         c.nombre AS categoria_nombre
       FROM torneo t
       LEFT JOIN categoria c ON t.categoria_id = c.id_categoria
@@ -1180,9 +1332,15 @@ router.get('/torneos/:id/grupos', async (req, res) => {
           eg.puntos,
           eg.partidos_jugados,
           eg.sets_favor,
-          eg.sets_contra
+          eg.sets_contra,
+          eg.games_favor,
+          eg.games_contra,
+          j1.foto_perfil AS foto1,
+          j2.foto_perfil AS foto2
         FROM equipos_grupo eg
         JOIN equipo e ON eg.equipo_id = e.id_equipo
+        LEFT JOIN jugador j1 ON e.jugador1_id = j1.id_jugador
+        LEFT JOIN jugador j2 ON e.jugador2_id = j2.id_jugador
         WHERE eg.grupo_id = $1
         `,
         [grupoId]
@@ -1192,7 +1350,9 @@ router.get('/torneos/:id/grupos', async (req, res) => {
         `
         SELECT 
           pg.id,
+          pg.equipo1_id,
           e1.nombre_equipo AS equipo1,
+          pg.equipo2_id,
           e2.nombre_equipo AS equipo2,
           pg.set1_equipo1,
           pg.set1_equipo2,
@@ -1200,7 +1360,8 @@ router.get('/torneos/:id/grupos', async (req, res) => {
           pg.set2_equipo2,
           pg.set3_equipo1,
           pg.set3_equipo2,
-          pg.estado
+          pg.estado,
+          pg.fecha
         FROM partidos_grupo pg
         JOIN equipo e1 ON pg.equipo1_id = e1.id_equipo
         JOIN equipo e2 ON pg.equipo2_id = e2.id_equipo
@@ -1222,6 +1383,8 @@ router.get('/torneos/:id/grupos', async (req, res) => {
       categoria: categoria_nombre, // solo si es categoria_fija
       formato_categoria,
       suma_categoria,
+      modalidad: torneoInfoRes.rows[0].modalidad,
+      dias_juego: torneoInfoRes.rows[0].dias_juego,
       grupos
     });
   } catch (error) {
@@ -1316,12 +1479,12 @@ router.put('/partidos-grupo/:id', async (req, res) => {
       [set2_equipo1, set2_equipo2],
       [set3_equipo1, set3_equipo2]
     ];
-    let setsGanados1 = 0, setsGanados2 = 0, setsFavor1 = 0, setsFavor2 = 0;
+    let setsGanados1 = 0, setsGanados2 = 0, gamesFavor1 = 0, gamesFavor2 = 0;
     for (const [s1, s2] of sets) {
       if (s1 == null || s2 == null) continue;
       if (s1 > s2) setsGanados1++; else if (s2 > s1) setsGanados2++;
-      setsFavor1 += (s1 ?? 0);
-      setsFavor2 += (s2 ?? 0);
+      gamesFavor1 += (s1 ?? 0);
+      gamesFavor2 += (s2 ?? 0);
     }
     const puntos1 = setsGanados1 > setsGanados2 ? 3 : 0;
     const puntos2 = setsGanados2 > setsGanados1 ? 3 : 0;
@@ -1333,10 +1496,12 @@ router.put('/partidos-grupo/:id', async (req, res) => {
         puntos = puntos + $1,
         partidos_jugados = partidos_jugados + 1,
         sets_favor = sets_favor + $2,
-        sets_contra = sets_contra + $3
-      WHERE grupo_id = $4 AND equipo_id = $5
+        sets_contra = sets_contra + $3,
+        games_favor = games_favor + $4,
+        games_contra = games_contra + $5
+      WHERE grupo_id = $6 AND equipo_id = $7
       `,
-      [puntos1, setsFavor1, setsFavor2, grupo_id, equipo1_id]
+      [puntos1, setsGanados1, setsGanados2, gamesFavor1, gamesFavor2, grupo_id, equipo1_id]
     );
 
     await client.query(
@@ -1346,10 +1511,12 @@ router.put('/partidos-grupo/:id', async (req, res) => {
         puntos = puntos + $1,
         partidos_jugados = partidos_jugados + 1,
         sets_favor = sets_favor + $2,
-        sets_contra = sets_contra + $3
-      WHERE grupo_id = $4 AND equipo_id = $5
+        sets_contra = sets_contra + $3,
+        games_favor = games_favor + $4,
+        games_contra = games_contra + $5
+      WHERE grupo_id = $6 AND equipo_id = $7
       `,
-      [puntos2, setsFavor2, setsFavor1, grupo_id, equipo2_id]
+      [puntos2, setsGanados2, setsGanados1, gamesFavor2, gamesFavor1, grupo_id, equipo2_id]
     );
 
     await client.query('COMMIT');
@@ -1395,10 +1562,18 @@ router.get('/torneos/:idTorneo/playoff', async (req, res) => {
         pl.estado,
         pl.ganador_id,
         pl.next_match_id,
-        pl.next_slot
+        pl.next_slot,
+        j1a.foto_perfil AS eq1_foto1,
+        j1b.foto_perfil AS eq1_foto2,
+        j2a.foto_perfil AS eq2_foto1,
+        j2b.foto_perfil AS eq2_foto2
       FROM partidos_llave pl
       LEFT JOIN equipo e1 ON e1.id_equipo = pl.equipo1_id
       LEFT JOIN equipo e2 ON e2.id_equipo = pl.equipo2_id
+      LEFT JOIN jugador j1a ON e1.jugador1_id = j1a.id_jugador
+      LEFT JOIN jugador j1b ON e1.jugador2_id = j1b.id_jugador
+      LEFT JOIN jugador j2a ON e2.jugador1_id = j2a.id_jugador
+      LEFT JOIN jugador j2b ON e2.jugador2_id = j2b.id_jugador
       WHERE pl.id_torneo = $1
       ORDER BY
         CASE pl.ronda
