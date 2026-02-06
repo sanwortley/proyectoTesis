@@ -221,6 +221,7 @@ export default function AdminJugadores() {
                 <table className="pro-table contain-text">
                     <thead>
                         <tr>
+                            <th className="col-nombre">Foto</th>
                             <th className="col-nombre">Nombre</th>
                             <th className="col-apellido">Apellido</th>
                             <th className="col-apodo">Apodo</th>
@@ -233,6 +234,32 @@ export default function AdminJugadores() {
                     <tbody>
                         {filteredJugadores.map((j) => (
                             <tr key={j.id_jugador}>
+                                <td className="col-foto">
+                                    <div style={{
+                                        width: '40px',
+                                        height: '40px',
+                                        borderRadius: '50%',
+                                        overflow: 'hidden',
+                                        backgroundColor: '#333',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        border: '1px solid #ffd700'
+                                    }}>
+                                        {j.foto_perfil ? (
+                                            <img
+                                                src={`http://localhost:3000/${j.foto_perfil}`}
+                                                alt={j.nombre_jugador}
+                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                onError={(e) => { e.target.style.display = 'none' }}
+                                            />
+                                        ) : (
+                                            <span style={{ color: '#ffd700', fontSize: '0.8rem' }}>
+                                                {j.nombre_jugador.charAt(0)}{j.apellido_jugador.charAt(0)}
+                                            </span>
+                                        )}
+                                    </div>
+                                </td>
                                 <td className="col-nombre">{j.nombre_jugador}</td>
                                 <td className="col-apellido">{j.apellido_jugador}</td>
                                 <td className="col-apodo"><span style={{ color: '#ffd700' }}>{j.apodo || '-'}</span></td>

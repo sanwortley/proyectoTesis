@@ -33,4 +33,14 @@ TEST, , , ,0,Endpoint de prueba
 2026-01-30T20:53:50.135Z,1,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso
 2026-01-30T21:31:24.665Z,6,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso
 2026-01-30T21:38:25.499Z,12,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso
-2026-01-30T21:39:42.554Z,1,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso
+2026-01-30T21:39:42.554Z,1,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso2026-02-06T14:38:53.544Z,,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",0,Usuario no encontrado
+2026-02-06T14:39:38.642Z,53,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso
+2026-02-06T14:42:08.791Z,1,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso
+2026-02-06T14:43:09.352Z,54,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso
+2026-02-06T14:44:12.182Z,1,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso
+2026-02-06T15:04:08.288Z,1,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso
+2026-02-06T21:11:41.281Z,1,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso
+2026-02-06T21:12:58.885Z,1,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso
+2026-02-06T21:15:16.289Z,1,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso
+2026-02-06T21:15:33.321Z,54,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso
+2026-02-06T21:16:19.581Z,1,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso

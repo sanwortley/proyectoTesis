@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../crearTorneo.css';
-import { useLocation } from 'react-router-dom';
+/* import { useLocation } from 'react-router-dom'; */
 
 function CrearTorneo() {
   const [nombre_torneo, setNombreTorneo] = useState('');
@@ -20,7 +20,7 @@ function CrearTorneo() {
   const [categorias, setCategorias] = useState([]);
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState('');
-  const [mostrarTorneos, setMostrarTorneos] = useState(false);
+  /* const [mostrarTorneos, setMostrarTorneos] = useState(false); // Eliminado por no uso */
   const [torneos, setTorneos] = useState([]);
   const [equiposPorTorneo, setEquiposPorTorneo] = useState({});
   const [torneosExpandido, setTorneosExpandido] = useState({});
@@ -29,7 +29,7 @@ function CrearTorneo() {
   const [mensajeGrupos, setMensajeGrupos] = useState('');
   const [torneoConGrupos, setTorneoConGrupos] = useState(null);
 
-  const location = useLocation();
+  /* const location = useLocation(); // Eliminado por no uso */
 
   useEffect(() => {
     axios
@@ -66,10 +66,7 @@ function CrearTorneo() {
       await axios.post(`${process.env.REACT_APP_API_URL}/torneos`, {
         nombre_torneo,
         fecha_inicio: fechaInicio,
-        nombre_torneo,
-        fecha_inicio: fechaInicio,
         fecha_fin: modalidad === 'liga' ? null : fechaFin,
-        fecha_cierre_inscripcion,
         fecha_cierre_inscripcion,
         max_equipos: parseInt(max_equipos, 10),
         formato_categoria: formatoCategoria,

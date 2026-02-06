@@ -89,7 +89,8 @@ CREATE TABLE equipo (
 CREATE TABLE inscripcion (
   id_inscripcion SERIAL PRIMARY KEY,
   id_equipo      INT REFERENCES equipo(id_equipo) ON DELETE CASCADE,
-  id_torneo      INT REFERENCES torneo(id_torneo) ON DELETE CASCADE
+  id_torneo      INT REFERENCES torneo(id_torneo) ON DELETE CASCADE,
+  created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ============================

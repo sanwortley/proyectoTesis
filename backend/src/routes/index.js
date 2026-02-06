@@ -299,6 +299,7 @@ router.get('/jugadores', async (_req, res) => {
         j.nombre_jugador, 
         j.apellido_jugador, 
         j.apodo,
+        j.foto_perfil,
         j.email,
         j.telefono,
         j.rol,

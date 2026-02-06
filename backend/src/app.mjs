@@ -28,12 +28,15 @@ const __dirname = path.dirname(__filename);
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Montaje de rutas
+import dashboardRoutes from './routes/dashboardRoutes.js';
+
 app.use('/api', routes);
 app.use('/api', auditoriaRoutes);
 app.use('/api', authRoutes);
-app.use('/api', playoffroutes)
-app.use('/api', rankingRoutes)
-app.use('/api', torneoRoutes)
+app.use('/api', playoffroutes);
+app.use('/api', rankingRoutes);
+app.use('/api', torneoRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 
 console.log('[ROUTES] playoff montada');

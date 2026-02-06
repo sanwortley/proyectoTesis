@@ -1,5 +1,5 @@
 // src/pages/CargarResultado.js
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import "../cargarResultado.css";
 
@@ -58,7 +58,7 @@ export default function CargarResultado() {
 
   const [grupos, setGrupos] = useState([]);
   const [resultadosGrupos, setResultadosGrupos] = useState({});
-  const [gruposCompletos, setGruposCompletos] = useState(false);
+  /* const [gruposCompletos, setGruposCompletos] = useState(false); // Eliminado por no uso */
 
   const [rondasPO, setRondasPO] = useState({});
   const [resultadosPO, setResultadosPO] = useState({});
@@ -84,7 +84,7 @@ export default function CargarResultado() {
       setRondasPO({});
       setResultadosGrupos({});
       setResultadosPO({});
-      setGruposCompletos(false);
+      /* setGruposCompletos(false); */
       return;
     }
 
@@ -118,7 +118,7 @@ export default function CargarResultado() {
               g.partidos.every((p) => p.estado === "finalizado")
           );
 
-        setGruposCompletos(completos);
+        /* setGruposCompletos(completos); */
 
         // ⭐ GENERAR PLAYOFF AUTOMÁTICO CUANDO SE COMPLETAN
         if (completos) {
@@ -128,7 +128,7 @@ export default function CargarResultado() {
       .catch(() => {
         setGrupos([]);
         setResultadosGrupos({});
-        setGruposCompletos(false);
+        /* setGruposCompletos(false); */
       });
 
     // --- PLAYOFF ---
@@ -231,7 +231,7 @@ export default function CargarResultado() {
             g.partidos.every((p) => p.estado === "finalizado")
         );
 
-      setGruposCompletos(completos);
+      /* setGruposCompletos(completos); */
 
       // ⭐ SI SE COMPLETÓ TODO → GENERAR PLAYOFF SOLO
       if (completos) {
@@ -316,10 +316,7 @@ export default function CargarResultado() {
   // =======================
   // RENDER
   // =======================
-  const torneoSeleccionado = useMemo(
-    () => torneos.find((t) => String(t.id_torneo) === String(torneoId)) || null,
-    [torneos, torneoId]
-  );
+  /* const torneoSeleccionado = useMemo(...) eliminada por no uso */
 
   return (
     <div className="cargar-resultado-container">
