@@ -188,7 +188,15 @@ router.post('/login', async (req, res) => {
     const { password } = req.body;
 
     if (!loginInput || !password) {
-      await registrarLogIngreso({ ip, userAgent, exitoso: false, motivo: 'Faltan credenciales' });
+      await registrarLogIngreso({
+        jugadorId: null,
+        nombre: null,
+        apellido: null,
+        ip,
+        userAgent,
+        exitoso: false,
+        motivo: 'Faltan credenciales'
+      });
       return res.status(400).json({ error: 'Faltan credenciales' });
     }
 
@@ -203,7 +211,15 @@ router.post('/login', async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      await registrarLogIngreso({ ip, userAgent, exitoso: false, motivo: 'Usuario no encontrado' });
+      await registrarLogIngreso({
+        jugadorId: null,
+        nombre: null,
+        apellido: null,
+        ip,
+        userAgent,
+        exitoso: false,
+        motivo: 'Usuario no encontrado'
+      });
       return res.status(404).json({ error: 'Jugador no encontrado' });
     }
 
@@ -213,12 +229,27 @@ router.post('/login', async (req, res) => {
       : password === jugador.password;
 
     if (!ok) {
-      await registrarLogIngreso({ jugadorId: jugador.id_jugador, ip, userAgent, exitoso: false, motivo: 'Contraseña incorrecta' });
+      await registrarLogIngreso({
+        jugadorId: jugador.id_jugador,
+        nombre: jugador.nombre_jugador,
+        apellido: jugador.apellido_jugador,
+        ip,
+        userAgent,
+        exitoso: false,
+        motivo: 'Contraseña incorrecta'
+      });
       return res.status(401).json({ error: 'Contraseña incorrecta' });
     }
 
     // ✅ Login Exitoso
-    await registrarLogIngreso({ jugadorId: jugador.id_jugador, ip, userAgent, exitoso: true });
+    await registrarLogIngreso({
+      jugadorId: jugador.id_jugador,
+      nombre: jugador.nombre_jugador,
+      apellido: jugador.apellido_jugador,
+      ip,
+      userAgent,
+      exitoso: true
+    });
 
     const role = (jugador.rol || 'jugador').toLowerCase();
     const token = jwt.sign(
@@ -231,7 +262,15 @@ router.post('/login', async (req, res) => {
   } catch (error) {
     console.error('Error en login:', error);
     // Registrar error de servidor si es posible
-    await registrarLogIngreso({ ip, userAgent, exitoso: false, motivo: 'Error de servidor: ' + error.message });
+    await registrarLogIngreso({
+      jugadorId: null,
+      nombre: null,
+      apellido: null,
+      ip,
+      userAgent,
+      exitoso: false,
+      motivo: 'Error de servidor: ' + error.message
+    });
     return res.status(500).json({ error: 'Error del servidor' });
   }
 });

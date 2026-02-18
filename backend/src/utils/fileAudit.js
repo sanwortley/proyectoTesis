@@ -50,10 +50,10 @@ export async function appendAuditToFiles({
   timestamp = new Date()
 }) {
   try {
-    if (!headerOk) await ensureSetup();
+    const localTimestamp = timestamp.toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
 
     const row = [
-      csvEscape(timestamp.toISOString()),
+      csvEscape(localTimestamp),
       csvEscape(jugadorId ?? ''),
       csvEscape(nombre ?? ''),
       csvEscape(apellido ?? ''),
@@ -64,7 +64,7 @@ export async function appendAuditToFiles({
     ].join(',') + '\n';
 
     const jsonLine = JSON.stringify({
-      timestamp: timestamp.toISOString(),
+      timestamp: localTimestamp,
       jugador_id: jugadorId ?? null,
       nombre: nombre ?? null,
       apellido: apellido ?? null,
