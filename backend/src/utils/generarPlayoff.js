@@ -78,8 +78,23 @@ export async function generarPlayoffSiNoExiste(idTorneo) {
 
     const cuartosIds = [];
 
+    // Determinar nombre de la primera ronda según cantidad de equipos
+    const numPartidosPrimeraRonda = Math.floor(N / 2);
+    let primeraRonda;
+    if (numPartidosPrimeraRonda === 8) {
+      primeraRonda = 'OCTAVOS';  // 16 equipos → 8 partidos
+    } else if (numPartidosPrimeraRonda === 4) {
+      primeraRonda = 'CUARTOS';  // 8 equipos → 4 partidos
+    } else if (numPartidosPrimeraRonda === 2) {
+      primeraRonda = 'SEMIS';    // 4 equipos → 2 partidos
+    } else {
+      primeraRonda = 'CUARTOS';  // fallback
+    }
+
+    console.log(`[PLAYOFF] N=${N} equipos → ${numPartidosPrimeraRonda} partidos en ${primeraRonda}`);
+
     // Emparejamiento "snake": 1 vs último, 2 vs anteúltimo, etc.
-    for (let i = 0; i < Math.floor(N / 2); i++) {
+    for (let i = 0; i < numPartidosPrimeraRonda; i++) {
       const A = seeds[i]?.id_equipo ?? null;
       const B = seeds[N - 1 - i]?.id_equipo ?? null;
 
@@ -87,30 +102,62 @@ export async function generarPlayoffSiNoExiste(idTorneo) {
         `
         INSERT INTO partidos_llave
           (id_torneo, ronda, orden, equipo1_id, equipo2_id, estado)
-        VALUES ($1,'CUARTOS',$2,$3,$4,'no_iniciado')
+        VALUES ($1,$2,$3,$4,$5,'no_iniciado')
         RETURNING id
         `,
-        [idTorneo, i + 1, A, B]
+        [idTorneo, primeraRonda, i + 1, A, B]
       );
       cuartosIds.push(r.rows[0].id);
     }
 
-    // SEMIS (2 partidos vacíos)
-    const semisIds = [];
-    for (let i = 0; i < Math.ceil(cuartosIds.length / 2); i++) {
+    // Determinar las rondas siguientes según la primera ronda
+    let segundaRonda, terceraRonda;
+    if (primeraRonda === 'OCTAVOS') {
+      segundaRonda = 'CUARTOS';  // 8 partidos → 4 partidos
+      terceraRonda = 'SEMIS';     // 4 partidos → 2 partidos
+    } else if (primeraRonda === 'CUARTOS') {
+      segundaRonda = 'SEMIS';     // 4 partidos → 2 partidos
+      terceraRonda = 'FINAL';     // 2 partidos → 1 partido (pero FINAL se genera aparte)
+    } else if (primeraRonda === 'SEMIS') {
+      segundaRonda = 'FINAL';     // 2 partidos → 1 partido (pero FINAL se genera aparte)
+      terceraRonda = null;
+    }
+
+    // Segunda ronda (CUARTOS o SEMIS según la primera ronda)
+    const segundaRondaIds = [];
+    const numPartidosSegundaRonda = Math.ceil(cuartosIds.length / 2);
+    for (let i = 0; i < numPartidosSegundaRonda; i++) {
       const r = await client.query(
         `
         INSERT INTO partidos_llave
           (id_torneo, ronda, orden, estado)
-        VALUES ($1,'SEMIS',$2,'no_iniciado')
+        VALUES ($1,$2,$3,'no_iniciado')
         RETURNING id
         `,
-        [idTorneo, i + 1]
+        [idTorneo, segundaRonda, i + 1]
       );
-      semisIds.push(r.rows[0].id);
+      segundaRondaIds.push(r.rows[0].id);
     }
 
-    // FINAL (1 partido vacío)
+    // Tercera ronda (solo si existe - para OCTAVOS sería SEMIS)
+    const terceraRondaIds = [];
+    if (terceraRonda && terceraRonda !== 'FINAL') {
+      const numPartidosTerceraRonda = Math.ceil(segundaRondaIds.length / 2);
+      for (let i = 0; i < numPartidosTerceraRonda; i++) {
+        const r = await client.query(
+          `
+          INSERT INTO partidos_llave
+            (id_torneo, ronda, orden, estado)
+          VALUES ($1,$2,$3,'no_iniciado')
+          RETURNING id
+          `,
+          [idTorneo, terceraRonda, i + 1]
+        );
+        terceraRondaIds.push(r.rows[0].id);
+      }
+    }
+
+    // FINAL (siempre 1 partido)
     const finalId = (
       await client.query(
         `
@@ -123,38 +170,61 @@ export async function generarPlayoffSiNoExiste(idTorneo) {
       )
     ).rows[0].id;
 
-    // Linkear CUARTOS → SEMIS
+    // Linkear primera ronda → segunda ronda
     for (let i = 0; i < cuartosIds.length; i++) {
-      const nextSemi = semisIds[Math.floor(i / 2)];
-      const slot = (i % 2) === 0 ? 1 : 2; // primer partido entra como slot1, segundo como slot2
+      const nextMatch = segundaRondaIds[Math.floor(i / 2)];
+      const slot = (i % 2) === 0 ? 1 : 2;
       await client.query(
         `
         UPDATE partidos_llave
         SET next_match_id = $1, next_slot = $2
         WHERE id = $3
         `,
-        [nextSemi, slot, cuartosIds[i]]
+        [nextMatch, slot, cuartosIds[i]]
       );
     }
 
-    // Linkear SEMIS → FINAL
-    await client.query(
-      `
-      UPDATE partidos_llave
-      SET next_match_id = $1, next_slot = 1
-      WHERE id = $2
-      `,
-      [finalId, semisIds[0]]
-    );
-    if (semisIds[1]) {
-      await client.query(
-        `
-        UPDATE partidos_llave
-        SET next_match_id = $1, next_slot = 2
-        WHERE id = $2
-        `,
-        [finalId, semisIds[1]]
-      );
+    // Linkear segunda ronda → tercera ronda (o FINAL)
+    if (terceraRondaIds.length > 0) {
+      // Hay tercera ronda (ej: OCTAVOS→CUARTOS→SEMIS)
+      for (let i = 0; i < segundaRondaIds.length; i++) {
+        const nextMatch = terceraRondaIds[Math.floor(i / 2)];
+        const slot = (i % 2) === 0 ? 1 : 2;
+        await client.query(
+          `
+          UPDATE partidos_llave
+          SET next_match_id = $1, next_slot = $2
+          WHERE id = $3
+          `,
+          [nextMatch, slot, segundaRondaIds[i]]
+        );
+      }
+
+      // Linkear tercera ronda → FINAL
+      for (let i = 0; i < terceraRondaIds.length; i++) {
+        const slot = (i % 2) === 0 ? 1 : 2;
+        await client.query(
+          `
+          UPDATE partidos_llave
+          SET next_match_id = $1, next_slot = $2
+          WHERE id = $3
+          `,
+          [finalId, slot, terceraRondaIds[i]]
+        );
+      }
+    } else {
+      // No hay tercera ronda - segunda ronda va directo a FINAL
+      for (let i = 0; i < segundaRondaIds.length; i++) {
+        const slot = (i % 2) === 0 ? 1 : 2;
+        await client.query(
+          `
+          UPDATE partidos_llave
+          SET next_match_id = $1, next_slot = $2
+          WHERE id = $3
+          `,
+          [finalId, slot, segundaRondaIds[i]]
+        );
+      }
     }
 
     await client.query('COMMIT');
@@ -165,7 +235,7 @@ export async function generarPlayoffSiNoExiste(idTorneo) {
     // 👇 usar el mismo client
     try {
       await client.query('ROLLBACK');
-    } catch {}
+    } catch { }
     console.error('[PLAYOFF] Error generar árbol:', err);
     throw err;
   } finally {

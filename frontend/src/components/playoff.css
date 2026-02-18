@@ -1,221 +1,579 @@
-/* =========================
-   CONTENEDOR GENERAL PLAYOFF
-   ========================= */
-.bracket.inverted{
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
-  gap: 28px;
+/* ==========================================
+   SYMMETRIC PLAYOFF BRACKET - IMPROVED
+   ========================================== */
+
+.bracket-symmetric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 20px 10px;
+  gap: 16px;
   overflow-x: auto;
-  padding: 8px 4px 24px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 204, 0, .3) transparent;
+  position: relative;
 }
 
-.bracket.inverted::-webkit-scrollbar{ height: 8px; }
-.bracket.inverted::-webkit-scrollbar-thumb{
-  background: rgba(255, 204, 0, .3);
+/* ==========================================
+   TOP & BOTTOM HALVES
+   ========================================== */
+.bracket-half {
+  display: flex;
+  flex-direction: row;
+  gap: 60px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+
+/* ==========================================
+   CENTER - FINAL
+   ========================================== */
+.bracket-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+  position: relative;
+  z-index: 10;
+}
+
+.round-final {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.round-final .round-title {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #ffd34d;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-shadow: 0 3px 10px rgba(255, 211, 77, 0.5);
+  margin-bottom: 8px;
+}
+
+.round-final .match {
+  transform: scale(1.1);
+  border-width: 3px;
+  box-shadow: 0 8px 24px rgba(255, 211, 77, 0.3);
+}
+
+/* ==========================================
+   ROUNDS
+   ========================================== */
+.round {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  min-width: 280px;
+  position: relative;
+}
+
+.round-title {
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: #ffd34d;
+  letter-spacing: 1px;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 0 2px 8px rgba(255, 211, 77, 0.4);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  padding: 8px 16px;
   border-radius: 8px;
 }
 
-.bracket.center-single{
-  place-content: center;
-}
-
-/* =========================
-   COLUMNAS / RONDAS
-   ========================= */
-.round{
+.matches-column {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  min-width: 260px;
-}
-
-.round-title{
-  text-align:center;
-  font-weight: 700;
-  margin-bottom: 10px;
-  letter-spacing:.5px;
-  color: #ffd34d;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  backdrop-filter: blur(2px);
-}
-
-/* Layout vertical de la ronda */
-.round-grid{
-  display: flex;
-  flex-direction: column;
-  gap: 36px;  /* espacio entre cada par de partidos */
-}
-
-/* Cada par de partidos (ej. 2 cuartos que llevan a 1 semi) */
-.match-pair{
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-/* Aseguramos que los partidos de un par puedan dibujar su rayita */
-.match-pair .match{
+  gap: 20px;
+  width: 100%;
   position: relative;
 }
 
-/* Rayita desde cada partido hacia el centro (a la derecha) */
-.match-pair .match::after{
-  content: "";
-  position: absolute;
-  right: -14px;              /* sale 14px hacia afuera */
-  top: 50%;
-  width: 14px;               /* llega justo hasta el palito vertical */
-  height: 2px;
-  background: #ffd34d;
-}
-
-/* Palito vertical centrado entre las 2 llaves */
-.match-pair::before{
-  content: "";
-  position: absolute;
-  right: -14px;              /* mismo x que las rayitas anteriores */
-  top: 50%;
-  transform: translateY(-50%);
-  height: calc(100% - 32px); /* un poco más corto que todo el alto para que
-                                quede lindo entre las dos tarjetas */
-  width: 2px;
-  background: #ffd34d;
-}
-
-/* Rayita que va desde el centro hacia la siguiente ronda */
-.match-pair::after{
-  content: "";
-  position: absolute;
-  right: -14px;
-  top: 50%;
-  transform: translate(100%, -50%);
-  width: 28px;               /* cruza el gap hacia la siguiente columna */
-  height: 2px;
-  background: #ffd34d;
-}
-
-/* =========================
-   TARJETA DE PARTIDO
-   ========================= */
-.match{
+.match-wrapper {
   position: relative;
-  background: #151515;
-  border: 2px solid rgba(255, 204, 0, .35);
-  border-radius: 14px;
-  padding: 14px 16px;
-  box-shadow: 0 6px 16px rgba(0,0,0,.35);
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+
+/* ==========================================
+   MATCH CARDS
+   ========================================== */
+.match {
+  position: relative;
+  background: linear-gradient(135deg, #1a1a1a 0%, #151515 100%);
+  border: 2px solid rgba(255, 204, 0, .4);
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, .4),
+    0 0 0 1px rgba(255, 204, 0, 0.1) inset;
+  display: flex;
+  flex-direction: row;
   align-items: center;
-  column-gap: 12px;
-  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-}
-
-.match:hover{
-  transform: translateY(-2px);
-  box-shadow: 0 10px 18px rgba(0,0,0,.45);
-  border-color: rgba(255, 204, 0, .6);
-}
-
-/* Estado visual opcional */
-.match.finalizado{ border-color: #ffd34d; }
-.match.en_juego{ border-color: #ffdf80; }
-.match.no_iniciado{ opacity: .95; }
-
-/* =========================
-   EQUIPOS
-   ========================= */
-.team{
-  display: flex;
   justify-content: space-between;
+  gap: 12px;
+  transition: all .2s ease;
+  width: 100%;
+  min-width: 280px;
+  max-width: 320px;
+  z-index: 1;
+}
+
+.match:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, .5),
+    0 0 20px rgba(255, 211, 77, 0.2);
+  border-color: rgba(255, 204, 0, .7);
+  z-index: 10;
+  /* Bring to front on hover */
+}
+
+.match.finalizado {
+  border-color: #ffd34d;
+  background: linear-gradient(135deg, #1f1f1f 0%, #1a1a1a 100%);
+}
+
+.match.en_juego {
+  border-color: #ffdf80;
+  box-shadow:
+    0 8px 20px rgba(255, 211, 77, 0.3),
+    0 0 30px rgba(255, 211, 77, 0.15);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 8px 20px rgba(255, 211, 77, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 8px 20px rgba(255, 211, 77, 0.5);
+  }
+}
+
+.match.no_iniciado {
+  opacity: .92;
+  border-color: rgba(255, 204, 0, .25);
+}
+
+/* ==========================================
+   TEAMS WITHIN MATCH
+   ========================================== */
+/* ... existing styles ... */
+
+.team-container {
+  display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  background: #0f0f0f;
+  flex: 1;
+  min-width: 0;
 }
 
-.team.win{
-  outline: 2px solid #ffd34d;
-  background: #121212;
+.names-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.1;
+  min-width: 0;
+  flex: 1;
 }
 
-.team.win .name{
-  font-weight: 700;
-  letter-spacing: .2px;
-}
-
-.team .name{
+.name-line {
+  font-size: 0.8rem;
   font-weight: 600;
+  color: #e8e8e8;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 75%;
+  display: block;
+  letter-spacing: 0.2px;
 }
 
-.team .score{
-  font-variant-numeric: tabular-nums;
-  opacity: .9;
+.team .score {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #a8a8a8;
+  font-family: 'Courier New', monospace;
+  align-self: flex-start;
+  margin-left: auto;
+  /* Push score to the right */
+  padding-left: 8px;
 }
 
-/* “vs” centrado */
-.vs-badge{
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  padding: 4px 6px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 204, 0, .6);
-  color: #ffcf3a;
-  background: rgba(255, 204, 0, .08);
-  justify-self: center;
+/* Win styles update */
+.team.win .name-line {
+  color: #ffd34d;
+  font-weight: 700;
+}
+
+.team.win {
   position: relative;
-  z-index: 2;
-  min-width: 28px;
+}
+
+.team.win::before {
+  content: "";
+  position: absolute;
+  left: -12px;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, #ffd34d, #ffb700);
+  border-radius: 2px;
+}
+
+.team.win .name {
+  color: #ffd34d;
+  font-weight: 800;
+}
+
+.team.win .score {
+  color: #ffd34d;
+  font-weight: 900;
+}
+
+/* ==========================================
+   VS BADGE
+   ========================================== */
+.vs-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+  /* Solid background to hide overlap */
+  border: 1.5px solid rgba(255, 204, 0, .5);
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #ffd34d;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, .3),
+    0 0 8px rgba(255, 211, 77, 0.1) inset;
+  z-index: 5;
+  /* Sit above team names */
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   NO PLAYOFF MESSAGE
+   ========================================== */
+.no-playoff {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  font-size: 1.2rem;
+  color: #666;
   text-align: center;
+  font-weight: 500;
 }
 
-/* =========================
-   APAGAR COSAS VIEJAS
-   ========================= */
-
-.match .vs::before,
-.match .vs::after,
-.match .vs-badge::before,
-.match .vs-badge::after,
-.match-vs::before,
-.match-vs::after{
-  display: none !important;
-  content: none !important;
-}
-
-.connector,
-.connector .h-line,
-.connector .v-line{
-  display: none !important;
-  content: none !important;
-}
-
-/* =========================
+/* ==========================================
    RESPONSIVE
-   ========================= */
-@media (max-width: 980px){
-  .round{ min-width: 220px; }
-  .round-grid{ gap: 26px; }
-  .match{ padding: 12px 12px; border-radius: 12px; }
-  .team{ padding: 7px 8px; }
-  .vs-badge{ font-size: 11px; padding: 3px 6px; }
+   ========================================== */
+@media (max-width: 1600px) {
+  .bracket-half {
+    gap: 60px;
+  }
 }
 
-@media (max-width: 720px){
-  .round{ min-width: 200px; }
-  .match{ grid-template-columns: 1fr auto 1fr; column-gap: 10px; }
-  .team .name{ max-width: 70%; }
+@media (max-width: 1400px) {
+  .bracket-half {
+    gap: 50px;
+  }
+
+  .round {
+    min-width: 260px;
+  }
+
+  .match {
+    max-width: 280px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .bracket-symmetric {
+    gap: 20px;
+    padding: 20px 10px;
+  }
+
+  .bracket-half {
+    gap: 40px;
+  }
+
+  .matches-column {
+    gap: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .bracket-symmetric {
+    padding: 16px 8px;
+  }
+
+  .bracket-half {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .round {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .match {
+    max-width: 100%;
+  }
+
+  /* Hide connectors on mobile */
+  .match-wrapper::after,
+  .match-wrapper::before {
+    display: none;
+  }
+}
+
+/* === MODAL DETALLE PARTIDO === */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85);
+  /* Fondo oscuro semi-transparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+  /* Efecto borroso de fondo */
+}
+
+.modal-content {
+  background-color: #1a1a1a;
+  color: #fff;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 12px;
+  border: 1px solid #ffd700;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  overflow: hidden;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background-color: #111;
+  border-bottom: 1px solid #333;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #ffd700;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  font-family: inherit;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+.close-btn:hover {
+  color: #ffd700;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.close-btn:focus,
+.close-btn:active {
+  outline: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.modal-body {
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modal-team-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.modal-team-row.right-aligned {
+  flex-direction: row;
+  /* Mantener orden visual pero alineado a la derecha */
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.modal-team-names {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-team-names p {
+  margin: 2px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #eee;
+}
+
+.modal-score-section {
+  text-align: center;
+  padding: 10px 0;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+  margin: 10px 0;
+}
+
+.modal-final-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.score-big {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffd700;
+  letter-spacing: 2px;
+}
+
+.status-badge-final {
+  background-color: #4caf50;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.modal-vs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.vs-big {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #888;
+}
+
+.status-badge-pending {
+  background-color: #ff9800;
+  color: #000;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* === TORNEO FINALIZADO (GRAY THEME) === */
+.torneo-finalizado .match {
+  border-color: rgba(189, 195, 199, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .4), 0 0 0 1px rgba(189, 195, 199, 0.1) inset;
+}
+
+.torneo-finalizado .match:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, .5), 0 0 20px rgba(189, 195, 199, 0.2);
+  border-color: rgba(189, 195, 199, 0.7);
+}
+
+.torneo-finalizado .match.finalizado {
+  border-color: #bdc3c7;
+}
+
+.torneo-finalizado .round-title {
+  color: #bdc3c7;
+  text-shadow: none;
+}
+
+.torneo-finalizado .round-final .round-title {
+  color: #bdc3c7;
+  text-shadow: none;
+}
+
+.torneo-finalizado .round-final .match {
+  box-shadow: 0 8px 24px rgba(189, 195, 199, 0.15);
+}
+
+.torneo-finalizado .vs-badge {
+  border-color: rgba(189, 195, 199, 0.5);
+  color: #bdc3c7;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .3), 0 0 8px rgba(189, 195, 199, 0.1) inset;
+}
+
+.torneo-finalizado .team.win .name-line,
+.torneo-finalizado .team.win .name,
+.torneo-finalizado .team.win .score {
+  color: #bdc3c7;
+}
+
+.torneo-finalizado .team.win::before {
+  background: linear-gradient(180deg, #bdc3c7, #95a5a6);
+}
+
+.torneo-finalizado .score-big {
+  color: #bdc3c7;
+}
+
+.torneo-finalizado .match img {
+  filter: grayscale(100%);
+  opacity: 0.7;
+}
+
+.torneo-finalizado .team-container>div {
+  filter: grayscale(100%);
+  opacity: 0.8;
 }

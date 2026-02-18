@@ -3,7 +3,7 @@ import React from 'react';
 // Ajustar base URL según tu entorno (o usar variable de entorno)
 const BASE_URL = 'http://localhost:3000/';
 
-const TeamAvatar = ({ foto1, foto2, size = 30 }) => {
+const TeamAvatar = ({ foto1, foto2, iniciales1, iniciales2, size = 30 }) => {
     const getUrl = (path) => {
         if (!path) return null;
         if (path.startsWith('http')) return path;
@@ -12,6 +12,22 @@ const TeamAvatar = ({ foto1, foto2, size = 30 }) => {
 
     const img1 = getUrl(foto1);
     const img2 = getUrl(foto2);
+
+    const renderPlaceholder = (initials) => (
+        <div style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#fff',
+            fontSize: `${size * 0.4}px`,
+            fontWeight: 'bold',
+            backgroundColor: '#555'
+        }}>
+            {initials || '?'}
+        </div>
+    );
 
     return (
         <div style={{ position: 'relative', width: size + 16, height: size, marginRight: '8px' }}>
@@ -32,9 +48,7 @@ const TeamAvatar = ({ foto1, foto2, size = 30 }) => {
             >
                 {img1 ? (
                     <img src={img1} alt="J1" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                ) : (
-                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: '10px' }}>?</div>
-                )}
+                ) : renderPlaceholder(iniciales1)}
             </div>
 
             {/* Foto Jugador 2 (solapada) */}
@@ -54,9 +68,7 @@ const TeamAvatar = ({ foto1, foto2, size = 30 }) => {
             >
                 {img2 ? (
                     <img src={img2} alt="J2" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                ) : (
-                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888', fontSize: '10px' }}>?</div>
-                )}
+                ) : renderPlaceholder(iniciales2)}
             </div>
         </div>
     );

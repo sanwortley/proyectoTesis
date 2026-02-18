@@ -77,15 +77,17 @@ export default function Torneos() {
     axios
       .get('/api/torneos/anios')
       .then((r) => {
-        const currentYear = new Date().getFullYear();
-        // Unir los años de la BD con el año actual, eliminando duplicados
-        const yearsSet = new Set([...r.data, currentYear]);
-        // Convertir a array y ordenar descendente
-        const sortedYears = Array.from(yearsSet).sort((a, b) => b - a);
+        // Solo los años que tienen torneos en la BD
+        const sortedYears = [...r.data].sort((a, b) => b - a);
+
+        // Si no hay ningún año, agregar el actual como fallback
+        if (sortedYears.length === 0) {
+          sortedYears.push(new Date().getFullYear());
+        }
 
         setAniosDisponibles(sortedYears);
 
-        // Si el año seleccionado (por defecto el actual) no está en la lista (raro porque lo acabamos de agregar), fallback
+        // Si el año seleccionado no está en la lista, usar el más reciente
         if (!sortedYears.includes(anioSeleccionado)) {
           setAnioSeleccionado(sortedYears[0]);
         }
@@ -341,8 +343,7 @@ export default function Torneos() {
                 onChange={(e) => setCategoriaSeleccionada(e.target.value)}
                 style={{ margin: 0 }} /* Override default margin if any */
               >
-                <option value="">Todas las categorías</option>
-                {sumaOptions.length > 0 && <option value="SUMA">Todos los torneos SUMA</option>}
+                <option value="" disabled>Seleccione una categoría</option>
                 {sumaOptions.map((suma) => (
                   <option key={suma} value={`SUMA_${suma}`}>SUMA {suma}</option>
                 ))}
@@ -370,7 +371,7 @@ export default function Torneos() {
                         transition: 'all 0.2s'
                       }}
                     >
-                      {t.modalidad === 'liga' ? '🏆 LIGA' : '⚡ FINDE'} {new Date(t.fecha_inicio).getDate()}/{new Date(t.fecha_inicio).getMonth() + 1}
+                      {t.modalidad === 'liga' ? '🏆 LIGA' : 'FINDE'} {new Date(t.fecha_inicio).getDate()}/{new Date(t.fecha_inicio).getMonth() + 1}
                     </button>
                   ))}
                 </div>
@@ -394,15 +395,18 @@ export default function Torneos() {
                         ) : (
                           <span className="badge-modality badge-weekend">FIN DE SEMANA</span>
                         )}
+                        {torneoActual.max_equipos && torneoActual.inscriptos_count >= torneoActual.max_equipos && new Date() < new Date(torneoActual.fecha_inicio) && (
+                          <span className="badge-modality" style={{ background: '#ff4d4d', marginLeft: '10px' }}>CUPOS AGOTADOS</span>
+                        )}
                       </div>
 
                       <p className="fecha-torneo-info" style={{ fontSize: '1.1rem' }}>
                         <strong>
-                          {new Date(torneoActual.fecha_inicio).toLocaleDateString()}
+                          {new Date(torneoActual.fecha_inicio).toLocaleDateString('es-ES', { timeZone: 'UTC' })}
                         </strong>{' '}
                         al{' '}
                         <strong>
-                          {torneoActual.fecha_fin ? new Date(torneoActual.fecha_fin).toLocaleDateString() : '???'}
+                          {torneoActual.fecha_fin ? new Date(torneoActual.fecha_fin).toLocaleDateString('es-ES', { timeZone: 'UTC' }) : '???'}
                         </strong>
                       </p>
 
@@ -432,7 +436,8 @@ export default function Torneos() {
                       flex: '0 1 auto',
                       minWidth: '150px',
                       borderRadius: '8px',
-                      background: fase === 'grupos' ? '#ffd700' : '#222',
+                      background: fase === 'grupos' ? (torneoFinalizado ? '#bdc3c7' : '#ffd700') : '#222',
+                      borderColor: fase === 'grupos' && torneoFinalizado ? '#bdc3c7' : undefined,
                       color: fase === 'grupos' ? '#000' : '#888',
                       border: fase === 'grupos' ? 'none' : '1px solid #444',
                       opacity: !hayTorneo ? 0.5 : 1
@@ -449,7 +454,8 @@ export default function Torneos() {
                       flex: '0 1 auto',
                       minWidth: '150px',
                       borderRadius: '8px',
-                      background: fase === 'playoffs' ? '#ffd700' : '#222',
+                      background: fase === 'playoffs' ? (torneoFinalizado ? '#bdc3c7' : '#ffd700') : '#222',
+                      borderColor: fase === 'playoffs' && torneoFinalizado ? '#bdc3c7' : undefined,
                       color: fase === 'playoffs' ? '#000' : '#888',
                       border: fase === 'playoffs' ? 'none' : '1px solid #444',
                       opacity: !hayTorneo ? 0.5 : 1
@@ -550,39 +556,41 @@ export default function Torneos() {
                             className={`grupo-partido-card ${estadoClass}`}
                           >
                             <div className="grupo-partido-detalle">
-                              {p.fecha && (
-                                <div style={{ fontSize: '0.8rem', color: '#ffd700', marginBottom: '4px', textAlign: 'center' }}>
-                                  {new Date(p.fecha).toLocaleDateString()}
-                                </div>
-                              )}
-                              <div className="grupo-equipos">
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <div className="game-col-date">
+                                {p.fecha ? (
+                                  <span>{new Date(p.fecha).toLocaleDateString()}</span>
+                                ) : (
+                                  <span style={{ opacity: 0.3 }}>-</span>
+                                )}
+                              </div>
+
+                              <div className="game-col-teams">
+                                <div className="team-row">
                                   <TeamAvatar foto1={eq1?.foto1} foto2={eq1?.foto2} size={28} />
-                                  {p.equipo1}
+                                  <span className="team-name-text">{p.equipo1}</span>
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <div className="team-row">
                                   <TeamAvatar foto1={eq2?.foto1} foto2={eq2?.foto2} size={28} />
-                                  {p.equipo2}
+                                  <span className="team-name-text">{p.equipo2}</span>
                                 </div>
                               </div>
-                              {setsCargados ? (
-                                <div className="grupo-sets">
-                                  <div>
-                                    {p.set1_equipo1}{' '}
-                                    {p.set2_equipo1}{' '}
-                                    {p.set3_equipo1 ?? '-'}
+
+                              <div className="game-col-status">
+                                {setsCargados ? (
+                                  <div className="game-result-sets">
+                                    <div className="set-row">
+                                      {p.set1_equipo1} {p.set2_equipo1} {p.set3_equipo1 ?? ''}
+                                    </div>
+                                    <div className="set-row">
+                                      {p.set1_equipo2} {p.set2_equipo2} {p.set3_equipo2 ?? ''}
+                                    </div>
                                   </div>
-                                  <div>
-                                    {p.set1_equipo2}{' '}
-                                    {p.set2_equipo2}{' '}
-                                    {p.set3_equipo2 ?? '-'}
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="grupo-estado">
-                                  {p.estado.replace('_', ' ')}
-                                </div>
-                              )}
+                                ) : (
+                                  <span className="game-status-text">
+                                    {p.estado === 'no_iniciado' ? 'no iniciado' : p.estado.replace('_', ' ')}
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
                         );
@@ -625,7 +633,7 @@ export default function Torneos() {
                     Cargando play-off…
                   </div>
                 ) : playoff && Object.keys(playoff).length > 0 ? (
-                  <PlayoffBrackets rounds={playoff} />
+                  <PlayoffBrackets rounds={playoff} finalizado={torneoFinalizado} />
                 ) : (
                   <>
                     {!gruposCompletos && (

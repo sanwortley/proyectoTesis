@@ -21,6 +21,7 @@ services:
       - "3000:3000"
     volumes:
       - ./backend:/app
+      - /app/node_modules
       - ./logs:/app/logs
     depends_on:
       - db
@@ -29,8 +30,7 @@ services:
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
-
-    
+    restart: always
 
   frontend:
     build:

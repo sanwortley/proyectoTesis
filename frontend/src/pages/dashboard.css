@@ -165,6 +165,12 @@
     border-color: #6c757d;
 }
 
+.status-llena {
+    background: rgba(255, 107, 107, 0.2);
+    color: #ff6b6b;
+    border-color: #ff6b6b;
+}
+
 /* Alerts */
 .alerts-list {
     display: flex;

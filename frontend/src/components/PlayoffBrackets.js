@@ -1,106 +1,85 @@
 // src/components/PlayoffBrackets.js
-import React, { useMemo } from "react";
+import React from "react";
 import TeamAvatar from "./TeamAvatar";
 
-// rounds prop: { OCTAVOS:[...], CUARTOS:[...], SEMIS:[...], FINAL:[...] }
-export default function PlayoffBrackets({ rounds = {} }) {
-  // ... (helpers)
+export default function PlayoffBrackets({ rounds = {}, finalizado = false }) {
+  const { OCTAVOS = [], CUARTOS = [], SEMIS = [], FINAL = [] } = rounds;
 
-  // ---------- Helpers ----------
+  // Estado para el modal
+  const [selectedMatch, setSelectedMatch] = React.useState(null);
 
-  // Reordena prevRound (ej: CUARTOS) en función de nextRound (ej: SEMIS)
-  // usando la relación next_match_id (quién alimenta a quién).
-  function reorderByNextMatch(prevRound = [], nextRound = []) {
-    if (!prevRound.length || !nextRound.length) return prevRound;
+  const handleMatchClick = (m) => {
+    setSelectedMatch(m);
+  };
 
-    const unused = new Set(prevRound.map((_, i) => i));
-    const result = [];
+  const closeModal = () => {
+    setSelectedMatch(null);
+  };
 
-    // para cada partido siguiente (semi/final), juntamos los prev que lo alimentan
-    nextRound.forEach((nr) => {
-      const feedersIdx = [];
-      prevRound.forEach((m, idx) => {
-        if (!unused.has(idx)) return;
-        if (m.next_match_id === nr.id) {
-          feedersIdx.push(idx);
-        }
-      });
+  // Helper para renderizar un match
+  const renderMatch = (m, keyExtra = "") => {
+    if (!m) return null;
 
-      // mantenemos el orden en que aparecen
-      feedersIdx.forEach((idx) => {
-        if (unused.has(idx)) {
-          unused.delete(idx);
-          result.push(prevRound[idx]);
-        }
-      });
-    });
+    const sets1 = fmtSets(m, "equipo1");
+    const sets2 = fmtSets(m, "equipo2");
+    const win1 = m.ganador_id && m.ganador_id === m.equipo1_id;
+    const win2 = m.ganador_id && m.ganador_id === m.equipo2_id;
 
-    // si queda alguno suelto lo mandamos al final
-    unused.forEach((idx) => {
-      result.push(prevRound[idx]);
-    });
+    const team1Details = m.equipo1_detalle || {};
+    const team2Details = m.equipo2_detalle || {};
 
-    return result;
-  }
+    // Fallback names if backend doesn't send details (or old format)
+    const t1p1 = team1Details.p1 || (m.equipo1_nombre ? m.equipo1_nombre.split('/')[0] : "—");
+    const t1p2 = team1Details.p2 || (m.equipo1_nombre ? m.equipo1_nombre.split('/')[1] : "");
 
-  // ---------- Normalización de rondas ----------
+    const t2p1 = team2Details.p1 || (m.equipo2_nombre ? m.equipo2_nombre.split('/')[0] : "—");
+    const t2p2 = team2Details.p2 || (m.equipo2_nombre ? m.equipo2_nombre.split('/')[1] : "");
 
-  const normalized = useMemo(() => {
-    const copy = { ...rounds };
+    return (
+      <div
+        key={(m.id || `${m.equipo1_nombre}-${m.equipo2_nombre}`) + keyExtra}
+        className={`match ${m.estado || ""}`}
+        onClick={() => handleMatchClick(m)}
+        style={{ cursor: 'pointer' }}
+      >
+        <div className={`team ${win1 ? "win" : ""}`}>
+          <div className="team-container">
+            <TeamAvatar
+              foto1={m.eq1_foto1}
+              foto2={m.eq1_foto2}
+              iniciales1={team1Details.p1_iniciales}
+              iniciales2={team1Details.p2_iniciales}
+              size={32}
+            />
+            <div className="names-col">
+              <span className="name-line">{t1p1}</span>
+              {t1p2 && <span className="name-line">{t1p2}</span>}
+            </div>
+          </div>
+          <span className="score">{sets1}</span>
+        </div>
 
-    // 1) Ordenar CUARTOS según a qué SEMI alimentan (next_match_id)
-    if (copy.CUARTOS && copy.SEMIS) {
-      copy.CUARTOS = reorderByNextMatch(copy.CUARTOS, copy.SEMIS);
-    }
+        <div className="vs-badge">vs</div>
 
-    // 2) Ordenar OCTAVOS según a qué CUARTOS alimentan
-    if (copy.OCTAVOS && copy.CUARTOS) {
-      copy.OCTAVOS = reorderByNextMatch(copy.OCTAVOS, copy.CUARTOS);
-    }
-
-    // 3) Ordenar SEMIS según a qué FINAL alimentan
-    if (copy.SEMIS && copy.FINAL && copy.FINAL.length > 0) {
-      copy.SEMIS = reorderByNextMatch(copy.SEMIS, copy.FINAL);
-    }
-
-    return copy;
-  }, [rounds]);
-
-  // Orden lógico de columnas (izq → der) según las rondas presentes
-  const ordered = useMemo(() => {
-    const orderNames = ["OCTAVOS", "CUARTOS", "SEMIS", "FINAL"];
-    const present = orderNames.filter((r) => normalized[r]?.length);
-    return present.map((r) => ({ name: r, matches: normalized[r] || [] }));
-  }, [normalized]);
-
-  // ---------- Offsets verticales automáticos ----------
-  const columnOffsets = useMemo(() => {
-    if (!ordered.length) return [];
-
-    const BASE_SLOT = 90; // altura “virtual” entre partidos
-    const offsets = [];
-    let prevOffset = 0;
-    let prevCount = ordered[0].matches.length || 1;
-
-    offsets[0] = 0;
-
-    for (let i = 1; i < ordered.length; i++) {
-      const count = ordered[i].matches.length || 1;
-
-      // Mantener centro vertical entre columnas
-      const extra = (prevCount / 2 - count / 2) * BASE_SLOT;
-      prevOffset = prevOffset + extra;
-      offsets[i] = Math.max(prevOffset, 0);
-
-      prevCount = count;
-    }
-
-    return offsets;
-  }, [ordered]);
-
-  const soloFinal = ordered.length === 1 && ordered[0].name === "FINAL";
-
-  if (!ordered.length) return null;
+        <div className={`team ${win2 ? "win" : ""}`}>
+          <div className="team-container">
+            <TeamAvatar
+              foto1={m.eq2_foto1}
+              foto2={m.eq2_foto2}
+              iniciales1={team2Details.p1_iniciales}
+              iniciales2={team2Details.p2_iniciales}
+              size={32}
+            />
+            <div className="names-col">
+              <span className="name-line">{t2p1}</span>
+              {t2p2 && <span className="name-line">{t2p2}</span>}
+            </div>
+          </div>
+          <span className="score">{sets2}</span>
+        </div>
+      </div>
+    );
+  };
 
   const fmtSets = (m, side) => {
     const a = m[`set1_${side}`];
@@ -111,84 +90,180 @@ export default function PlayoffBrackets({ rounds = {} }) {
       .join(" ");
   };
 
-  // Render de un partido individual
-  const renderMatch = (m, keyExtra = "") => {
-    if (!m) return null;
+  // División de partidos: top half / bottom half
+  const octavosTop = OCTAVOS.slice(0, 4);
+  const octavosBottom = OCTAVOS.slice(4, 8);
 
-    const sets1 = fmtSets(m, "equipo1");
-    const sets2 = fmtSets(m, "equipo2");
-    const win1 = m.ganador_id && m.ganador_id === m.equipo1_id;
-    const win2 = m.ganador_id && m.ganador_id === m.equipo2_id;
+  const cuartosTop = CUARTOS.slice(0, 2);
+  const cuartosBottom = CUARTOS.slice(2, 4);
 
-    return (
-      <div
-        key={(m.id || `${m.equipo1_nombre}-${m.equipo2_nombre}`) + keyExtra}
-        className={`match ${m.estado || ""}`}
-      >
-        <div className={`team ${win1 ? "win" : ""}`}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <TeamAvatar foto1={m.eq1_foto1} foto2={m.eq1_foto2} size={24} />
-            <span className="name">{m.equipo1_nombre || "—"}</span>
-          </div>
-          <span className="score">{sets1}</span>
-        </div>
+  const semisTop = SEMIS[0] ? [SEMIS[0]] : [];
+  const semisBottom = SEMIS[1] ? [SEMIS[1]] : [];
 
-        <div className="vs-badge">vs</div>
+  const finalMatch = FINAL[0];
 
-        <div className={`team ${win2 ? "win" : ""}`}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <TeamAvatar foto1={m.eq2_foto1} foto2={m.eq2_foto2} size={24} />
-            <span className="name">{m.equipo2_nombre || "—"}</span>
-          </div>
-          <span className="score">{sets2}</span>
-        </div>
-      </div>
-    );
-  };
-
-  // ---------- Render ----------
+  if (!OCTAVOS.length && !CUARTOS.length && !SEMIS.length && !FINAL.length) {
+    return <div className="no-playoff">No hay playoff generado</div>;
+  }
 
   return (
-    <div className={`bracket inverted ${soloFinal ? "center-single" : ""}`}>
-      {ordered.map((col, colIdx) => {
-        const isFinalCol = col.name === "FINAL";
-        const offsetTop = columnOffsets[colIdx] || 0;
-
-        return (
-          <div
-            key={col.name}
-            className={`round round-${col.name.toLowerCase()}`}
-          >
-            <div className="round-title">{col.name}</div>
-
-            <div className="round-grid" style={{ paddingTop: offsetTop }}>
-              {isFinalCol ? (
-                // FINAL: partidos sueltos, sin conectores de par
-                col.matches.map((m, i) => renderMatch(m, `-final-${i}`))
-              ) : (
-                // Otras rondas: agrupar de a 2 dentro de .match-pair
-                col.matches.reduce((blocks, _, idx, arr) => {
-                  if (idx % 2 !== 0) return blocks; // solo índices pares
-
-                  const m1 = arr[idx];
-                  const m2 = arr[idx + 1];
-
-                  blocks.push(
-                    <div
-                      key={`${col.name}-pair-${idx}`}
-                      className="match-pair"
-                    >
-                      {renderMatch(m1, "-a")}
-                      {m2 && renderMatch(m2, "-b")}
-                    </div>
-                  );
-                  return blocks;
-                }, [])
-              )}
+    <div className={`bracket-symmetric ${finalizado ? 'torneo-finalizado' : ''}`}>
+      {/* TOP HALF */}
+      <div className="bracket-half bracket-top">
+        {octavosTop.length > 0 && (
+          <div className="round round-octavos">
+            <div className="round-title">OCTAVOS</div>
+            <div className="matches-column">
+              {octavosTop.map((m, i) => (
+                <div key={i} className="match-wrapper">
+                  {renderMatch(m, `-oct-top-${i}`)}
+                </div>
+              ))}
             </div>
           </div>
-        );
-      })}
+        )}
+
+        {cuartosTop.length > 0 && (
+          <div className="round round-cuartos">
+            <div className="round-title">CUARTOS</div>
+            <div className="matches-column">
+              {cuartosTop.map((m, i) => (
+                <div key={i} className="match-wrapper">
+                  {renderMatch(m, `-cuart-top-${i}`)}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {semisTop.length > 0 && (
+          <div className="round round-semis">
+            <div className="round-title">SEMIS</div>
+            <div className="matches-column">
+              {semisTop.map((m, i) => (
+                <div key={i} className="match-wrapper">
+                  {renderMatch(m, `-semi-top-${i}`)}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* CENTER - FINAL */}
+      {finalMatch && (
+        <div className="bracket-center">
+          <div className="round round-final">
+            <div className="round-title">FINAL</div>
+            {renderMatch(finalMatch, '-final')}
+          </div>
+        </div>
+      )}
+
+      {/* BOTTOM HALF */}
+      <div className="bracket-half bracket-bottom">
+        {semisBottom.length > 0 && (
+          <div className="round round-semis">
+            <div className="round-title">SEMIS</div>
+            <div className="matches-column">
+              {semisBottom.map((m, i) => (
+                <div key={i} className="match-wrapper">
+                  {renderMatch(m, `-semi-bot-${i}`)}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {cuartosBottom.length > 0 && (
+          <div className="round round-cuartos">
+            <div className="round-title">CUARTOS</div>
+            <div className="matches-column">
+              {cuartosBottom.map((m, i) => (
+                <div key={i} className="match-wrapper">
+                  {renderMatch(m, `-cuart-bot-${i}`)}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {octavosBottom.length > 0 && (
+          <div className="round round-octavos">
+            <div className="round-title">OCTAVOS</div>
+            <div className="matches-column">
+              {octavosBottom.map((m, i) => (
+                <div key={i} className="match-wrapper">
+                  {renderMatch(m, `-oct-bot-${i}`)}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* MODAL DETALLE PARTIDO */}
+      {selectedMatch && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Detalle del Partido</h3>
+              <button className="close-btn" onClick={closeModal}>×</button>
+            </div>
+
+            <div className="modal-body">
+              {/* Equipo 1 */}
+              <div className="modal-team-row">
+                <TeamAvatar
+                  foto1={selectedMatch.eq1_foto1}
+                  foto2={selectedMatch.eq1_foto2}
+                  iniciales1={selectedMatch.equipo1_detalle?.p1_iniciales}
+                  iniciales2={selectedMatch.equipo1_detalle?.p2_iniciales}
+                  size={50}
+                />
+                <div className="modal-team-names">
+                  <p>{selectedMatch.equipo1_detalle?.p1_full || selectedMatch.equipo1_detalle?.p1 || 'Jugador 1'}</p>
+                  <p>{selectedMatch.equipo1_detalle?.p2_full || selectedMatch.equipo1_detalle?.p2 || 'Jugador 2'}</p>
+                </div>
+              </div>
+
+              {/* VS / Resultado */}
+              <div className="modal-score-section">
+                {selectedMatch.estado === 'finalizado' ? (
+                  <div className="modal-final-score">
+                    <span className="score-big">
+                      {fmtSets(selectedMatch, 'equipo1')} - {fmtSets(selectedMatch, 'equipo2')}
+                    </span>
+                    <span className="status-badge-final">FINALIZADO</span>
+                  </div>
+                ) : (
+                  <div className="modal-vs">
+                    <span className="vs-big">VS</span>
+                    <span className="status-badge-pending">
+                      {selectedMatch.estado === 'no_iniciado' ? 'NO INICIADO' : 'EN JUEGO'}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Equipo 2 */}
+              <div className="modal-team-row right-aligned">
+                <div className="modal-team-names">
+                  <p>{selectedMatch.equipo2_detalle?.p1_full || selectedMatch.equipo2_detalle?.p1 || 'Jugador 1'}</p>
+                  <p>{selectedMatch.equipo2_detalle?.p2_full || selectedMatch.equipo2_detalle?.p2 || 'Jugador 2'}</p>
+                </div>
+                <TeamAvatar
+                  foto1={selectedMatch.eq2_foto1}
+                  foto2={selectedMatch.eq2_foto2}
+                  iniciales1={selectedMatch.equipo2_detalle?.p1_iniciales}
+                  iniciales2={selectedMatch.equipo2_detalle?.p2_iniciales}
+                  size={50}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

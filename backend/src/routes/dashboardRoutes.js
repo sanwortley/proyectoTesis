@@ -21,7 +21,7 @@ router.get('/kpis', async (req, res) => {
     try {
         const queries = {
             torneosActivos: "SELECT COUNT(*) FROM torneo WHERE fecha_fin >= CURRENT_DATE",
-            equiposInscriptos: "SELECT COUNT(*) FROM equipo",
+            equiposInscriptos: "SELECT COUNT(*) FROM inscripcion",
             partidosJugados: "SELECT COUNT(*) FROM partidos_grupo WHERE estado = 'finalizado'",
             partidosPendientes: "SELECT COUNT(*) FROM partidos_grupo WHERE estado != 'finalizado'",
             jugadoresRegistrados: "SELECT COUNT(*) FROM jugador WHERE rol = 'jugador'"
@@ -189,6 +189,9 @@ router.get('/torneos-status', async (req, res) => {
                     (SELECT COUNT(*) FROM partidos_grupo pg JOIN grupos g ON pg.grupo_id = g.id_grupo WHERE g.id_torneo = t.id_torneo AND pg.estado != 'finalizado') = 0 AND
                     (SELECT COUNT(*) FROM partidos_llave pl WHERE pl.id_torneo = t.id_torneo AND pl.estado != 'finalizado') = 0
                 ) THEN 'Finalizado'
+
+                -- Si no empezó y está lleno => Inscripción llena
+                WHEN CURRENT_DATE < t.fecha_inicio AND (SELECT COUNT(*) FROM inscripcion i2 WHERE i2.id_torneo = t.id_torneo) >= t.max_equipos THEN 'Inscripción llena'
 
                 -- Si no empezó => Inscripción abierta
                 WHEN CURRENT_DATE < t.fecha_inicio THEN 'Inscripción abierta'

@@ -8,7 +8,7 @@ import routes from './routes/index.js';
 // Rutas de auditoría (log de ingresos)
 import auditoriaRoutes from './routes/auditoria.js';
 import authRoutes from './routes/auth.js';
-import playoffroutes from './routes/playoffroutes.js'
+import playoffroutes from './routes/playoffRoutes.js'
 import rankingRoutes from './routes/rankingRoutes.js'
 import torneoRoutes from './routes/torneosRoutes.js'
 
@@ -30,13 +30,15 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 // Montaje de rutas
 import dashboardRoutes from './routes/dashboardRoutes.js';
 
+app.use('/api', playoffroutes);
 app.use('/api', routes);
 app.use('/api', auditoriaRoutes);
 app.use('/api', authRoutes);
-app.use('/api', playoffroutes);
 app.use('/api', rankingRoutes);
 app.use('/api', torneoRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+
+app.get('/api/test_debug', (req, res) => res.json({ msg: 'I AM ALIVE' }));
 
 
 console.log('[ROUTES] playoff montada');
@@ -44,8 +46,8 @@ console.log('[ROUTES] playoff montada');
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en puerto ${PORT}`);
-  console.log('[ROUTES] auditoria montada');
+    console.log(`Servidor corriendo en puerto ${PORT}`);
+    console.log('[ROUTES] auditoria montada');
 
 });
 

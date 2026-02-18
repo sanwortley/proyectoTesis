@@ -598,7 +598,8 @@ router.get('/torneos', async (req, res) => {
     let sql = `
       SELECT 
         t.*,
-        c.nombre AS categoria_nombre
+        c.nombre AS categoria_nombre,
+        (SELECT COUNT(*) FROM inscripcion i WHERE i.id_torneo = t.id_torneo)::int AS inscriptos_count
       FROM torneo t
       LEFT JOIN categoria c ON t.categoria_id = c.id_categoria
     `;
@@ -757,6 +758,68 @@ router.delete('/torneos/:id', async (req, res) => {
 /* =========================
  * INSCRIPCIONES / EQUIPOS
  * ========================= */
+
+/** POST /verificar-inscripcion — checks if players are already enrolled */
+router.post('/verificar-inscripcion', async (req, res) => {
+  const { jugador1_id, jugador2_id, id_torneo } = req.body;
+  try {
+    // Check player 1
+    const r1 = await pool.query(`
+      SELECT j.nombre_jugador, j.apellido_jugador
+      FROM inscripcion i
+      JOIN equipo e ON i.id_equipo = e.id_equipo
+      JOIN jugador j ON j.id_jugador = $2
+      WHERE i.id_torneo = $1
+        AND $2 IN (e.jugador1_id, e.jugador2_id)
+      LIMIT 1
+    `, [id_torneo, jugador1_id]);
+
+    // Check player 2
+    const r2 = await pool.query(`
+      SELECT j.nombre_jugador, j.apellido_jugador
+      FROM inscripcion i
+      JOIN equipo e ON i.id_equipo = e.id_equipo
+      JOIN jugador j ON j.id_jugador = $2
+      WHERE i.id_torneo = $1
+        AND $2 IN (e.jugador1_id, e.jugador2_id)
+      LIMIT 1
+    `, [id_torneo, jugador2_id]);
+
+    res.json({
+      jugador1Inscripto: r1.rowCount > 0,
+      jugador1Nombre: r1.rowCount > 0 ? `${r1.rows[0].nombre_jugador} ${r1.rows[0].apellido_jugador}` : null,
+      jugador2Inscripto: r2.rowCount > 0,
+      jugador2Nombre: r2.rowCount > 0 ? `${r2.rows[0].nombre_jugador} ${r2.rows[0].apellido_jugador}` : null,
+    });
+  } catch (err) {
+    console.error('[verificar-inscripcion] error:', err);
+    res.status(500).json({ error: 'Error al verificar inscripción' });
+  }
+});
+
+/** GET /torneos/:id/verificar-cupo */
+router.get('/torneos/:id/verificar-cupo', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const torneo = await pool.query(
+      'SELECT * FROM torneo WHERE id_torneo = $1', [id]
+    );
+    if (!torneo.rowCount) return res.status(404).json({ error: 'Torneo no encontrado' });
+
+    const maxParejas = torneo.rows[0].max_parejas;
+    if (!maxParejas) return res.json({ lleno: false }); // sin límite o columna inexistente
+
+    const inscritos = await pool.query(
+      'SELECT COUNT(*)::int AS total FROM inscripcion WHERE id_torneo = $1', [id]
+    );
+    const total = inscritos.rows[0].total;
+    res.json({ lleno: total >= maxParejas, total, max: maxParejas });
+  } catch (err) {
+    console.error('[verificar-cupo] error:', err);
+    res.json({ lleno: false }); // fallback seguro
+  }
+});
+
 router.post('/inscripcion', async (req, res) => {
   const { jugador1_id, jugador2_id, id_torneo } = req.body;
   const client = await pool.connect();
@@ -818,23 +881,33 @@ router.post('/inscripcion', async (req, res) => {
     }
 
     // ✅ A) Bloquear si cualquiera de los dos jugadores ya está inscripto en ESTE torneo
-    const yaInscripto = await client.query(`
-      SELECT 1
+    const yaInscriptoJ1 = await client.query(`
+      SELECT j.nombre_jugador, j.apellido_jugador
       FROM inscripcion i
       JOIN equipo e ON i.id_equipo = e.id_equipo
+      JOIN jugador j ON j.id_jugador = $2
       WHERE i.id_torneo = $1
-        AND (
-          $2 IN (e.jugador1_id, e.jugador2_id)
-          OR
-          $3 IN (e.jugador1_id, e.jugador2_id)
-        )
+        AND $2 IN (e.jugador1_id, e.jugador2_id)
       LIMIT 1
-    `, [id_torneo, jugador1_id, jugador2_id]);
+    `, [id_torneo, jugador1_id]);
 
-    if (yaInscripto.rowCount > 0) {
+    const yaInscriptoJ2 = await client.query(`
+      SELECT j.nombre_jugador, j.apellido_jugador
+      FROM inscripcion i
+      JOIN equipo e ON i.id_equipo = e.id_equipo
+      JOIN jugador j ON j.id_jugador = $2
+      WHERE i.id_torneo = $1
+        AND $2 IN (e.jugador1_id, e.jugador2_id)
+      LIMIT 1
+    `, [id_torneo, jugador2_id]);
+
+    if (yaInscriptoJ1.rowCount > 0 || yaInscriptoJ2.rowCount > 0) {
       await client.query('ROLLBACK');
+      const nombres = [];
+      if (yaInscriptoJ1.rowCount > 0) nombres.push(`${yaInscriptoJ1.rows[0].nombre_jugador} ${yaInscriptoJ1.rows[0].apellido_jugador}`);
+      if (yaInscriptoJ2.rowCount > 0) nombres.push(`${yaInscriptoJ2.rows[0].nombre_jugador} ${yaInscriptoJ2.rows[0].apellido_jugador}`);
       return res.status(400).json({
-        error: 'Uno de los jugadores ya está inscripto en este torneo'
+        error: `${nombres.join(' y ')} ya está/n inscripto/s en este torneo`
       });
     }
 
@@ -1149,6 +1222,8 @@ router.post('/torneos/:id/generar-grupos', async (req, res) => {
       // Obtener info del torneo para fechas
       const tRes = await client.query('SELECT fecha_inicio, dias_juego FROM torneo WHERE id_torneo = $1', [id]);
       const fechaInicio = new Date(tRes.rows[0].fecha_inicio);
+      fechaInicio.setUTCHours(12, 0, 0, 0); // Evitar cambio de día por timezone
+
       // dias_juego viene como "Lunes,Miércoles" o IDs de día. Asumiremos string con nombres en español o inglés por ahora.
       // Parsear días de juego:
       const diasStr = tRes.rows[0].dias_juego || "";
@@ -1521,6 +1596,42 @@ router.put('/partidos-grupo/:id', async (req, res) => {
     );
 
     await client.query('COMMIT');
+
+    // ======================================
+    // AUTO-GENERAR PLAYOFF SI TODOS LOS PARTIDOS DE GRUPO ESTÁN COMPLETOS
+    // ======================================
+    try {
+      const pendingCheck = await client.query(
+        `SELECT COUNT(*) as pending
+         FROM partidos_grupo pg
+         JOIN grupos g ON pg.grupo_id = g.id_grupo
+         WHERE g.id_torneo = $1 AND pg.estado != 'finalizado'`,
+        [idTorneo]
+      );
+
+      const pendingMatches = parseInt(pendingCheck.rows[0].pending, 10);
+
+      if (pendingMatches === 0) {
+        // Todos los partidos completados - verificar si ya existe playoff
+        const playoffCheck = await client.query(
+          'SELECT COUNT(*) as count FROM partidos_llave WHERE id_torneo = $1',
+          [idTorneo]
+        );
+
+        const hasPlayoff = parseInt(playoffCheck.rows[0].count, 10) > 0;
+
+        if (!hasPlayoff) {
+          console.log('[AUTO-PLAYOFF] Todos los partidos completados. Generando playoff automáticamente...');
+          // Importar y llamar la función de generarPlayoff
+          await generarPlayoffSiNoExiste(idTorneo);
+          console.log('[AUTO-PLAYOFF] ✅ Playoff generado exitosamente');
+        }
+      }
+    } catch (autoPlayoffError) {
+      console.error('[AUTO-PLAYOFF] Error al intentar generar playoff automáticamente:', autoPlayoffError);
+      // No fallar si el auto-playoff falla - el usuario puede generarlo manualmente
+    }
+
     res.json({ mensaje: 'Resultado guardado y estadísticas actualizadas' });
   } catch (error) {
     await client.query('ROLLBACK');

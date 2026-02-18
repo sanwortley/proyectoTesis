@@ -284,6 +284,7 @@ function OccupancyBar({ current, max }) {
 
 function getStatusClass(estado) {
   if (estado === 'Inscripción abierta') return 'abierta';
+  if (estado === 'Inscripción llena') return 'llena';
   if (estado === 'En curso') return 'curso';
   return 'finalizado';
 }

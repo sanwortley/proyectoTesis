@@ -10,11 +10,11 @@ function puntosPorFase(fase) {
   const f = String(fase).toLowerCase();
 
   if (f.includes('campeon') && !f.includes('sub')) return 2000; // campeón
-  if (f.includes('sub')) return 1000;                            // subcampeón
-  if (f.includes('semi')) return 500;                             // semis
-  if (f.includes('cuart')) return 200;                            // cuartos
-  if (f.includes('octav')) return 100;                            // octavos
-  if (f.includes('16')) return 50;                                // 16avos (si algún día)
+  if (f.includes('sub')) return 1200;                            // subcampeón
+  if (f.includes('semi')) return 720;                             // semis
+  if (f.includes('cuart')) return 360;                            // cuartos
+  if (f.includes('octav')) return 180;                            // octavos
+  if (f.includes('16')) return 90;                                // 16avos
   return 0;
 }
 
@@ -62,6 +62,20 @@ router.post('/torneos/:id/generar-ranking', async (req, res) => {
 
     const torneo = tRes.rows[0];
     const nombreTorneo = torneo.nombre_torneo;
+
+    // 🔒 EVITAR DUPLICADOS: Si ya hay entradas para este torneo, no procesar de nuevo.
+    const yaRes = await client.query(
+      'SELECT COUNT(*)::int AS cant FROM ranking_jugador WHERE torneo_participado = $1',
+      [nombreTorneo]
+    );
+    if ((yaRes.rows[0]?.cant ?? 0) > 0) {
+      await client.query('ROLLBACK');
+      return res.json({
+        ok: true,
+        mensaje: 'Este torneo ya ha sido procesado para el ranking anteriormente.',
+        jugadores_procesados: 0
+      });
+    }
 
     // ✅ Categoría a guardar en ranking_jugador.categoria
     // - Si es categoría fija => 2..8 (valor_numerico)

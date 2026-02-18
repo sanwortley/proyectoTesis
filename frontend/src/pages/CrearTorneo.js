@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import axios from 'axios';
 import '../crearTorneo.css';
 /* import { useLocation } from 'react-router-dom'; */
@@ -22,6 +23,8 @@ function CrearTorneo() {
   const [error, setError] = useState('');
   /* const [mostrarTorneos, setMostrarTorneos] = useState(false); // Eliminado por no uso */
   const [torneos, setTorneos] = useState([]);
+  const [torneosFinalizados, setTorneosFinalizados] = useState([]);
+  const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [equiposPorTorneo, setEquiposPorTorneo] = useState({});
   const [torneosExpandido, setTorneosExpandido] = useState({});
   const [editando, setEditando] = useState(null);
@@ -132,6 +135,8 @@ function CrearTorneo() {
       });
 
       const torneosValidos = todos.filter((t) => {
+        const fin = new Date(t.fecha_fin);
+        if (fin < hoy) return false; // finalizados van aparte
         const inicio = new Date(t.fecha_inicio);
         const diffDias = (hoy - inicio) / (1000 * 60 * 60 * 24);
         const esReciente = diffDias <= 7;
@@ -141,7 +146,13 @@ function CrearTorneo() {
         return esReciente || masReciente;
       });
 
+      // Torneos finalizados (fecha_fin < hoy)
+      const finalizados = todos
+        .filter((t) => t.fecha_fin && new Date(t.fecha_fin) < hoy)
+        .sort((a, b) => new Date(b.fecha_fin) - new Date(a.fecha_fin));
+
       setTorneos(torneosValidos);
+      setTorneosFinalizados(finalizados);
     } catch (err) {
       console.error('Error al obtener todos los torneos', err);
     }
@@ -408,6 +419,118 @@ function CrearTorneo() {
 
             <button type="submit">Crear Torneo</button>
           </form>
+
+          {/* HISTORIAL DE TORNEOS FINALIZADOS (BLOQUE SEPARADO) */}
+          {torneosFinalizados.length > 0 && (
+            <div style={{ marginTop: '24px' }}>
+              <button
+                type="button"
+                onClick={() => setMostrarHistorial(!mostrarHistorial)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  background: 'transparent',
+                  borderRadius: '12px',
+                  padding: '12px 20px',
+                  color: '#bdc3c7',
+                  cursor: 'pointer',
+                  fontSize: '15px',
+                  fontWeight: 'bold',
+                  width: '100%',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s',
+                  backgroundColor: '#0a0a0a',
+                  border: '1px solid #333',
+                  boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = '#ffd700';
+                  e.currentTarget.style.color = '#ffd700';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = '#333';
+                  e.currentTarget.style.color = '#bdc3c7';
+                }}
+              >
+                {/* Clock history icon (SVG) */}
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                  <path d="M2.05 12A10 10 0 0 1 6 4.46" />
+                  <path d="M5 1L2.05 4.46L6 4.46" />
+                </svg>
+                {mostrarHistorial ? 'Ocultar historial' : `Historial de torneos (${torneosFinalizados.length})`}
+              </button>
+
+              {mostrarHistorial && (
+                <div style={{ marginTop: '16px', opacity: 0.8 }}>
+                  {torneosFinalizados.map((t) => (
+                    <div key={t.id_torneo} className="torneo-card" style={{ borderColor: '#555', position: 'relative', marginBottom: '12px', background: '#0a0a0a' }}>
+                      <span style={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '10px',
+                        background: '#bdc3c7',
+                        color: '#000',
+                        fontSize: '10px',
+                        fontWeight: 'bold',
+                        padding: '2px 8px',
+                        borderRadius: '4px',
+                        textTransform: 'uppercase'
+                      }}>Finalizado</span>
+                      <h3 style={{ color: '#bdc3c7', fontSize: '1.2rem' }}>{t.nombre_torneo}</h3>
+                      <p style={{ fontSize: '0.9rem' }}><strong>Inicio:</strong> {new Date(t.fecha_inicio).toLocaleDateString()}</p>
+                      <p style={{ fontSize: '0.9rem' }}><strong>Fin:</strong> {new Date(t.fecha_fin).toLocaleDateString()}</p>
+                      <p style={{ fontSize: '0.9rem' }}>
+                        <strong>Formato:</strong>{' '}
+                        {t.formato_categoria === 'suma'
+                          ? `SUMA ${t.suma_categoria}`
+                          : getCategoriaNombre(t.categoria_id)}
+                      </p>
+                      <p style={{ fontSize: '0.9rem' }}><strong>Máx equipos:</strong> {t.max_equipos}</p>
+                      <div style={{ marginTop: '12px' }}>
+                        <button
+                          type="button"
+                          onClick={() => toggleExpandir(t.id_torneo)}
+                          style={{
+                            padding: '8px 16px',
+                            fontSize: '0.85rem',
+                            background: '#ffd700',
+                            color: '#000',
+                            border: 'none',
+                            borderRadius: '6px',
+                            fontWeight: 'bold',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          {torneosExpandido[t.id_torneo] ? 'Ocultar equipos' : 'Ver equipos'}
+                        </button>
+                      </div>
+                      {torneosExpandido[t.id_torneo] && (
+                        <ul className="equipo-lista" style={{ marginTop: '15px' }}>
+                          {Array.isArray(equiposPorTorneo[t.id_torneo]) &&
+                            equiposPorTorneo[t.id_torneo].length > 0 ? (
+                            equiposPorTorneo[t.id_torneo].map((e) => (
+                              <li key={e.id_equipo} style={{ padding: '10px', marginBottom: '8px', border: '1px solid #333', borderRadius: '8px' }}>
+                                <span style={{ fontSize: '0.9rem' }}>{e.nombre_equipo}</span>
+                                <span style={{ fontSize: '0.8rem', color: '#888', marginLeft: '10px', fontStyle: 'italic' }}>
+                                  ({e.nombre_jugador1} {e.apellido_jugador1} / {e.nombre_jugador2} {e.apellido_jugador2})
+                                </span>
+                              </li>
+                            ))
+                          ) : (
+                            <li style={{ fontSize: '0.9rem', color: '#888' }}>No hay equipos inscriptos.</li>
+                          )}
+                        </ul>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
         </div>
 
         {/* TORNEOS */}
@@ -514,117 +637,175 @@ function CrearTorneo() {
             ))}
           </div>
         </div>
-      </div>
 
-      {/* MODAL DE EDICIÓN */}
-      {editando && (
+      </div> {/* CIERRE DE contenedor-crear-torneo */}
+
+      {/* MODAL DE EDICIÓN (FUERA PARA EVITAR CONFLICTOS DE POSICIONAMIENTO) */}
+      {editando && ReactDOM.createPortal(
         <div className="editar-form-modal">
-          <h3>Editar Torneo</h3>
-          <input
-            type="text"
-            value={formEdit.nombre_torneo || ''}
-            onChange={(e) =>
-              setFormEdit({ ...formEdit, nombre_torneo: e.target.value })
-            }
-            placeholder="Nombre del torneo"
-          />
-          <input
-            type="date"
-            value={formEdit.fecha_inicio || ''}
-            onChange={(e) =>
-              setFormEdit({ ...formEdit, fecha_inicio: e.target.value })
-            }
-          />
-          <input
-            type="date"
-            value={formEdit.fecha_fin || ''}
-            onChange={(e) =>
-              setFormEdit({ ...formEdit, fecha_fin: e.target.value })
-            }
-          />
-          <input
-            type="date"
-            value={formEdit.fecha_cierre_inscripcion || ''}
-            onChange={(e) =>
-              setFormEdit({
-                ...formEdit,
-                fecha_cierre_inscripcion: e.target.value,
-              })
-            }
-          />
-          <input
-            type="number"
-            value={formEdit.max_equipos || ''}
-            onChange={(e) =>
-              setFormEdit({ ...formEdit, max_equipos: e.target.value })
-            }
-            placeholder="Máx equipos"
-          />
+          <div className="modal-content">
+            <h3>Editar Torneo</h3>
+            <div className="modal-scroll-area">
+              <div className="form-group">
+                <label>Nombre del Torneo</label>
+                <input
+                  type="text"
+                  value={formEdit.nombre_torneo || ''}
+                  onChange={(e) =>
+                    setFormEdit({ ...formEdit, nombre_torneo: e.target.value })
+                  }
+                  placeholder="Nombre del torneo"
+                />
+              </div>
 
-          <label>Modalidad</label>
-          <select
-            value={formEdit.modalidad || 'fin_de_semana'}
-            onChange={(e) =>
-              setFormEdit({ ...formEdit, modalidad: e.target.value })
-            }
-          >
-            <option value="fin_de_semana">Fin de Semana</option>
-            <option value="liga">Liga / Fechas</option>
-          </select>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Fecha de Inicio</label>
+                  <input
+                    type="date"
+                    value={formEdit.fecha_inicio || ''}
+                    onChange={(e) =>
+                      setFormEdit({ ...formEdit, fecha_inicio: e.target.value })
+                    }
+                  />
+                </div>
+                {formEdit.modalidad !== 'liga' && (
+                  <div className="form-group">
+                    <label>Fecha de Fin</label>
+                    <input
+                      type="date"
+                      value={formEdit.fecha_fin || ''}
+                      onChange={(e) =>
+                        setFormEdit({ ...formEdit, fecha_fin: e.target.value })
+                      }
+                    />
+                  </div>
+                )}
+              </div>
 
-          {formEdit.modalidad === 'liga' && (
-            <input
-              type="text"
-              placeholder="Días de juego"
-              value={formEdit.dias_juego || ''}
-              onChange={(e) =>
-                setFormEdit({ ...formEdit, dias_juego: e.target.value })
-              }
-            />
-          )}
+              <div className="form-group">
+                <label>Cierre de Inscripción</label>
+                <input
+                  type="date"
+                  value={formEdit.fecha_cierre_inscripcion || ''}
+                  onChange={(e) =>
+                    setFormEdit({
+                      ...formEdit,
+                      fecha_cierre_inscripcion: e.target.value,
+                    })
+                  }
+                />
+              </div>
 
-          <label>Formato del torneo</label>
-          <select
-            value={formEdit.formato_categoria || 'categoria_fija'}
-            onChange={(e) =>
-              setFormEdit({ ...formEdit, formato_categoria: e.target.value })
-            }
-          >
-            <option value="categoria_fija">Por categoría fija</option>
-            <option value="suma">SUMA X</option>
-          </select>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Máx Equipos</label>
+                  <input
+                    type="number"
+                    value={formEdit.max_equipos || ''}
+                    onChange={(e) =>
+                      setFormEdit({ ...formEdit, max_equipos: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Modalidad</label>
+                  <select
+                    value={formEdit.modalidad || 'fin_de_semana'}
+                    onChange={(e) =>
+                      setFormEdit({ ...formEdit, modalidad: e.target.value })
+                    }
+                  >
+                    <option value="fin_de_semana">Fin de Semana</option>
+                    <option value="liga">Liga / Fechas</option>
+                  </select>
+                </div>
+              </div>
 
-          {formEdit.formato_categoria !== 'suma' && (
-            <select
-              value={formEdit.categoria_id || ''}
-              onChange={(e) =>
-                setFormEdit({ ...formEdit, categoria_id: e.target.value })
-              }
-            >
-              <option value="">Seleccioná una categoría</option>
-              {categorias.map((cat) => (
-                <option key={cat.id_categoria} value={cat.id_categoria}>
-                  {cat.nombre}
-                </option>
-              ))}
-            </select>
-          )}
+              {formEdit.modalidad === 'liga' && (
+                <div className="form-group">
+                  <label>Días de Juego</label>
+                  <div className="checkboxes-dias edit-modal-days">
+                    {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'].map(dia => (
+                      <label key={dia} className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          value={dia}
+                          checked={(formEdit.dias_juego || '').includes(dia)}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            const actuales = formEdit.dias_juego || '';
+                            let nuevos;
+                            if (actuales.includes(val)) {
+                              nuevos = actuales.split(',').filter(d => d !== val).join(',');
+                            } else {
+                              nuevos = actuales ? actuales + ',' + val : val;
+                            }
+                            setFormEdit({ ...formEdit, dias_juego: nuevos });
+                          }}
+                        />
+                        {dia}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-          {formEdit.formato_categoria === 'suma' && (
-            <input
-              type="number"
-              min="2"
-              value={formEdit.suma_categoria || ''}
-              onChange={(e) =>
-                setFormEdit({ ...formEdit, suma_categoria: e.target.value })
-              }
-              placeholder="SUMA (ej: 9)"
-            />
-          )}
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Formato Categoría</label>
+                  <select
+                    value={formEdit.formato_categoria || 'categoria_fija'}
+                    onChange={(e) =>
+                      setFormEdit({ ...formEdit, formato_categoria: e.target.value })
+                    }
+                  >
+                    <option value="categoria_fija">Por categoría fija</option>
+                    <option value="suma">SUMA X</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  {formEdit.formato_categoria !== 'suma' ? (
+                    <>
+                      <label>Categoría</label>
+                      <select
+                        value={formEdit.categoria_id || ''}
+                        onChange={(e) =>
+                          setFormEdit({ ...formEdit, categoria_id: e.target.value })
+                        }
+                      >
+                        <option value="">Seleccioná</option>
+                        {categorias.map((cat) => (
+                          <option key={cat.id_categoria} value={cat.id_categoria}>
+                            {cat.nombre}
+                          </option>
+                        ))}
+                      </select>
+                    </>
+                  ) : (
+                    <>
+                      <label>Valor SUMA</label>
+                      <input
+                        type="number"
+                        min="2"
+                        value={formEdit.suma_categoria || ''}
+                        onChange={(e) =>
+                          setFormEdit({ ...formEdit, suma_categoria: e.target.value })
+                        }
+                      />
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
 
-          <button onClick={editarTorneo}>Guardar Cambios</button>
-          <button onClick={() => setEditando(null)}>Cancelar</button>
-        </div>
+            <div className="modal-actions">
+              <button className="btn-save" onClick={editarTorneo}>Guardar Cambios</button>
+              <button className="btn-cancel" onClick={() => setEditando(null)}>Cancelar</button>
+            </div>
+          </div>
+        </div>,
+        document.body
       )}
     </>
   );

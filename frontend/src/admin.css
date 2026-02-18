@@ -136,74 +136,119 @@
 }
 
 /* Modal */
+/* Modal Overlay */
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(5px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    /* Ensure it's on top of everything */
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    backdrop-filter: blur(10px);
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    z-index: 100000 !important;
+    margin: 0 !important;
+    padding: 20px !important;
 }
 
-.modal-content {
-    background-color: #1a1a1a;
-    padding: 25px;
-    /* Reduced padding */
-    border-radius: 12px;
-    width: 100%;
-    max-width: 500px;
-    max-height: 80vh;
-    /* Reduced height to avoid touching edges */
-    overflow-y: auto;
+/* Modal Content with Premium Styles */
+.modal-content.premium-modal {
+    background: linear-gradient(145deg, #111, #050505);
     border: 2px solid #ffd700;
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 550px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.2);
+    overflow: hidden;
     position: relative;
+    padding: 0;
+    /* Let scroll area handle padding */
 }
 
 .modal-content h3 {
     color: #ffd700;
-    margin-top: 0;
-    margin-bottom: 20px;
+    margin: 0;
+    padding: 30px 20px 20px;
     text-align: center;
     text-transform: uppercase;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    border-bottom: 1px solid #333;
 }
 
+.modal-scroll-area {
+    padding: 30px 40px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* Custom Scrollbar for Modal (Gold Theme) */
+.modal-scroll-area::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-scroll-area::-webkit-scrollbar-track {
+    background: #0a0a0a;
+    border-radius: 10px;
+}
+
+.modal-scroll-area::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 10px;
+    border: 2px solid #0a0a0a;
+}
+
+.modal-scroll-area::-webkit-scrollbar-thumb:hover {
+    background: #ffd700;
+}
+
+/* Form Groups in Modal */
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 25px;
 }
 
 .form-label {
     display: block;
-    margin-bottom: 5px;
-    color: #aaa;
-    font-size: 13px;
+    margin-bottom: 12px;
+    color: #ffd700;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .modal-input {
     width: 100%;
-    background-color: #0a0a0a;
+    background-color: #1a1a1a;
     border: 1px solid #333;
-    padding: 12px;
+    padding: 12px 15px;
     color: white;
-    border-radius: 6px;
+    border-radius: 10px;
     outline: none;
     font-family: inherit;
+    font-size: 1rem;
+    transition: all 0.2s;
+    box-sizing: border-box;
 }
 
 .modal-input:focus {
     border-color: #ffd700;
+    background-color: #222;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
 }
 
 .modal-actions {
     display: flex;
-    gap: 15px;
-    margin-top: 25px;
+    gap: 20px;
+    padding: 20px 40px 30px;
+    border-top: 1px solid #333;
 }
 
 .btn-save {
@@ -211,24 +256,37 @@
     background-color: #ffd700;
     color: black;
     border: none;
-    padding: 12px;
-    font-weight: bold;
-    border-radius: 6px;
+    padding: 14px;
+    font-weight: 800;
+    font-size: 1rem;
+    border-radius: 12px;
     cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+}
+
+.btn-save:hover {
+    background-color: #e0a800;
+    transform: translateY(-2px);
 }
 
 .btn-cancel {
     flex: 1;
     background-color: transparent;
-    color: #ccc;
-    border: 1px solid #333;
-    padding: 12px;
-    border-radius: 6px;
+    color: #888;
+    border: 1px solid #444;
+    padding: 14px;
+    border-radius: 12px;
     cursor: pointer;
+    text-transform: uppercase;
+    font-weight: 700;
+    transition: all 0.2s;
 }
 
 .btn-cancel:hover {
-    background-color: #222;
+    color: #fff;
+    border-color: #888;
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 /* Fixed Layout for Players Table (contain-text) */

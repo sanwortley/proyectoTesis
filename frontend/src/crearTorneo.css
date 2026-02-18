@@ -31,6 +31,7 @@
     border-radius: 16px;
     padding: 30px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
 }
 
 .crear-torneo-form h2 {
@@ -63,7 +64,6 @@
     color: #fff;
     font-size: 1rem;
     box-sizing: border-box;
-    /* Previene desbordamiento */
     outline: none;
     transition: border-color 0.2s;
 }
@@ -98,9 +98,9 @@
     text-align: center;
     border: 1px dashed #4caf50;
     padding: 10px;
-    background: #111;
+    background: #0a0a0a;
     border-radius: 8px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .error {
@@ -109,36 +109,15 @@
     text-align: center;
     border: 1px dashed #ff4d4d;
     padding: 10px;
-    background: #111;
+    background: #0a0a0a;
     border-radius: 8px;
-    margin-bottom: 15px;
-}
-
-/* Lado Derecho: Torneos */
-.torneos-lado {
-    flex: 1;
-    width: 100%;
-}
-
-.mostrar-torneos-container {
-    text-align: right;
     margin-bottom: 20px;
 }
 
-.btn-azul {
-    background-color: transparent;
-    color: #ffd700;
-    border: 1px solid #ffd700;
-    padding: 10px 20px;
-    font-weight: 600;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.btn-azul:hover {
-    background-color: #ffd700;
-    color: #000;
+/* Lado Derecho: Torneos Activos */
+.torneos-lado {
+    flex: 1;
+    width: 100%;
 }
 
 .torneo-grid {
@@ -192,12 +171,7 @@
     border-radius: 6px;
     cursor: pointer;
     border: none;
-    transition: opacity 0.2s, transform 0.2s;
-}
-
-.torneo-botones button:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
+    transition: all 0.2s;
 }
 
 .btn-warning {
@@ -215,14 +189,191 @@
     color: #fff !important;
 }
 
+/* Modal Edición (DEFINITIVE POSITION FIX) */
+.editar-form-modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    backdrop-filter: blur(10px);
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    z-index: 100000 !important;
+    padding: 20px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.modal-content {
+    background: linear-gradient(145deg, #111, #050505);
+    border: 2px solid #ffd700;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+    overflow: hidden;
+}
+
+.modal-content h3 {
+    color: #ffd700;
+    text-align: center;
+    padding: 30px 20px 20px;
+    /* Un poco más de aire */
+    margin: 0;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 1px solid #333;
+}
+
+.modal-scroll-area {
+    padding: 35px 45px;
+    /* Más aire a los costados y arriba/abajo */
+    overflow-y: auto;
+    flex: 1;
+}
+
+.form-group {
+    margin-bottom: 25px;
+    /* Más espacio entre grupos */
+}
+
+.form-group label {
+    display: block;
+    color: #ffd700;
+    font-weight: 700;
+    margin-bottom: 12px;
+    /* Más espacio entre etiqueta e input */
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.form-row {
+    display: flex;
+    gap: 30px;
+    /* Más espacio entre columnas */
+    margin-bottom: 5px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.modal-content input,
+.modal-content select {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #1a1a1a;
+    border: 1px solid #444;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.modal-content input:focus {
+    border-color: #ffd700;
+    background-color: #222;
+}
+
+/* Checkboxes inside Modal */
+.edit-modal-days {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 12px;
+    background: #151515;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #333;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ccc;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.checkbox-label:hover {
+    color: #ffd700;
+}
+
+/* Actions */
+.modal-actions {
+    padding: 20px 40px 30px;
+    display: flex;
+    gap: 15px;
+    border-top: 1px solid #333;
+}
+
+.modal-actions button {
+    flex: 1;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    transition: all 0.2s;
+}
+
+.btn-save {
+    background-color: #ffd700;
+    color: #000;
+    border: none;
+}
+
+.btn-save:hover {
+    background-color: #e0a800;
+    transform: translateY(-2px);
+}
+
+.btn-cancel {
+    background-color: transparent;
+    color: #888;
+    border: 1px solid #444;
+}
+
+.btn-cancel:hover {
+    color: #fff;
+    border-color: #888;
+}
+
+/* Badges Modalidad */
+.badge-modality {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.badge-liga {
+    background-color: #ffd700;
+    color: #000;
+}
+
+.badge-weekend {
+    background-color: #2196f3;
+    color: #fff;
+}
+
 /* Lista Equipos */
 .equipo-lista {
     list-style: none;
     padding: 0;
     margin-top: 20px;
-    background: transparent;
-    /* El fondo lo tendrán los items individuales */
-    border: none;
 }
 
 .equipo-lista li {
@@ -230,27 +381,11 @@
     justify-content: space-between;
     align-items: center;
     padding: 15px;
-    margin-bottom: 15px;
-    /* Separación entre tarjetas */
-    background-color: #111 !important;
-    /* Forzar fondo oscuro */
+    margin-bottom: 10px;
+    background-color: #111;
     border: 1px solid #333;
     border-radius: 8px;
-    /* Bordes redondeados */
     color: #eee;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-    transition: transform 0.2s ease;
-}
-
-.equipo-lista li:hover {
-    border-color: #ffd700;
-    /* Borde dorado al pasar el mouse */
-    transform: translateY(-2px);
-}
-
-.equipo-lista li span {
-    text-shadow: none;
-    /* Asegurar que no haya sombras extrañas */
 }
 
 .equipo-detalle {
@@ -258,81 +393,4 @@
     font-size: 0.85rem;
     font-style: italic;
     margin: 0 15px;
-}
-
-/* Modal Edición */
-.editar-form-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #111;
-    padding: 30px;
-    border: 2px solid #ffd700;
-    border-radius: 12px;
-    z-index: 1000;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
-}
-
-.editar-form-modal h3 {
-    color: #ffd700;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.editar-form-modal input,
-.editar-form-modal select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 12px;
-    background: #000;
-    border: 1px solid #444;
-    color: #fff;
-    border-radius: 6px;
-}
-
-.editar-form-modal button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.editar-form-modal button:first-of-type {
-    background-color: #ffd700;
-    color: #000;
-    border: none;
-}
-
-.editar-form-modal button:last-of-type {
-    background-color: transparent;
-    color: #888;
-    border: 1px solid #444;
-}
-/* Badges para Modalidad */
-.badge-modality {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-    letter-spacing: 0.5px;
-}
-
-.badge-liga {
-    background-color: #ffd700;
-    color: #000;
-    border: 1px solid #e0a800;
-}
-
-.badge-weekend {
-    background-color: #2196f3;
-    color: #fff;
-    border: 1px solid #1976d2;
 }

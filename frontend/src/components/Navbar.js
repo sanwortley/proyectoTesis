@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import '../style.css';
 import { useAuth } from '../context/AuthContext';
+import { LogOut } from 'lucide-react';
 
 export default function Navbar() {
   const { pathname } = useLocation();
@@ -42,42 +43,48 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <div className="navbar-logo-container">
-        <Link to={homeByRole}>
-          <img src={logo} alt="Logo" className="navbar-logo" />
-        </Link>
-      </div>
+      <div className="navbar-container">
+        <div className="navbar-logo-container">
+          <Link to={homeByRole}>
+            <img src={logo} alt="Logo" className="navbar-logo" />
+          </Link>
+        </div>
 
-      <div className="navbar-links">
-        {/* Comunes */}
-        <Link to="/torneosllave" className={isActive('/torneosllave')}>Torneos</Link>
-        <Link to="/ranking" className={isActive('/ranking')}>Ranking</Link>
+        <div className="navbar-links">
+          {/* Comunes */}
+          <Link to="/torneosllave" className={`nav-link ${isActive('/torneosllave')}`}><span>TORNEOS</span></Link>
+          <Link to="/ranking" className={`nav-link ${isActive('/ranking')}`}><span>RANKING</span></Link>
 
-        {/* Invitado */}
-        {role === 'invitado' && (
-          <button className="link-button" onClick={goLogin}>Volver al login</button>
-        )}
+          {/* Invitado */}
+          {role === 'invitado' && (
+            <button className="nav-logout" onClick={goLogin}>LOGIN</button>
+          )}
 
-        {/* Jugador */}
-        {role === 'jugador' && (
-          <>
-            <Link to="/inscripcion" className={isActive('/inscripcion')}>Inscripción</Link>
-            <Link to="/perfil" className={isActive('/perfil')}>Mi Perfil</Link>
-            <button className="logout-btn" onClick={ctxLogout}>Cerrar sesión</button>
-          </>
-        )}
+          {/* Jugador */}
+          {role === 'jugador' && (
+            <>
+              <Link to="/inscripcion" className={`nav-link ${isActive('/inscripcion')}`}><span>INSCRIPCIÓN</span></Link>
+              <Link to="/perfil" className={`nav-link ${isActive('/perfil')}`}><span>MI PERFIL</span></Link>
+              <button className="nav-logout" onClick={ctxLogout} title="Cerrar Sesión">
+                <LogOut size={20} />
+              </button>
+            </>
+          )}
 
-        {/* Organizador */}
-        {role === 'organizador' && (
-          <>
-            <Link to="/crear-torneo" className={isActive('/crear-torneo')}>Crear Torneo</Link>
-            <Link to="/cargar-resultado" className={isActive('/cargar-resultado')}>Resultados</Link>
-            <Link to="/admin/jugadores" className={isActive('/admin/jugadores')}>Jugadores</Link>
-            <Link to="/dashboard" className={isActive('/dashboard')}>Dashboard</Link>
-            <Link to="/perfil" className={isActive('/perfil')}>Mi Perfil</Link>
-            <button className="logout-btn" onClick={ctxLogout}>Cerrar sesión</button>
-          </>
-        )}
+          {/* Organizador */}
+          {role === 'organizador' && (
+            <>
+              <Link to="/crear-torneo" className={`nav-link ${isActive('/crear-torneo')}`}><span>CREAR TORNEO</span></Link>
+              <Link to="/cargar-resultado" className={`nav-link ${isActive('/cargar-resultado')}`}><span>RESULTADOS</span></Link>
+              <Link to="/admin/jugadores" className={`nav-link ${isActive('/admin/jugadores')}`}><span>JUGADORES</span></Link>
+              <Link to="/dashboard" className={`nav-link ${isActive('/dashboard')}`}><span>DASHBOARD</span></Link>
+              <Link to="/perfil" className={`nav-link ${isActive('/perfil')}`}><span>MI PERFIL</span></Link>
+              <button className="nav-logout" onClick={ctxLogout} title="Cerrar Sesión">
+                <LogOut size={20} />
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );

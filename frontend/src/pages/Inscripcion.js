@@ -21,6 +21,8 @@ function Inscripcion() {
   const [torneoLleno, setTorneoLleno] = useState(false);
   const [jugador1Inscripto, setJugador1Inscripto] = useState(false);
   const [jugador2Inscripto, setJugador2Inscripto] = useState(false);
+  const [jugador1InscriptoNombre, setJugador1InscriptoNombre] = useState('');
+  const [jugador2InscriptoNombre, setJugador2InscriptoNombre] = useState('');
 
   // 🚧 Si no hay token, mandá a login (evita entrar sin sesión)
   useEffect(() => {
@@ -84,6 +86,8 @@ function Inscripcion() {
 
         setJugador1Inscripto(!!resInscripcion.data?.jugador1Inscripto);
         setJugador2Inscripto(!!resInscripcion.data?.jugador2Inscripto);
+        setJugador1InscriptoNombre(resInscripcion.data?.jugador1Nombre || '');
+        setJugador2InscriptoNombre(resInscripcion.data?.jugador2Nombre || '');
 
         const resCupo = await api.get(`/torneos/${torneoId}/verificar-cupo`);
         setTorneoLleno(!!resCupo.data?.lleno);
@@ -110,6 +114,8 @@ function Inscripcion() {
     setJugador2Id('');
     setJugador2Inscripto(false);
     setJugador1Inscripto(false);
+    setJugador1InscriptoNombre('');
+    setJugador2InscriptoNombre('');
     setTorneoLleno(false);
     // ojo: esto solo resetea estados visuales; las verificaciones vuelven a correr cuando selecciones compañero
   }, [torneoId]);
@@ -204,13 +210,61 @@ function Inscripcion() {
         {error && <p className="error">{error}</p>}
         {torneoLleno && <p className="error">Este torneo ya está lleno.</p>}
         {jugador1Inscripto && (
-          <p className="error">Ya estás inscripto en este torneo.</p>
+          <p className="error">
+            {jugador1InscriptoNombre || 'Vos'} ya está inscripto en este torneo.
+          </p>
         )}
         {jugador2Inscripto && (
           <p className="error">
-            El jugador seleccionado como compañero ya está inscripto en este
-            torneo.
+            {jugador2InscriptoNombre || 'El compañero seleccionado'} ya está inscripto en este torneo.
           </p>
+        )}
+
+        {/* SUMA X: hint de categoría necesaria */}
+        {torneoSeleccionado?.formato_categoria === 'suma' && (
+          <div style={{
+            background: '#1a1a2e',
+            border: '1px solid #ffd700',
+            borderRadius: '8px',
+            padding: '12px 16px',
+            margin: '8px 0 16px',
+            fontSize: '14px',
+            color: '#e0e0e0'
+          }}>
+            <strong style={{ color: '#ffd700' }}>Torneo SUMA {torneoSeleccionado.suma_categoria}</strong>
+            <br />
+            Tu categoría: <strong>{getCategoriaNombre(jugador?.categoria_id)}</strong>
+            {(() => {
+              const miValor = getCategoriaValor(jugador?.categoria_id);
+              const objetivo = Number(torneoSeleccionado.suma_categoria);
+              if (miValor && objetivo) {
+                const necesita = objetivo - miValor;
+                return (
+                  <>
+                    <br />
+                    Necesitás un compañero de <strong>{necesita}ta Categoría</strong> para sumar {objetivo}.
+                  </>
+                );
+              }
+              return null;
+            })()}
+            {jugadoresDisponibles.length > 0 && (
+              <>
+                <br />
+                <span style={{ color: '#98fb98' }}>
+                  ✓ {jugadoresDisponibles.length} jugador{jugadoresDisponibles.length > 1 ? 'es' : ''} disponible{jugadoresDisponibles.length > 1 ? 's' : ''}
+                </span>
+              </>
+            )}
+            {jugadoresDisponibles.length === 0 && torneoSeleccionado && (
+              <>
+                <br />
+                <span style={{ color: '#ff6b6b' }}>
+                  ✗ No hay jugadores disponibles de esa categoría
+                </span>
+              </>
+            )}
+          </div>
         )}
 
         <label className="inscripcion-label">Jugador principal:</label>
@@ -224,16 +278,21 @@ function Inscripcion() {
           required
         >
           <option value="">Seleccioná torneo</option>
-          {torneos.map((t) => (
-            <option key={t.id_torneo} value={t.id_torneo}>
-              {t.nombre_torneo} —{' '}
-              {t.formato_categoria === 'suma'
-                ? `SUMA ${t.suma_categoria}`
-                : getCategoriaNombre(t.categoria_id)}
-              {'  |  Cierra: ' +
-                new Date(t.fecha_cierre_inscripcion).toLocaleDateString()}
-            </option>
-          ))}
+          {torneos.map((t) => {
+            const estaLleno = t.max_equipos && t.inscriptos_count >= t.max_equipos;
+            return (
+              <option key={t.id_torneo} value={t.id_torneo} disabled={estaLleno}>
+                {estaLleno ? 'LLENO — ' : ''}
+                {t.nombre_torneo} —{' '}
+                {t.formato_categoria === 'suma'
+                  ? `SUMA ${t.suma_categoria}`
+                  : getCategoriaNombre(t.categoria_id)}
+                {'  |  Cierra: ' +
+                  new Date(t.fecha_cierre_inscripcion).toLocaleDateString()}
+                {estaLleno ? ` (${t.inscriptos_count}/${t.max_equipos})` : ''}
+              </option>
+            );
+          })}
         </select>
 
         <label className="inscripcion-label">Compañero:</label>

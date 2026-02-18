@@ -56,9 +56,9 @@ function MisTorneosOrganizador() {
                   <p><strong>Formato:</strong> SUMA {torneo.suma_categoria}</p>
                 )}
 
-                <p><strong>Inicio:</strong> {new Date(torneo.fecha_inicio).toLocaleDateString()}</p>
-                <p><strong>Fin:</strong> {new Date(torneo.fecha_fin).toLocaleDateString()}</p>
-                <p><strong>Cierre de inscripción:</strong> {new Date(torneo.fecha_cierre_inscripcion).toLocaleDateString()}</p>
+                <p><strong>Inicio:</strong> {new Date(torneo.fecha_inicio).toLocaleDateString('es-ES', { timeZone: 'UTC' })}</p>
+                <p><strong>Fin:</strong> {new Date(torneo.fecha_fin).toLocaleDateString('es-ES', { timeZone: 'UTC' })}</p>
+                <p><strong>Cierre de inscripción:</strong> {new Date(torneo.fecha_cierre_inscripcion).toLocaleDateString('es-ES', { timeZone: 'UTC' })}</p>
                 <p><strong>Máx. equipos:</strong> {torneo.max_equipos}</p>
 
                 <div className="botones-acciones">

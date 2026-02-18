@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
 import axios from 'axios';
 import '../style.css';
 import '../admin.css'; // Import the new professional styles
@@ -161,60 +162,63 @@ export default function AdminJugadores() {
             </div>
 
             {/* Modal de Edición / Creación */}
-            {(editingPlayer || isCreating) && (
+            {(editingPlayer || isCreating) && ReactDOM.createPortal(
                 <div className="modal-overlay">
-                    <div className="modal-content">
+                    <div className="modal-content premium-modal">
                         <h3>{isCreating ? 'Nuevo Jugador' : 'Editar Jugador'}</h3>
-                        <form onSubmit={handleSave}>
-                            <div className="form-group">
-                                <label className="form-label">Nombre</label>
-                                <input name="nombre_jugador" value={formData.nombre_jugador} onChange={handleChange} required className="modal-input" />
-                            </div>
-
-                            <div className="form-group">
-                                <label className="form-label">Apellido</label>
-                                <input name="apellido_jugador" value={formData.apellido_jugador} onChange={handleChange} required className="modal-input" />
-                            </div>
-
-                            <div className="form-group">
-                                <label className="form-label">Apodo</label>
-                                <input name="apodo" value={formData.apodo} onChange={handleChange} className="modal-input" />
-                            </div>
-
-                            <div className="form-group">
-                                <label className="form-label">Email</label>
-                                <input name="email" value={formData.email} onChange={handleChange} required className="modal-input" />
-                            </div>
-
-                            {isCreating && (
+                        <div className="modal-scroll-area">
+                            <form onSubmit={handleSave}>
                                 <div className="form-group">
-                                    <label className="form-label">Contraseña (Opcional, defecto: 123456)</label>
-                                    <input name="password" type="password" value={formData.password} onChange={handleChange} className="modal-input" placeholder="******" />
+                                    <label className="form-label">Nombre</label>
+                                    <input name="nombre_jugador" value={formData.nombre_jugador} onChange={handleChange} required className="modal-input" />
                                 </div>
-                            )}
 
-                            <div className="form-group">
-                                <label className="form-label">Teléfono</label>
-                                <input name="telefono" value={formData.telefono} onChange={handleChange} className="modal-input" />
-                            </div>
+                                <div className="form-group">
+                                    <label className="form-label">Apellido</label>
+                                    <input name="apellido_jugador" value={formData.apellido_jugador} onChange={handleChange} required className="modal-input" />
+                                </div>
 
-                            <div className="form-group">
-                                <label className="form-label">Categoría</label>
-                                <select name="categoria_id" value={formData.categoria_id} onChange={handleChange} required className="modal-input">
-                                    <option value="">-- Seleccionar --</option>
-                                    {categorias.map(c => (
-                                        <option key={c.id_categoria} value={c.id_categoria}>{c.nombre}</option>
-                                    ))}
-                                </select>
-                            </div>
+                                <div className="form-group">
+                                    <label className="form-label">Apodo</label>
+                                    <input name="apodo" value={formData.apodo} onChange={handleChange} className="modal-input" />
+                                </div>
 
-                            <div className="modal-actions">
-                                <button type="submit" className="btn-save">GUARDAR</button>
-                                <button type="button" onClick={handleCancel} className="btn-cancel">CANCELAR</button>
-                            </div>
-                        </form>
+                                <div className="form-group">
+                                    <label className="form-label">Email</label>
+                                    <input name="email" value={formData.email} onChange={handleChange} required className="modal-input" />
+                                </div>
+
+                                {isCreating && (
+                                    <div className="form-group">
+                                        <label className="form-label">Contraseña (Opcional, defecto: 123456)</label>
+                                        <input name="password" type="password" value={formData.password} onChange={handleChange} className="modal-input" placeholder="******" />
+                                    </div>
+                                )}
+
+                                <div className="form-group">
+                                    <label className="form-label">Teléfono</label>
+                                    <input name="telefono" value={formData.telefono} onChange={handleChange} className="modal-input" />
+                                </div>
+
+                                <div className="form-group">
+                                    <label className="form-label">Categoría</label>
+                                    <select name="categoria_id" value={formData.categoria_id} onChange={handleChange} required className="modal-input">
+                                        <option value="">-- Seleccionar --</option>
+                                        {categorias.map(c => (
+                                            <option key={c.id_categoria} value={c.id_categoria}>{c.nombre}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="modal-actions">
+                                    <button type="submit" className="btn-save">GUARDAR</button>
+                                    <button type="button" onClick={handleCancel} className="btn-cancel">CANCELAR</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
 
             <div className="table-responsive">

@@ -43,15 +43,22 @@ export function generarGruposAleatorios(equipos) {
     return cortarParejo(mezclados, 3);
   }
 
+
   if (total === 14 || total === 15) {
     // 4 grupos (4-4-3-3 o 4-4-4-2)
     return cortarParejo(mezclados, 4);
+  }
+
+  if (total === 32) {
+    // 8 grupos de 4 → pasan 2 de cada grupo → OCTAVOS
+    return cortarEnGrupos(mezclados, 8, 4);
   }
 
   // ========================
   // 3) Fallback raro → distribuir lo más parejo posible
   // ========================
   return cortarParejo(mezclados, Math.ceil(total / 4));
+
 }
 
 
