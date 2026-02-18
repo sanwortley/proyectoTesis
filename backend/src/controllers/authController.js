@@ -55,6 +55,8 @@ export const login = async (req, res) => {
     if (!user) {
       await registrarLogIngreso({
         jugadorId: null,
+        nombre: null,
+        apellido: null,
         ip,
         userAgent,
         exitoso: false,
@@ -71,6 +73,8 @@ export const login = async (req, res) => {
     if (!isValid) {
       await registrarLogIngreso({
         jugadorId: user.id_jugador,
+        nombre: user.nombre_jugador,
+        apellido: user.apellido_jugador,
         ip,
         userAgent,
         exitoso: false,
@@ -92,6 +96,8 @@ export const login = async (req, res) => {
 
     await registrarLogIngreso({
       jugadorId: user.id_jugador,
+      nombre: user.nombre_jugador,
+      apellido: user.apellido_jugador,
       ip,
       userAgent,
       exitoso: true,
@@ -116,6 +122,8 @@ export const login = async (req, res) => {
     console.error('[AUTH] Error en login:', err);
     await registrarLogIngreso({
       jugadorId: null,
+      nombre: null,
+      apellido: null,
       ip,
       userAgent,
       exitoso: false,

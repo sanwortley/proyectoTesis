@@ -70,3 +70,4 @@ TEST, , , ,0,Endpoint de prueba
 2026-02-18T17:52:57.712Z,12,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso
 2026-02-18T17:55:18.592Z,1,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso
 2026-02-18T18:49:25.535Z,1,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso
+2026-02-18T19:05:32.620Z,12,,,::ffff:172.18.0.1,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",1,Login exitoso

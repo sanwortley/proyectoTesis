@@ -17,7 +17,7 @@ async function ensureSetup() {
     } catch {
       await fsp.writeFile(
         CSV_PATH,
-        'timestamp,jugador_id,ip,user_agent,exitoso,motivo\n',
+        'timestamp,jugador_id,nombre,apellido,ip,user_agent,exitoso,motivo\n',
         'utf8'
       );
       headerOk = true;
@@ -39,13 +39,24 @@ function csvEscape(val = '') {
   return s;
 }
 
-export async function appendAuditToFiles({ jugadorId, ip, userAgent, exitoso, motivo, timestamp = new Date() }) {
+export async function appendAuditToFiles({
+  jugadorId,
+  nombre,
+  apellido,
+  ip,
+  userAgent,
+  exitoso,
+  motivo,
+  timestamp = new Date()
+}) {
   try {
     if (!headerOk) await ensureSetup();
 
     const row = [
       csvEscape(timestamp.toISOString()),
       csvEscape(jugadorId ?? ''),
+      csvEscape(nombre ?? ''),
+      csvEscape(apellido ?? ''),
       csvEscape(ip ?? ''),
       csvEscape(userAgent ?? ''),
       csvEscape(exitoso ? 1 : 0),
@@ -55,6 +66,8 @@ export async function appendAuditToFiles({ jugadorId, ip, userAgent, exitoso, mo
     const jsonLine = JSON.stringify({
       timestamp: timestamp.toISOString(),
       jugador_id: jugadorId ?? null,
+      nombre: nombre ?? null,
+      apellido: apellido ?? null,
       ip: ip ?? null,
       user_agent: userAgent ?? null,
       exitoso: !!exitoso,

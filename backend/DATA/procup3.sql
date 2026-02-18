@@ -188,6 +188,8 @@ CREATE TABLE ranking_jugador (
 CREATE TABLE audit_log_ingresos (
   id           SERIAL PRIMARY KEY,
   jugador_id   INT,
+  nombre       VARCHAR(100),
+  apellido     VARCHAR(100),
   ip           VARCHAR(50),
   user_agent   TEXT,
   exitoso      BOOLEAN DEFAULT FALSE,
