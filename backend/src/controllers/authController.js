@@ -25,14 +25,14 @@ export const login = async (req, res) => {
       return res.status(400).json({ error: 'Faltan credenciales' });
     }
 
-    // 🧩 Logs de diagnóstico
+    // Logs de diagnóstico
     console.log('[LOGIN] body:', req.body);
 
-    // 📊 Verificar base de datos actual
+    // Verificar base de datos actual
     const dbMeta = await pool.query('SELECT current_database() db, current_user usr');
     console.log('[DB]', dbMeta.rows[0]); // Ej: { db: 'procup3', usr: 'postgres' }
 
-    // 🎯 Query a tu tabla real con TRIM para evitar espacios invisibles
+    // Query a tu tabla real con TRIM para evitar espacios invisibles
     const { rows } = await pool.query(
       `
       SELECT 
@@ -65,7 +65,7 @@ export const login = async (req, res) => {
       return res.status(404).json({ error: 'Jugador no encontrado' });
     }
 
-    // 🔐 Verificación de contraseña (bcrypt o texto plano)
+    // Verificación de contraseña (bcrypt o texto plano)
     const stored = user.password_norm || '';
     const isHash = stored.startsWith?.('$2');
     const isValid = isHash ? await bcrypt.compare(password, stored) : password === stored;
@@ -84,10 +84,10 @@ export const login = async (req, res) => {
       return res.status(401).json({ error: 'Contraseña incorrecta' });
     }
 
-    // 🏷️ Rol normalizado
+    // Rol normalizado
     const role = (user.rol || 'jugador').toLowerCase();
 
-    // 🎟️ Generar token JWT
+    // Generar token JWT
     const token = jwt.sign(
       { id: user.id_jugador, role },
       process.env.JWT_SECRET || 'dev_secret_change_me',
@@ -104,7 +104,7 @@ export const login = async (req, res) => {
       motivo: 'Login exitoso'
     });
 
-    // 📦 Respuesta al frontend
+    // Respuesta al frontend
     return res.json({
       ok: true,
       token,

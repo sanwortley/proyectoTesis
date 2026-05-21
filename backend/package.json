@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/app.mjs ",
     "docker:up": "docker-compose up --build",
-    "docker:down": "docker-compose down"
+    "docker:down": "docker-compose down",
+    "db:patch": "node tools/apply_schema_patch.js"
   },
   "keywords": [],
   "author": "",
