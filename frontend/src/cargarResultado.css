@@ -3,12 +3,15 @@
 /* Contenedor Principal */
 .cargar-resultado-container {
     max-width: 1200px;
+    width: 100%;
     margin: 40px auto;
     padding: 30px;
     background-color: #0a0a0a;
     color: #eee;
     font-family: 'Poppins', sans-serif;
     min-height: 80vh;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 /* Título */
@@ -51,6 +54,21 @@
     border-color: #ffd700;
 }
 
+/* Contenedor de botones de fase */
+.botones-fase-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 12px 0 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.botones-fase-toggle {
+    display: flex;
+    gap: 10px;
+}
+
 /* Botones de Fase (Grupos / Playoff) */
 .boton-fase {
     background-color: transparent;
@@ -62,6 +80,7 @@
     border-radius: 30px;
     cursor: pointer;
     transition: all 0.2s;
+    white-space: nowrap;
 }
 
 .boton-fase:hover {
@@ -77,24 +96,44 @@
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
 }
 
-/* Botón Generar Ranking */
-.boton-generar-ranking {
+/* Botón Ranking de Emergencia */
+.boton-ranking-emergencia {
     background-color: #1a1a1a;
-    color: #4caf50;
-    border: 1px solid #4caf50;
-    padding: 10px 20px;
-    font-weight: 600;
+    color: #e67e22;
+    border: 1px solid #e67e22;
+    padding: 10px 18px;
+    font-weight: 700;
+    font-size: 0.85rem;
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.2s, color 0.2s;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    opacity: 0.7;
 }
 
-.boton-generar-ranking:hover {
-    background-color: #4caf50;
-    color: #fff;
+.boton-ranking-emergencia:hover {
+    background-color: rgba(230, 126, 34, 0.12);
+    opacity: 1;
+}
+
+/* Mensaje de ranking actualizado automáticamente */
+.ranking-auto-ok {
+    margin-top: 8px;
+    padding: 10px 16px;
+    background: rgba(40, 167, 69, 0.12);
+    border: 1px solid rgba(40, 167, 69, 0.4);
+    border-radius: 8px;
+    color: #28a745;
+    font-size: 0.9rem;
+    font-weight: 600;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 /* Mensajes de estado vacío */
@@ -132,10 +171,18 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
+.grupo-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
 .grupo-titulo {
     font-size: 1.4rem;
     color: #ffd700;
-    margin-bottom: 20px;
+    margin: 0;
     border-left: 4px solid #ffd700;
     padding-left: 15px;
     text-transform: uppercase;
@@ -211,6 +258,162 @@
     border-color: #ffd700;
 }
 
+/* Buscador */
+.busqueda-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #1a1a1a;
+    border: 1px solid #444;
+    border-radius: 30px;
+    padding: 10px 18px;
+    max-width: 380px;
+    margin-bottom: 24px;
+    transition: border-color 0.2s;
+}
+
+.busqueda-container:focus-within {
+    border-color: #ffd700;
+}
+
+.busqueda-icon {
+    color: #888;
+    flex-shrink: 0;
+}
+
+.busqueda-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 0.95rem;
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+}
+
+.busqueda-input::placeholder {
+    color: #555;
+}
+
+.busqueda-clear {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: color 0.2s;
+}
+
+.busqueda-clear:hover {
+    color: #ffd700;
+}
+
+/* Dropdown de fecha (modo liga) */
+.fechas-filtro {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.fecha-select-wrapper {
+    position: relative;
+    min-width: 280px;
+}
+
+.fecha-select-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 16px;
+    background-color: #1a1a1a;
+    color: #fff;
+    border: 1px solid #444;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    text-align: left;
+}
+
+.fecha-select-trigger:hover,
+.fecha-select-trigger:focus {
+    border-color: #ffd700;
+    outline: none;
+}
+
+.fecha-chevron {
+    color: #888;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+}
+
+.fecha-chevron.abierto {
+    transform: rotate(180deg);
+    color: #ffd700;
+}
+
+.fecha-select-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99;
+}
+
+.fecha-select-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 100%;
+    background-color: #1a1a1a;
+    border: 1px solid #555;
+    border-radius: 8px;
+    z-index: 100;
+    max-height: 260px;
+    overflow-y: auto;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+.fecha-select-menu::-webkit-scrollbar {
+    width: 4px;
+}
+.fecha-select-menu::-webkit-scrollbar-track {
+    background: #111;
+    border-radius: 4px;
+}
+.fecha-select-menu::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
+}
+
+.fecha-select-option {
+    width: 100%;
+    text-align: left;
+    padding: 10px 16px;
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 0.9rem;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.fecha-select-option:hover {
+    background-color: #2a2a2a;
+    color: #fff;
+}
+
+.fecha-select-option.activo {
+    color: #ffd700;
+    font-weight: 600;
+}
+
 /* Botón Guardar (Icono) */
 .btn-icon-guardar {
     background-color: #ffd700;
@@ -226,4 +429,123 @@
 
 .btn-icon-guardar:hover {
     background-color: #e0a800;
+}
+
+/* ===== RESPONSIVE MÓVIL ===== */
+@media (max-width: 768px) {
+    .cargar-resultado-container {
+        padding: 16px;
+        margin: 16px auto;
+    }
+
+    .titulo {
+        font-size: 1.6rem;
+        letter-spacing: 1px;
+        margin-bottom: 24px;
+        padding-bottom: 14px;
+    }
+
+    /* El select de torneo ocupa todo el ancho */
+    .inscripcion-select {
+        max-width: 100%;
+    }
+
+    /* Botones de fase */
+    .botones-fase-toggle {
+        width: 100%;
+    }
+
+    .boton-fase {
+        flex: 1;
+        text-align: center;
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+
+    .boton-generar-ranking {
+        width: 100%;
+        justify-content: center;
+        font-size: 0.9rem;
+    }
+
+    /* Buscador ocupa todo el ancho */
+    .busqueda-container {
+        max-width: 100%;
+    }
+
+    /* Selector de fecha ocupa todo */
+    .fecha-select-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .fechas-filtro {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    /* Tabla: scroll horizontal */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .tabla-resultados {
+        min-width: 420px;
+    }
+
+    .tabla-resultados th,
+    .tabla-resultados td {
+        padding: 8px 6px;
+        font-size: 0.85rem;
+    }
+
+    /* Partido toma menos espacio para que los sets entren */
+    .col-partido {
+        width: 34%;
+        font-size: 0.85rem;
+    }
+
+    .col-set {
+        width: 20%;
+    }
+
+    .col-accion {
+        width: 12%;
+    }
+
+    .grupo-tarjeta {
+        padding: 16px;
+    }
+
+    .grupo-titulo {
+        font-size: 1.1rem;
+    }
+
+    /* Mensajes de estado */
+    .mensaje-sin-grupos,
+    .mensaje-playoff,
+    .error {
+        padding: 24px 16px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .titulo {
+        font-size: 1.3rem;
+    }
+
+    .tabla-input {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+        margin: 0 2px;
+    }
+
+    .boton-generar-ranking {
+        font-size: 0.85rem;
+        padding: 8px 14px;
+    }
 }

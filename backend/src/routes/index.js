@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 
 import { generarGruposAleatorios } from '../utils/generarGrupos.js';
 import { generarPlayoffSiNoExiste } from '../utils/generarPlayoff.js';
+import { enviarConfirmacionInscripcion } from '../utils/mailer.js';
 
 const router = Router();
 
@@ -518,14 +519,18 @@ router.get('/torneos/:idTorneo/jugadores-disponibles', async (req, res) => {
     const { idTorneo } = req.params;
 
     const q = `
-      SELECT 
+      SELECT
         j.id_jugador,
         j.nombre_jugador,
         j.apellido_jugador,
+        j.apodo,
         j.rol,
-        j.categoria_id
+        j.categoria_id,
+        c.nombre        AS categoria_nombre,
+        c.valor_numerico
       FROM jugador j
-      WHERE j.rol = 'jugador'
+      LEFT JOIN categoria c ON c.id_categoria = j.categoria_id
+      WHERE (j.rol = 'jugador' OR (j.rol = 'organizador' AND j.categoria_id IS NOT NULL))
         AND j.id_jugador NOT IN (
           SELECT e.jugador1_id
           FROM inscripcion i
@@ -537,7 +542,7 @@ router.get('/torneos/:idTorneo/jugadores-disponibles', async (req, res) => {
           JOIN equipo e ON e.id_equipo = i.id_equipo
           WHERE i.id_torneo = $1
         )
-      ORDER BY j.apellido_jugador, j.nombre_jugador
+      ORDER BY c.valor_numerico, j.apellido_jugador, j.nombre_jugador
     `;
 
     const { rows } = await pool.query(q, [idTorneo]);
@@ -1059,6 +1064,35 @@ router.post('/inscripcion', async (req, res) => {
 
     await client.query('COMMIT');
     res.status(201).json({ mensaje: 'Inscripción exitosa', nombre_equipo });
+
+    // Enviar emails de confirmación (sin await — no bloquea la respuesta)
+    try {
+      const emailsRes = await pool.query(
+        `SELECT j.nombre_jugador, j.apellido_jugador, j.email
+         FROM jugador j WHERE j.id_jugador = ANY($1::int[])`,
+        [[jugador1_id, jugador2_id]]
+      );
+      const torneoInfoRes = await pool.query(
+        `SELECT nombre_torneo, fecha_inicio FROM torneo WHERE id_torneo = $1`,
+        [id_torneo]
+      );
+      const t = torneoInfoRes.rows[0];
+      for (const j of emailsRes.rows) {
+        if (j.email) {
+          console.log('[MAIL] Enviando confirmación a:', j.email);
+          enviarConfirmacionInscripcion({
+            email: j.email,
+            nombre: `${j.nombre_jugador} ${j.apellido_jugador}`,
+            nombreEquipo: nombre_equipo,
+            nombreTorneo: t?.nombre_torneo || '',
+            fechaTorneo: t?.fecha_inicio || null,
+          }).then(() => console.log('[MAIL] Confirmación enviada a:', j.email))
+            .catch(err => console.error('[MAIL] Error enviando a', j.email, ':', err.message));
+        }
+      }
+    } catch (mailErr) {
+      console.error('[MAIL] error al enviar confirmación:', mailErr.message);
+    }
   } catch (error) {
     await client.query('ROLLBACK');
     console.error('Error en inscripción:', error);
@@ -1084,7 +1118,7 @@ router.get('/torneos/:idTorneo/jugadores-disponibles', async (req, res) => {
         j.rol,
         j.categoria_id
       FROM jugador j
-      WHERE j.rol = 'jugador'
+      WHERE (j.rol = 'jugador' OR (j.rol = 'organizador' AND j.categoria_id IS NOT NULL))
         AND j.id_jugador NOT IN (
           SELECT e.jugador1_id
           FROM inscripcion i
@@ -1161,13 +1195,34 @@ router.put('/equipos/:id', async (req, res) => {
   }
 });
 
+router.get('/equipos/:id/tiene-partidos', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const r = await pool.query(
+      `SELECT EXISTS (
+         SELECT 1 FROM partidos_grupo WHERE equipo1_id=$1 OR equipo2_id=$1
+         UNION ALL
+         SELECT 1 FROM partidos_llave WHERE equipo1_id=$1 OR equipo2_id=$1
+       ) AS tiene`,
+      [id]
+    );
+    res.json({ tienePartidos: r.rows[0]?.tiene === true });
+  } catch (err) {
+    res.json({ tienePartidos: false });
+  }
+});
+
 router.delete('/equipos/:id', async (req, res) => {
   const { id } = req.params;
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-    await client.query('DELETE FROM inscripcion WHERE id_equipo = $1', [id]);
-    await client.query('DELETE FROM equipo WHERE id_equipo = $1', [id]);
+    // Borrar en orden para respetar FK constraints
+    await client.query('DELETE FROM partidos_llave WHERE equipo1_id=$1 OR equipo2_id=$1 OR ganador_id=$1', [id]);
+    await client.query('DELETE FROM partidos_grupo WHERE equipo1_id=$1 OR equipo2_id=$1', [id]);
+    await client.query('DELETE FROM equipos_grupo WHERE equipo_id=$1', [id]);
+    await client.query('DELETE FROM inscripcion WHERE id_equipo=$1', [id]);
+    await client.query('DELETE FROM equipo WHERE id_equipo=$1', [id]);
     await client.query('COMMIT');
     res.json({ mensaje: 'Equipo eliminado correctamente' });
   } catch (error) {
@@ -1570,6 +1625,16 @@ router.put('/partidos-grupo/:id', async (req, res) => {
       return res.status(404).json({ error: 'Partido no encontrado' });
     }
     const { grupo_id, equipo1_id, equipo2_id } = partidoRes.rows[0];
+
+    const torneoRes = await client.query(
+      `SELECT id_torneo FROM grupos WHERE id_grupo = $1`,
+      [grupo_id]
+    );
+    if (torneoRes.rowCount === 0) {
+      await client.query('ROLLBACK');
+      return res.status(500).json({ error: 'No se pudo determinar el torneo del grupo' });
+    }
+    const idTorneo = torneoRes.rows[0].id_torneo;
 
     await client.query(
       `

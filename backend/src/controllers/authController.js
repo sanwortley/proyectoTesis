@@ -35,15 +35,18 @@ export const login = async (req, res) => {
     // Query a tu tabla real con TRIM para evitar espacios invisibles
     const { rows } = await pool.query(
       `
-      SELECT 
-        id_jugador,
-        nombre_jugador,
-        apellido_jugador,
-        email,
-        rol,
-        password AS password_norm
-      FROM public.jugador
-      WHERE LOWER(TRIM(email)) = LOWER(TRIM($1))
+      SELECT
+        j.id_jugador,
+        j.nombre_jugador,
+        j.apellido_jugador,
+        j.email,
+        j.rol,
+        j.password AS password_norm,
+        j.categoria_id,
+        c.valor_numerico
+      FROM public.jugador j
+      LEFT JOIN categoria c ON c.id_categoria = j.categoria_id
+      WHERE LOWER(TRIM(j.email)) = LOWER(TRIM($1))
       LIMIT 1
       `,
       [loginInput]
@@ -114,7 +117,9 @@ export const login = async (req, res) => {
         apellido: user.apellido_jugador,
         email: user.email,
         role,
-        rol: role
+        rol: role,
+        categoria_id: user.categoria_id,
+        valor_numerico: user.valor_numerico,
       }
     });
 

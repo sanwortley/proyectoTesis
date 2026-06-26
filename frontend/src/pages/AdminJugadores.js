@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
+import { Search } from 'lucide-react';
 import axios from 'axios';
 import '../style.css';
-import '../admin.css'; // Import the new professional styles
+import '../admin.css';
 
 export default function AdminJugadores() {
     const [jugadores, setJugadores] = useState([]);
@@ -136,13 +137,13 @@ export default function AdminJugadores() {
         );
     });
 
-    if (loading) return <div className="admin-container" style={{ padding: '40px', textAlign: 'center' }}>Cargando...</div>;
+    if (loading) return <div className="admin-container admin-page-container" style={{ textAlign: 'center' }}>Cargando...</div>;
 
     return (
-        <div className="admin-container" style={{ padding: '40px 20px', maxWidth: '1200px', margin: '0 auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                <h2 style={{ borderBottom: 'none', margin: 0, padding: 0 }}>Gestión de Jugadores</h2>
-                <button className="btn-save" style={{ maxWidth: '200px' }} onClick={handleCreateClick}>
+        <div className="admin-container admin-page-container">
+            <div className="admin-page-header">
+                <h2 className="admin-page-title">Gestión de Jugadores</h2>
+                <button className="btn-save admin-btn-nuevo" onClick={handleCreateClick}>
                     + NUEVO JUGADOR
                 </button>
             </div>
@@ -151,7 +152,7 @@ export default function AdminJugadores() {
 
             {/* Buscador */}
             <div className="search-container">
-                <span className="search-icon">🔍</span>
+                <Search size={18} className="search-icon" />
                 <input
                     type="text"
                     placeholder="Buscar por nombre, apellido, apodo o email..."

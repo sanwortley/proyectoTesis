@@ -6,9 +6,11 @@
     flex-direction: column;
     gap: 40px;
     max-width: 1200px;
+    width: 100%;
     margin: 40px auto;
     padding: 20px;
     min-height: 80vh;
+    box-sizing: border-box;
 }
 
 @media (min-width: 900px) {
@@ -118,6 +120,8 @@
 .torneos-lado {
     flex: 1;
     width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 .torneo-grid {
@@ -132,6 +136,8 @@
     border-radius: 12px;
     padding: 25px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .torneo-card h3 {
@@ -236,8 +242,8 @@
 
 .modal-scroll-area {
     padding: 35px 45px;
-    /* Más aire a los costados y arriba/abajo */
     overflow-y: auto;
+    overflow-x: hidden;
     flex: 1;
 }
 
@@ -270,6 +276,7 @@
 .modal-content input,
 .modal-content select {
     width: 100%;
+    box-sizing: border-box;
     padding: 12px 15px;
     background-color: #1a1a1a;
     border: 1px solid #444;
@@ -393,4 +400,104 @@
     font-size: 0.85rem;
     font-style: italic;
     margin: 0 15px;
+}
+
+/* ===== RESPONSIVE MÓVIL ===== */
+@media (max-width: 768px) {
+    .contenedor-crear-torneo {
+        padding: 12px;
+        margin: 12px auto;
+        gap: 20px;
+    }
+
+    /* El formulario ocupa el 100% en móvil */
+    .formulario-lado {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .crear-torneo-form {
+        padding: 16px;
+    }
+
+    .crear-torneo-form h2 {
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+        letter-spacing: 0;
+    }
+
+    /* Tarjetas de torneos activos: más compactas */
+    .torneo-card {
+        padding: 16px;
+    }
+
+    .torneo-card h3 {
+        font-size: 1.1rem;
+    }
+
+    .torneo-card p {
+        font-size: 0.9rem;
+    }
+
+    .torneo-botones {
+        gap: 8px;
+        margin-top: 16px;
+        padding-top: 12px;
+    }
+
+    .torneo-botones button {
+        padding: 7px 10px;
+        font-size: 0.8rem;
+    }
+
+    /* Modal de edición: ocupa casi toda la pantalla */
+    .modal-content {
+        max-width: 96vw;
+        max-height: 96vh;
+    }
+
+    .modal-content h3 {
+        font-size: 1.2rem;
+        padding: 16px 14px 12px;
+        letter-spacing: 0;
+    }
+
+    .modal-scroll-area {
+        padding: 16px 14px;
+    }
+
+    /* Filas de 2 campos → una columna en móvil */
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .modal-actions {
+        padding: 14px 16px 18px;
+        gap: 10px;
+    }
+
+    .modal-actions button {
+        padding: 12px;
+        font-size: 0.85rem;
+    }
+
+    /* Checkboxes de días: 2 por fila */
+    .edit-modal-days {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        padding: 10px;
+    }
+
+    /* Lista de equipos inscriptos */
+    .equipo-lista li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 10px;
+    }
+
+    .equipo-detalle {
+        margin: 0;
+    }
 }

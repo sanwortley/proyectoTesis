@@ -129,30 +129,31 @@ export default function Dashboard() {
                       <Pie
                         data={stats.equiposPorCategoria}
                         cx="50%"
-                        cy="50%"
+                        cy="45%"
                         innerRadius={50}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        paddingAngle={5}
+                        outerRadius={75}
+                        paddingAngle={4}
                         dataKey="cantidad"
                         nameKey="categoria"
                         label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+                          const RADIAN = Math.PI / 180;
                           const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                          const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
-                          const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
-                          return (
-                            <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+                          const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                          const y = cy + radius * Math.sin(-midAngle * RADIAN);
+                          return percent > 0.05 ? (
+                            <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={12} fontWeight={700}>
                               {`${(percent * 100).toFixed(0)}%`}
                             </text>
-                          );
+                          ) : null;
                         }}
+                        labelLine={false}
                       >
                         {stats.equiposPorCategoria.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
                       <Tooltip contentStyle={{ backgroundColor: '#333', borderColor: '#444', color: '#fff' }} />
-                      <Legend />
+                      <Legend wrapperStyle={{ paddingTop: '8px', fontSize: '0.82rem' }} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
@@ -212,7 +213,7 @@ export default function Dashboard() {
             <div className="alerts-list">
               {alerts.map((a, idx) => (
                 <div key={idx} className={`alert-item ${a.type}`}>
-                  <span className="alert-title">{a.type === 'error' ? '⛔ Atención' : '⚠️ Aviso'}</span>
+                  <span className="alert-title">{a.type === 'error' ? 'Atención' : 'Aviso'}</span>
                   <span className="alert-msg">{a.message}</span>
                 </div>
               ))}

@@ -1,5 +1,6 @@
 // src/pages/CargarResultado.js
 import { useEffect, useState } from "react";
+import { Search, ChevronDown } from "lucide-react";
 import axios from "axios";
 import "../cargarResultado.css";
 
@@ -64,6 +65,12 @@ export default function CargarResultado() {
   const [resultadosPO, setResultadosPO] = useState({});
   const [loadingPO, setLoadingPO] = useState(false);
   const [errorPO, setErrorPO] = useState("");
+  const [guardandoGrupo, setGuardandoGrupo] = useState(new Set());
+  const [guardandoRonda, setGuardandoRonda] = useState(new Set());
+  const [rankingAutoMsg, setRankingAutoMsg] = useState("");
+  const [busqueda, setBusqueda] = useState("");
+  const [fechaFiltro, setFechaFiltro] = useState(null);
+  const [fechaDropdownOpen, setFechaDropdownOpen] = useState(false);
 
   // =======================
   // CARGA TORNEOS
@@ -173,36 +180,41 @@ export default function CargarResultado() {
     }));
   };
 
-  const guardarResultadoGrupo = async (partido) => {
-    const data = resultadosGrupos[partido.id] || {};
-    const payload = {
-      set1_equipo1: n(data.set1_equipo1),
-      set1_equipo2: n(data.set1_equipo2),
-      set2_equipo1: n(data.set2_equipo1),
-      set2_equipo2: n(data.set2_equipo2),
-      set3_equipo1: n(data.set3_equipo1),
-      set3_equipo2: n(data.set3_equipo2)
-    };
+  const guardarGrupo = async (grupo) => {
+    const partidos = grupo.partidos || [];
+    const key = grupo.id_grupo;
 
-    // ✅ Validar sets con reglas de pádel
-    const sets = [
-      [payload.set1_equipo1, payload.set1_equipo2],
-      [payload.set2_equipo1, payload.set2_equipo2],
-      [payload.set3_equipo1, payload.set3_equipo2]
-    ];
-
-    for (let i = 0; i < sets.length; i++) {
-      const [a, b] = sets[i];
-      if (!validarSetPadel(a, b)) {
-        alert(
-          `Set ${i + 1}: poné bien el resultado (ej: 6-4, 7-5 o 7-6, sin negativos ni 6-5).`
-        );
-        return;
+    // Validar todos los sets antes de guardar
+    for (const p of partidos) {
+      const data = resultadosGrupos[p.id] || {};
+      const sets = [
+        [n(data.set1_equipo1), n(data.set1_equipo2)],
+        [n(data.set2_equipo1), n(data.set2_equipo2)],
+        [n(data.set3_equipo1), n(data.set3_equipo2)]
+      ];
+      for (let i = 0; i < sets.length; i++) {
+        if (!validarSetPadel(...sets[i])) {
+          alert(`${p.equipo1} vs ${p.equipo2} — Set ${i + 1}: resultado inválido (ej: 6-4, 7-5 o 7-6).`);
+          return;
+        }
       }
     }
 
+    setGuardandoGrupo((prev) => new Set(prev).add(key));
     try {
-      await axios.put(`${API}/partidos-grupo/${partido.id}`, payload);
+      await Promise.all(
+        partidos.map((p) => {
+          const data = resultadosGrupos[p.id] || {};
+          return axios.put(`${API}/partidos-grupo/${p.id}`, {
+            set1_equipo1: n(data.set1_equipo1),
+            set1_equipo2: n(data.set1_equipo2),
+            set2_equipo1: n(data.set2_equipo1),
+            set2_equipo2: n(data.set2_equipo2),
+            set3_equipo1: n(data.set3_equipo1),
+            set3_equipo2: n(data.set3_equipo2)
+          });
+        })
+      );
 
       const res = await axios.get(`${API}/torneos/${torneoId}/grupos`);
       const dataG = res.data?.grupos || [];
@@ -231,17 +243,24 @@ export default function CargarResultado() {
             g.partidos.every((p) => p.estado === "finalizado")
         );
 
-      /* setGruposCompletos(completos); */
-
-      // ⭐ SI SE COMPLETÓ TODO → GENERAR PLAYOFF SOLO
       if (completos) {
-        await axios.post(`${API}/torneos/${torneoId}/playoff`);
+        try {
+          await axios.post(`${API}/torneos/${torneoId}/playoff`);
+        } catch (playoffErr) {
+          if (playoffErr?.response?.status !== 409) throw playoffErr;
+        }
       }
 
-      alert("Resultado guardado");
+      alert(`${grupo.nombre} — resultados guardados.`);
     } catch (err) {
       console.error(err);
-      alert("Error guardando resultado");
+      if (err?.response?.status === 409) {
+        alert("El play-off ya fue generado");
+        return;
+      }
+      alert("Error guardando resultados");
+    } finally {
+      setGuardandoGrupo((prev) => { const s = new Set(prev); s.delete(key); return s; });
     }
   };
 
@@ -255,37 +274,46 @@ export default function CargarResultado() {
     }));
   };
 
-  const guardarResultadoPO = async (match) => {
-    const data = resultadosPO[match.id] || {};
-    const payload = {
-      set1_equipo1: n(data.set1_equipo1),
-      set1_equipo2: n(data.set1_equipo2),
-      set2_equipo1: n(data.set2_equipo1),
-      set2_equipo2: n(data.set2_equipo2),
-      set3_equipo1: n(data.set3_equipo1),
-      set3_equipo2: n(data.set3_equipo2)
-    };
-
-    // ✅ Validar sets con reglas de pádel
-    const sets = [
-      [payload.set1_equipo1, payload.set1_equipo2],
-      [payload.set2_equipo1, payload.set2_equipo2],
-      [payload.set3_equipo1, payload.set3_equipo2]
-    ];
-
-    for (let i = 0; i < sets.length; i++) {
-      const [a, b] = sets[i];
-      if (!validarSetPadel(a, b)) {
-        alert(
-          `Set ${i + 1}: poné bien el resultado (ej: 6-4, 7-5 o 7-6, sin negativos ni 6-5).`
-        );
-        return;
+  const guardarRonda = async (ronda, matches) => {
+    // Validar todos los sets antes de guardar
+    for (const m of matches) {
+      const data = resultadosPO[m.id] || {};
+      const sets = [
+        [n(data.set1_equipo1), n(data.set1_equipo2)],
+        [n(data.set2_equipo1), n(data.set2_equipo2)],
+        [n(data.set3_equipo1), n(data.set3_equipo2)]
+      ];
+      for (let i = 0; i < sets.length; i++) {
+        if (!validarSetPadel(...sets[i])) {
+          alert(`${m.equipo1_nombre || "—"} vs ${m.equipo2_nombre || "—"} — Set ${i + 1}: resultado inválido (ej: 6-4, 7-5 o 7-6).`);
+          return;
+        }
       }
     }
 
+    setGuardandoRonda((prev) => new Set(prev).add(ronda));
     try {
-      // ⭐ RUTA CORRECTA (usa PATCH del backend)
-      await axios.patch(`${API}/partidos-llave/${match.id}/resultado`, payload);
+      const responses = await Promise.all(
+        matches.map((m) => {
+          const data = resultadosPO[m.id] || {};
+          return axios.patch(`${API}/partidos-llave/${m.id}/resultado`, {
+            set1_equipo1: n(data.set1_equipo1),
+            set1_equipo2: n(data.set1_equipo2),
+            set2_equipo1: n(data.set2_equipo1),
+            set2_equipo2: n(data.set2_equipo2),
+            set3_equipo1: n(data.set3_equipo1),
+            set3_equipo2: n(data.set3_equipo2)
+          });
+        })
+      );
+
+      // Si la FINAL se completó y el ranking se actualizó automáticamente, mostrar mensaje
+      const esFinal = String(ronda).toUpperCase().trim() === "FINAL";
+      const rankingOk = responses.some(r => r.data?.ranking_actualizado === true);
+      if (esFinal && rankingOk) {
+        setRankingAutoMsg("Ranking actualizado automáticamente al finalizar el torneo.");
+        setTimeout(() => setRankingAutoMsg(""), 8000);
+      }
 
       const res = await axios.get(`${API}/torneos/${torneoId}/playoff`);
       const r = res.data?.rondas || {};
@@ -306,10 +334,12 @@ export default function CargarResultado() {
       );
       setResultadosPO(nextPO);
 
-      alert("Resultado guardado (play-off)");
+      alert(`${ronda} — resultados guardados.${esFinal && rankingOk ? " Ranking actualizado." : ""}`);
     } catch (err) {
       console.error(err);
-      alert("Error guardando resultado");
+      alert("Error guardando resultados");
+    } finally {
+      setGuardandoRonda((prev) => { const s = new Set(prev); s.delete(ronda); return s; });
     }
   };
 
@@ -317,6 +347,74 @@ export default function CargarResultado() {
   // RENDER
   // =======================
   /* const torneoSeleccionado = useMemo(...) eliminada por no uso */
+
+  const busquedaLower = busqueda.toLowerCase().trim();
+
+  const torneoActual = torneos.find((t) => String(t.id_torneo) === String(torneoId)) || null;
+  const esLiga = torneoActual?.modalidad === "liga";
+
+  const fechasDisponibles = esLiga
+    ? [
+        ...new Set(
+          grupos
+            .flatMap((g) => g.partidos || [])
+            .map((p) => (p.fecha ? new Date(p.fecha).toDateString() : null))
+            .filter(Boolean)
+        ),
+      ].sort((a, b) => new Date(a) - new Date(b))
+    : [];
+
+  const formatFecha = (dateString) => {
+    const d = new Date(dateString);
+    const s = d.toLocaleDateString("es-AR", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+    });
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  };
+
+  const gruposFiltrados = (() => {
+    let base = grupos;
+    if (busquedaLower) {
+      base = base
+        .map((g) => ({
+          ...g,
+          partidos: (g.partidos || []).filter(
+            (p) =>
+              p.equipo1?.toLowerCase().includes(busquedaLower) ||
+              p.equipo2?.toLowerCase().includes(busquedaLower)
+          ),
+        }))
+        .filter((g) => g.partidos.length > 0);
+    }
+    if (fechaFiltro) {
+      base = base
+        .map((g) => ({
+          ...g,
+          partidos: (g.partidos || []).filter(
+            (p) => p.fecha && new Date(p.fecha).toDateString() === fechaFiltro
+          ),
+        }))
+        .filter((g) => g.partidos.length > 0);
+    }
+    return base;
+  })();
+
+  const rondasFiltradas = busquedaLower
+    ? Object.fromEntries(
+        Object.entries(rondasPO)
+          .map(([ronda, matches]) => [
+            ronda,
+            matches.filter(
+              (m) =>
+                m.equipo1_nombre?.toLowerCase().includes(busquedaLower) ||
+                m.equipo2_nombre?.toLowerCase().includes(busquedaLower)
+            ),
+          ])
+          .filter(([, matches]) => matches.length > 0)
+      )
+    : rondasPO;
 
   return (
     <div className="cargar-resultado-container">
@@ -326,7 +424,7 @@ export default function CargarResultado() {
       <select
         className="inscripcion-select"
         value={torneoId}
-        onChange={(e) => setTorneoId(e.target.value)}
+        onChange={(e) => { setTorneoId(e.target.value); setBusqueda(""); setFechaFiltro(null); }}
       >
         <option value="">-- Seleccioná --</option>
         {torneos.map((t) => (
@@ -336,38 +434,99 @@ export default function CargarResultado() {
         ))}
       </select>
 
-      <div style={{ marginTop: 12, marginBottom: 20, display: "flex", gap: 12, alignItems: 'center' }}>
-        <button
-          className={modo === "grupos" ? "boton-fase activo" : "boton-fase"}
-          onClick={() => setModo("grupos")}
-        >
-          Fase de grupos
-        </button>
-        <button
-          className={modo === "playoff" ? "boton-fase activo" : "boton-fase"}
-          onClick={() => setModo("playoff")}
-        >
-          Play-off
-        </button>
+      <div className="botones-fase-container">
+        <div className="botones-fase-toggle">
+          <button
+            className={modo === "grupos" ? "boton-fase activo" : "boton-fase"}
+            onClick={() => setModo("grupos")}
+          >
+            Fase de grupos
+          </button>
+          <button
+            className={modo === "playoff" ? "boton-fase activo" : "boton-fase"}
+            onClick={() => setModo("playoff")}
+          >
+            Play-off
+          </button>
+        </div>
 
         {torneoId && (
           <button
-            className="boton-generar-ranking"
-            style={{ marginLeft: 'auto', backgroundColor: '#28a745', color: 'white' }}
+            className="boton-ranking-emergencia"
+            title="Usá este botón solo si el ranking no se actualizó automáticamente al finalizar la Final"
             onClick={async () => {
               try {
                 const res = await axios.post(`${API}/torneos/${torneoId}/generar-ranking`);
-                alert(`Ranking actualizado: ${res.data.jugadores_procesados} jugadores procesados.`);
+                alert(`Ranking forzado: ${res.data.jugadores_procesados} jugadores procesados.`);
               } catch (err) {
                 console.error(err);
                 alert(err.response?.data?.error || "Error al generar el ranking.");
               }
             }}
           >
-            Actualizar Ranking del Torneo
+            ⚠ Forzar Ranking (emergencia)
           </button>
         )}
+
+        {rankingAutoMsg && (
+          <div className="ranking-auto-ok">
+            ✔ {rankingAutoMsg}
+          </div>
+        )}
       </div>
+
+      {torneoId && modo === "grupos" && (
+        <div className="busqueda-container">
+          <Search size={16} className="busqueda-icon" />
+          <input
+            className="busqueda-input"
+            type="text"
+            placeholder="Buscar por equipo o jugador..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+          />
+          {busqueda && (
+            <button className="busqueda-clear" onClick={() => setBusqueda("")}>✕</button>
+          )}
+        </div>
+      )}
+
+      {esLiga && modo === "grupos" && fechasDisponibles.length > 0 && (
+        <div className="fechas-filtro">
+          <label className="inscripcion-label">Fecha:</label>
+          <div className="fecha-select-wrapper">
+            <button
+              className="fecha-select-trigger"
+              onClick={() => setFechaDropdownOpen((o) => !o)}
+            >
+              <span>{fechaFiltro ? formatFecha(fechaFiltro) : "Todas las fechas"}</span>
+              <ChevronDown size={16} className={`fecha-chevron${fechaDropdownOpen ? " abierto" : ""}`} />
+            </button>
+            {fechaDropdownOpen && (
+              <>
+                <div className="fecha-select-overlay" onClick={() => setFechaDropdownOpen(false)} />
+                <div className="fecha-select-menu">
+                  <button
+                    className={`fecha-select-option${fechaFiltro === null ? " activo" : ""}`}
+                    onClick={() => { setFechaFiltro(null); setFechaDropdownOpen(false); }}
+                  >
+                    Todas las fechas
+                  </button>
+                  {fechasDisponibles.map((fecha) => (
+                    <button
+                      key={fecha}
+                      className={`fecha-select-option${fechaFiltro === fecha ? " activo" : ""}`}
+                      onClick={() => { setFechaFiltro(fecha); setFechaDropdownOpen(false); }}
+                    >
+                      {formatFecha(fecha)}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ======================= */}
       {/* FASE DE GRUPOS */}
@@ -382,11 +541,24 @@ export default function CargarResultado() {
             <div className="mensaje-sin-grupos">
               Este torneo no tiene grupos generados.
             </div>
+          ) : gruposFiltrados.length === 0 ? (
+            <div className="mensaje-sin-grupos">
+              No se encontraron partidos con "{busqueda}".
+            </div>
           ) : (
             <div className="grupos-grid">
-              {grupos.map((grupo) => (
+              {gruposFiltrados.map((grupo) => (
                 <div key={grupo.id_grupo} className="grupo-tarjeta">
-                  <h3 className="grupo-titulo">{grupo.nombre}</h3>
+                  <div className="grupo-header">
+                    <h3 className="grupo-titulo">{grupo.nombre}</h3>
+                    <button
+                      className="btn-icon-guardar"
+                      onClick={() => guardarGrupo(grupo)}
+                      disabled={guardandoGrupo.has(grupo.id_grupo)}
+                    >
+                      {guardandoGrupo.has(grupo.id_grupo) ? "Guardando..." : `Guardar ${grupo.nombre}`}
+                    </button>
+                  </div>
 
                   <div className="table-responsive">
                     <table className="tabla-resultados">
@@ -396,7 +568,6 @@ export default function CargarResultado() {
                           <th className="col-set">Set 1</th>
                           <th className="col-set">Set 2</th>
                           <th className="col-set">Set 3</th>
-                          <th className="col-accion"></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -458,15 +629,6 @@ export default function CargarResultado() {
                                   onChange={(e) => handleInputGrupo(p.id, "set3_equipo2", e.target.value)}
                                 />
                               </td>
-                              <td className="col-accion">
-                                <button
-                                  className="btn-icon-guardar"
-                                  title="Guardar resultado"
-                                  onClick={() => guardarResultadoGrupo(p)}
-                                >
-                                  Guardar
-                                </button>
-                              </td>
                             </tr>
                           );
                         })}
@@ -497,12 +659,25 @@ export default function CargarResultado() {
             <div className="mensaje-playoff">
               No hay llaves generadas aún para este torneo.
             </div>
+          ) : Object.keys(rondasFiltradas).length === 0 ? (
+            <div className="mensaje-playoff">
+              No se encontraron cruces con "{busqueda}".
+            </div>
           ) : (
             <div className="playoff-editor">
-              {RONDAS_ORDENADAS.filter((r) => rondasPO[r]?.length).map(
+              {RONDAS_ORDENADAS.filter((r) => rondasFiltradas[r]?.length).map(
                 (ronda) => (
                   <div key={ronda} className="grupo-tarjeta">
-                    <h3 className="grupo-titulo">{ronda}</h3>
+                    <div className="grupo-header">
+                      <h3 className="grupo-titulo">{ronda}</h3>
+                      <button
+                        className="btn-icon-guardar"
+                        onClick={() => guardarRonda(ronda, rondasFiltradas[ronda])}
+                        disabled={guardandoRonda.has(ronda)}
+                      >
+                        {guardandoRonda.has(ronda) ? "Guardando..." : `Guardar ${ronda}`}
+                      </button>
+                    </div>
 
                     <div className="table-responsive">
                       <table className="tabla-resultados">
@@ -512,11 +687,10 @@ export default function CargarResultado() {
                             <th className="col-set">Set 1</th>
                             <th className="col-set">Set 2</th>
                             <th className="col-set">Set 3</th>
-                            <th className="col-accion"></th>
                           </tr>
                         </thead>
                         <tbody>
-                          {rondasPO[ronda].map((m) => {
+                          {rondasFiltradas[ronda].map((m) => {
                             const val = resultadosPO[m.id] || {};
                             return (
                               <tr key={m.id}>
@@ -573,15 +747,6 @@ export default function CargarResultado() {
                                     value={val.set3_equipo2 ?? ""}
                                     onChange={(e) => handleInputPO(m.id, "set3_equipo2", e.target.value)}
                                   />
-                                </td>
-                                <td className="col-accion">
-                                  <button
-                                    className="btn-icon-guardar"
-                                    title="Guardar resultado"
-                                    onClick={() => guardarResultadoPO(m)}
-                                  >
-                                    Guardar
-                                  </button>
                                 </td>
                               </tr>
                             );

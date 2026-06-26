@@ -226,17 +226,6 @@
   position: relative;
 }
 
-.team.win::before {
-  content: "";
-  position: absolute;
-  left: -12px;
-  top: 0;
-  width: 3px;
-  height: 100%;
-  background: linear-gradient(180deg, #ffd34d, #ffb700);
-  border-radius: 2px;
-}
-
 .team.win .name {
   color: #ffd34d;
   font-weight: 800;
@@ -327,12 +316,13 @@
 
 @media (max-width: 768px) {
   .bracket-symmetric {
-    padding: 16px 8px;
+    padding: 12px 6px;
+    gap: 10px;
   }
 
   .bracket-half {
     flex-direction: column;
-    gap: 30px;
+    gap: 20px;
   }
 
   .round {
@@ -340,14 +330,59 @@
     min-width: unset;
   }
 
+  .round-title {
+    font-size: 1rem;
+    padding: 6px 12px;
+  }
+
+  .matches-column {
+    gap: 12px;
+  }
+
   .match {
     max-width: 100%;
+    min-width: 0;
+    padding: 10px 10px;
+    gap: 8px;
+  }
+
+  /* La final no escala en móvil (evita overflow) */
+  .round-final .match {
+    transform: none;
+  }
+
+  .name-line {
+    font-size: 0.75rem;
+  }
+
+  .team .score {
+    font-size: 0.8rem;
+  }
+
+  .vs-badge {
+    padding: 3px 6px;
+    font-size: 0.65rem;
   }
 
   /* Hide connectors on mobile */
   .match-wrapper::after,
   .match-wrapper::before {
     display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .match {
+    padding: 8px 8px;
+    gap: 6px;
+  }
+
+  .name-line {
+    font-size: 0.7rem;
+  }
+
+  .team .score {
+    font-size: 0.75rem;
   }
 }
 
@@ -576,4 +611,136 @@
 .torneo-finalizado .team-container>div {
   filter: grayscale(100%);
   opacity: 0.8;
+}
+
+/* ==========================================
+   ANIMACIONES DE ENTRADA
+   ========================================== */
+@keyframes slide-up-fade {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes title-glow-pulse {
+  0%, 100% { text-shadow: 0 0 18px rgba(255,215,0,.7), 0 4px 14px rgba(255,215,0,.35); }
+  50%       { text-shadow: 0 0 34px rgba(255,215,0,1),  0 4px 22px rgba(255,215,0,.65); }
+}
+
+@keyframes border-glow-pulse {
+  0%, 100% { box-shadow: 0 8px 28px rgba(0,0,0,.5), 0 0 22px rgba(255,215,0,.22), 0 0 0 1px rgba(255,215,0,.22) inset; }
+  50%       { box-shadow: 0 8px 28px rgba(0,0,0,.5), 0 0 44px rgba(255,215,0,.45), 0 0 0 1px rgba(255,215,0,.4)  inset; }
+}
+
+/* Entrada escalonada por fase */
+.round-octavos .match-wrapper { animation: slide-up-fade .4s ease-out both; }
+.round-octavos .match-wrapper:nth-child(1) { animation-delay: .05s; }
+.round-octavos .match-wrapper:nth-child(2) { animation-delay: .15s; }
+.round-octavos .match-wrapper:nth-child(3) { animation-delay: .25s; }
+.round-octavos .match-wrapper:nth-child(4) { animation-delay: .35s; }
+
+.round-cuartos .match-wrapper { animation: slide-up-fade .45s ease-out both; }
+.round-cuartos .match-wrapper:nth-child(1) { animation-delay: .15s; }
+.round-cuartos .match-wrapper:nth-child(2) { animation-delay: .28s; }
+
+.round-semis .match-wrapper { animation: slide-up-fade .5s ease-out both; }
+.round-semis .match-wrapper:nth-child(1) { animation-delay: .3s; }
+
+.bracket-center { animation: slide-up-fade .6s ease-out .45s both; }
+
+/* ==========================================
+   COLORES Y JERARQUÍA POR FASE
+   ========================================== */
+
+/* --- OCTAVOS: gris apagado (menor jerarquía) --- */
+.round-octavos .round-title {
+  color: #888;
+  font-size: .9rem;
+  letter-spacing: .5px;
+  text-shadow: none;
+  background: rgba(0,0,0,.65);
+}
+.round-octavos .match {
+  border-color: rgba(130,130,130,.35);
+  background: linear-gradient(135deg, #161616, #131313);
+  box-shadow: 0 3px 10px rgba(0,0,0,.35);
+}
+.round-octavos .match:hover {
+  border-color: rgba(130,130,130,.65);
+  box-shadow: 0 8px 18px rgba(0,0,0,.45);
+}
+
+/* --- CUARTOS: bronce --- */
+.round-cuartos .round-title {
+  color: #c8943a;
+  font-size: 1rem;
+  text-shadow: 0 2px 8px rgba(200,148,58,.35);
+  background: rgba(0,0,0,.7);
+}
+.round-cuartos .match {
+  border-color: rgba(205,127,50,.55);
+  background: linear-gradient(135deg, #1b1812, #151210);
+  box-shadow: 0 4px 14px rgba(0,0,0,.4), 0 0 0 1px rgba(205,127,50,.1) inset;
+}
+.round-cuartos .match:hover {
+  border-color: rgba(205,127,50,.85);
+  box-shadow: 0 10px 22px rgba(0,0,0,.5), 0 0 16px rgba(205,127,50,.22);
+}
+
+/* --- SEMIS: plata --- */
+.round-semis .round-title {
+  color: #d8d8e8;
+  font-size: 1.15rem;
+  text-shadow: 0 2px 10px rgba(210,210,230,.4);
+  background: rgba(0,0,0,.72);
+}
+.round-semis .match {
+  border-color: rgba(195,195,215,.6);
+  background: linear-gradient(135deg, #1c1c1f, #171719);
+  box-shadow: 0 5px 18px rgba(0,0,0,.42), 0 0 0 1px rgba(200,200,220,.12) inset;
+}
+.round-semis .match:hover {
+  border-color: rgba(200,200,220,.9);
+  box-shadow: 0 12px 26px rgba(0,0,0,.52), 0 0 18px rgba(200,200,220,.2);
+}
+
+/* --- FINAL: oro, grande, con brillo animado --- */
+.round-final .round-title {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #ffd700;
+  letter-spacing: 3px;
+  text-shadow: 0 0 22px rgba(255,215,0,.8), 0 4px 14px rgba(255,215,0,.4);
+  animation: title-glow-pulse 2.5s ease-in-out infinite;
+  background: rgba(0,0,0,.75);
+  padding: 10px 28px;
+}
+.round-final .match {
+  border: 2px solid #ffd700;
+  background: linear-gradient(135deg, #1f1d0a, #191700);
+  animation: border-glow-pulse 3s ease-in-out 1s infinite;
+  transform: scale(1.06);
+}
+.round-final .match:hover {
+  transform: scale(1.09) translateY(-3px);
+}
+
+/* En mobile no se escala (ya lo hace el media query) */
+@media (max-width: 768px) {
+  .round-final .round-title {
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    padding: 8px 18px;
+  }
+  .round-final .match {
+    transform: none;
+    animation: border-glow-pulse 3s ease-in-out 1s infinite;
+  }
+  .round-final .match:hover {
+    transform: translateY(-2px);
+  }
+  .round-octavos .round-title,
+  .round-cuartos .round-title,
+  .round-semis .round-title {
+    font-size: .95rem;
+  }
 }

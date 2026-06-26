@@ -28,19 +28,36 @@ function puntosPorFase(fase) {
 export async function generarRankingTorneo(client, torneoId) {
   const id = Number(torneoId);
 
-  // 1) Verificar torneo (nombre + categoria_id + formato)
+  // 1) Verificar torneo (nombre + categoria + formato)
   const tRes = await client.query(
-    "SELECT nombre_torneo, categoria_id, formato_categoria FROM torneo WHERE id_torneo = $1",
+    `
+      SELECT t.nombre_torneo,
+             t.categoria_id,
+             t.formato_categoria,
+             t.suma_categoria,
+             c.valor_numerico AS categoria_num
+      FROM torneo t
+      LEFT JOIN categoria c ON c.id_categoria = t.categoria_id
+      WHERE t.id_torneo = $1
+    `,
     [id]
   );
   if (!tRes.rowCount) throw new Error("TORNEO_NO_ENCONTRADO");
 
   const nombreTorneo = tRes.rows[0].nombre_torneo;
-  const categoriaTorneoId = tRes.rows[0].categoria_id; // FK a categoria
   const formatoTorneo = tRes.rows[0].formato_categoria;
+  const sumaCategoria = tRes.rows[0].suma_categoria;
+  const categoriaNum = tRes.rows[0].categoria_num;
 
-  // 🔒 Solo generamos ranking para torneos de CATEGORÍA FIJA
-  if (!categoriaTorneoId || formatoTorneo !== "categoria_fija") {
+  // Determinar la categoría numérica a usar en ranking_jugador.categoria
+  let categoriaRanking = null;
+  if (formatoTorneo === "categoria_fija") {
+    categoriaRanking = categoriaNum ?? null;
+  } else if (formatoTorneo === "suma") {
+    categoriaRanking = sumaCategoria != null ? Number(sumaCategoria) : null;
+  }
+
+  if (categoriaRanking == null || Number.isNaN(Number(categoriaRanking))) {
     throw new Error("TORNEO_SIN_CATEGORIA_PARA_RANKING");
   }
 
@@ -269,7 +286,7 @@ export async function generarRankingTorneo(client, torneoId) {
     if (j1) {
       const r1 = await client.query(
         "SELECT id, puntos FROM ranking_jugador WHERE jugador_id = $1 AND categoria = $2",
-        [eq.jugador1_id, categoriaTorneoId]
+          [eq.jugador1_id, categoriaRanking]
       );
 
       if (r1.rowCount) {
@@ -296,7 +313,7 @@ export async function generarRankingTorneo(client, torneoId) {
             nombreTorneo,
             fase,
             puntosTotalesEquipo,
-            categoriaTorneoId,
+            categoriaRanking,
           ]
         );
       }
@@ -306,7 +323,7 @@ export async function generarRankingTorneo(client, torneoId) {
     if (j2) {
       const r2 = await client.query(
         "SELECT id, puntos FROM ranking_jugador WHERE jugador_id = $1 AND categoria = $2",
-        [eq.jugador2_id, categoriaTorneoId]
+        [eq.jugador2_id, categoriaRanking]
       );
 
       if (r2.rowCount) {
@@ -333,7 +350,7 @@ export async function generarRankingTorneo(client, torneoId) {
             nombreTorneo,
             fase,
             puntosTotalesEquipo,
-            categoriaTorneoId,
+            categoriaRanking,
           ]
         );
       }
@@ -415,13 +432,13 @@ router.get("/ranking", async (req, res) => {
              torneo_participado,
              fase_llegada,
              puntos,
-             categoria_id AS categoria
+             categoria AS categoria
       FROM ranking_jugador
     `;
     const params = [];
 
     if (categoria) {
-      sql += " WHERE categoria_id = $1";
+      sql += " WHERE categoria = $1";
       params.push(Number(categoria));
     }
 

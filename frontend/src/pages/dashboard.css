@@ -92,11 +92,18 @@
 }
 
 .section-title {
-    font-size: 1.2rem;
-    color: #ddd;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid #333;
+    font-size: 1.1rem;
+    color: #ffd700;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
     padding-bottom: 0.5rem;
+    border-bottom: 2px solid #ffd700;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Tournament Table */
@@ -357,5 +364,90 @@
 
     .full-width-chart {
         grid-column: span 1;
+    }
+}
+
+/* ===== RESPONSIVE MÓVIL ===== */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 12px;
+    }
+
+    .dashboard-title {
+        font-size: 1.3rem;
+        letter-spacing: 0;
+        margin-bottom: 1.2rem;
+        /* Evitar overflow del título */
+        overflow-wrap: break-word;
+        word-break: break-word;
+    }
+
+    /* KPIs: 2 por fila, más compactos */
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 1.2rem;
+    }
+
+    .kpi-card {
+        padding: 0.9rem 0.6rem;
+    }
+
+    .kpi-value {
+        font-size: 1.6rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .kpi-label {
+        font-size: 0.7rem;
+        text-align: center;
+    }
+
+    .section-container {
+        padding: 0.9rem;
+    }
+
+    .section-title {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Tabla de torneos: ocultar columnas secundarias en móvil */
+    .tournament-table th:nth-child(2),
+    .tournament-table td:nth-child(2),
+    .tournament-table th:nth-child(3),
+    .tournament-table td:nth-child(3) {
+        display: none;
+    }
+
+    .tournament-table th,
+    .tournament-table td {
+        padding: 0.6rem 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    /* Gráficos más pequeños */
+    .chart-wrapper {
+        height: 200px;
+    }
+
+    /* Alertas y actividad más compactos */
+    .alerts-list {
+        max-height: 280px;
+    }
+
+    .activity-item {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .activity-icon-wrapper {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+    }
+
+    .activity-text {
+        font-size: 0.85rem;
     }
 }

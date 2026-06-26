@@ -1,10 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
 /* Reset básico */
+html {
+  overflow-x: hidden;
+}
+
 body {
   background-color: #0a0a0a;
   color: #ffd700;
   font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
 }
 
 /* HEADER */
@@ -64,9 +69,10 @@ header {
 
 .navbar-links {
   display: flex;
-  gap: 16px;
-  /* Reducido de 32px para hacer el "rectángulo" más chico */
+  flex: 1;
+  justify-content: space-evenly;
   align-items: center;
+  gap: 0;
 }
 
 /* Enlaces de Navegación */
@@ -74,12 +80,12 @@ header {
 .nav-link {
   color: #e0e0e0;
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   text-decoration: none !important;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.4px;
   transition: color 0.3s ease;
-  padding: 6px 8px;
+  padding: 6px 5px;
   white-space: nowrap;
   /* Eliminar display inline-block problemáticos si existen, dejar default o flex padres decidir */
 }
@@ -473,7 +479,9 @@ button {
 
 .navbar-links {
   display: flex;
-  gap: 48px;
+  flex: 1;
+  justify-content: space-evenly;
+  gap: 0;
 }
 
 .navbar-logo {
@@ -483,7 +491,6 @@ button {
 .navbar-links a {
   color: #ffc107;
   font-weight: bold;
-  font-size: 16px;
   text-decoration: none;
   transition: transform 0.2s ease, color 0.3s ease;
   position: relative;
@@ -1758,6 +1765,46 @@ select:focus {
 }
 
 
+/* SELECTOR MÓVIL DE MES */
+.meses-select-mobile-wrapper {
+  display: none; /* oculto en desktop */
+}
+
+.meses-select-mobile {
+  width: 100%;
+  padding: 14px 16px;
+  background-color: #0a0a0a;
+  color: #ffc107;
+  border: none;
+  border-bottom: 2px solid #ffc107;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffc107' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 44px;
+}
+
+@media (max-width: 768px) {
+  /* Ocultar botones, mostrar dropdown */
+  .meses-scroll {
+    display: none;
+  }
+
+  .meses-select-mobile-wrapper {
+    display: block;
+    background-color: #0a0a0a;
+    border-bottom: 1px solid #333;
+  }
+}
+
 /* COLOR TORNEOS YA FINALIZADOS*/
 
 .grupo-finalizado {
@@ -1845,7 +1892,7 @@ select:focus {
 }
 
 
-@media (max-width: 1280px) {
+@media (max-width: 1280px) and (min-width: 769px) {
   .navbar-container {
     flex-direction: column;
     align-items: center;
@@ -1863,8 +1910,86 @@ select:focus {
     height: 60px;
     margin-bottom: 16px;
   }
+}
 
+/* ===== NAVBAR MÓVIL — HAMBURGUESA ===== */
+.navbar-hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ffd700;
+  padding: 8px;
+  line-height: 0;
+  flex-shrink: 0;
+}
 
+@media (max-width: 768px) {
+  /* .navbar ya tiene position:sticky, sirve como ancla del dropdown */
+
+  .navbar-container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .navbar-logo-container img {
+    width: 80px;
+    height: auto;
+  }
+
+  .navbar-hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Dropdown: se ancla al <nav> full-width */
+  .navbar-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #050505;
+    border-top: 1px solid #222;
+    border-bottom: 2px solid #ffd700;
+    padding: 8px 0 16px;
+    gap: 0;
+    z-index: 1000;
+    align-items: stretch;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+  }
+
+  .navbar-links.open {
+    display: flex;
+  }
+
+  /* Cada ítem ocupa el ancho completo */
+  .navbar-links .nav-link {
+    width: 100%;
+    padding: 14px 20px;
+    border-bottom: 1px solid #1a1a1a;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    display: block;
+  }
+
+  .navbar-links .nav-link:last-of-type {
+    border-bottom: none;
+  }
+
+  .navbar-links .nav-logout {
+    margin: 12px 20px 0;
+    width: calc(100% - 40px);
+    justify-content: flex-start;
+    padding: 12px 16px;
+  }
 }
 
 /* ===== Bracket invertido (derecha → izquierda) ===== */
@@ -2218,8 +2343,7 @@ select:focus {
 /* grilla de grupos */
 .grupos-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
-  /* Widen cards */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 24px;
   width: 100%;
 }
@@ -2562,11 +2686,11 @@ select:focus {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  /* Alineado al inicio, no center */
   min-height: 100vh;
   padding-top: 30px;
-  /* Espacio controlado desde la navbar */
   width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 /* =========================================================
@@ -2710,4 +2834,116 @@ select:focus {
   background-color: #2196f3;
   color: #fff;
   border: 1px solid #1976d2;
+}
+
+/* ===== TABLA DE GRUPOS + PARTIDOS — RESPONSIVE MÓVIL ===== */
+
+/* Wrapper que maneja el scroll horizontal de la tabla de posiciones */
+.grupo-tabla-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  .layout-content {
+    padding-top: 8px;
+  }
+
+  .grupo-tarjeta {
+    padding: 12px 8px;
+  }
+
+  /* Tabla con columnas fijas para que Equipo no se coma el espacio */
+  .grupo-tabla {
+    font-size: 0.72rem;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  /* Anchos fijos en mobile: Pos · Equipo(auto) · Pts · J · DS · GS */
+  .grupo-tabla th:nth-child(1),
+  .grupo-tabla td:nth-child(1) { width: 26px; }   /* Pos */
+  .grupo-tabla th:nth-child(3),
+  .grupo-tabla td:nth-child(3) { width: 32px; }   /* Pts */
+  .grupo-tabla th:nth-child(4),
+  .grupo-tabla td:nth-child(4) { width: 24px; }   /* J   */
+  .grupo-tabla th:nth-child(7),
+  .grupo-tabla td:nth-child(7) { width: 30px; }   /* DS  */
+  .grupo-tabla th:nth-child(10),
+  .grupo-tabla td:nth-child(10) { width: 30px; }  /* GS  */
+
+  .grupo-tabla th,
+  .grupo-tabla td {
+    padding: 0.25rem 0.2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Ocultar F(5) C(6) GF(8) GC(9) */
+  /* Visibles: Pos(1) · Equipo(2) · Pts(3) · J(4) · DS(7) · GS(10) */
+  .grupo-tabla th:nth-child(5),
+  .grupo-tabla td:nth-child(5),
+  .grupo-tabla th:nth-child(6),
+  .grupo-tabla td:nth-child(6),
+  .grupo-tabla th:nth-child(8),
+  .grupo-tabla td:nth-child(8),
+  .grupo-tabla th:nth-child(9),
+  .grupo-tabla td:nth-child(9) {
+    display: none !important;
+    width: 0 !important;
+    padding: 0 !important;
+  }
+
+  .grupo-equipo-nombre {
+    text-align: left;
+  }
+
+  /* ===== PARTIDO CARDS ===== */
+  .grupo-partido-card {
+    padding: 0.4rem 0.6rem;
+  }
+
+  .grupo-partido-detalle {
+    grid-template-columns: 60px 1fr 70px;
+    gap: 6px;
+  }
+
+  /* Evitar que el nombre largo expanda el 1fr */
+  .game-col-teams {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .team-name-text {
+    font-size: 0.8rem;
+    min-width: 0;
+  }
+
+  .team-row {
+    gap: 5px;
+    min-width: 0;
+  }
+
+  .game-col-date {
+    font-size: 0.7rem;
+  }
+
+  .game-col-status {
+    font-size: 0.8rem;
+  }
+
+  .set-row {
+    font-size: 0.78rem;
+    height: auto;
+  }
+
+  .tabla-input {
+    width: 28px !important;
+    height: 28px;
+    font-size: 0.8rem;
+    margin: 0 2px;
+    padding: 2px !important;
+  }
 }

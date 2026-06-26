@@ -64,6 +64,16 @@ function CrearTorneo() {
       return;
     }
 
+    // Validaciones de fechas
+    if (fechaInicio && fecha_cierre_inscripcion && fecha_cierre_inscripcion > fechaInicio) {
+      setError('La fecha de cierre de inscripción no puede ser posterior al inicio del torneo.');
+      return;
+    }
+    if (modalidad !== 'liga' && fechaInicio && fechaFin && fechaFin < fechaInicio) {
+      setError('La fecha de finalización no puede ser anterior al inicio del torneo.');
+      return;
+    }
+
     try {
       // 👇 YA NO PEDIMOS /torneos/nuevo-id, lo genera la DB
       await axios.post(`${process.env.REACT_APP_API_URL}/torneos`, {
@@ -172,15 +182,23 @@ function CrearTorneo() {
     }
   };
 
-  const eliminarEquipo = async (id_equipo) => {
+  const eliminarEquipo = async (id_equipo, id_torneo) => {
     try {
-      await axios.delete(
-        `${process.env.REACT_APP_API_URL}/equipos/${id_equipo}`
-      );
-      alert('Equipo eliminado');
-      obtenerTorneos();
+      const check = await axios.get(`${process.env.REACT_APP_API_URL}/equipos/${id_equipo}/tiene-partidos`);
+      const tienePartidos = check.data?.tienePartidos;
+
+      const mensaje = tienePartidos
+        ? '⚠️ Este equipo ya tiene partidos generados.\nAl eliminarlo se borrarán sus partidos de grupos y playoff.\nVas a tener que regenerar los grupos.\n\n¿Confirmás?'
+        : '¿Eliminás este equipo?';
+
+      if (!window.confirm(mensaje)) return;
+
+      await axios.delete(`${process.env.REACT_APP_API_URL}/equipos/${id_equipo}`);
+      await obtenerTorneos();
+      if (id_torneo) await obtenerEquipos(id_torneo);
     } catch (err) {
-      console.error('Error al eliminar equipo');
+      console.error('Error al eliminar equipo', err);
+      alert('No se pudo eliminar el equipo.');
     }
   };
 
@@ -197,6 +215,18 @@ function CrearTorneo() {
   };
 
   const editarTorneo = async () => {
+    // Validaciones de fechas
+    if (formEdit.fecha_inicio && formEdit.fecha_cierre_inscripcion &&
+        formEdit.fecha_cierre_inscripcion > formEdit.fecha_inicio) {
+      alert('La fecha de cierre de inscripción no puede ser posterior al inicio del torneo.');
+      return;
+    }
+    if (formEdit.modalidad !== 'liga' && formEdit.fecha_inicio && formEdit.fecha_fin &&
+        formEdit.fecha_fin < formEdit.fecha_inicio) {
+      alert('La fecha de finalización no puede ser anterior al inicio del torneo.');
+      return;
+    }
+
     try {
       const payload = {
         nombre_torneo: formEdit.nombre_torneo,
@@ -247,13 +277,48 @@ function CrearTorneo() {
         { method: 'POST' }
       );
 
-      setTorneoConGrupos(idTorneo);
       if (res.ok) {
+        setTorneoConGrupos(idTorneo);
         setMensajeGrupos('Grupos generados correctamente');
         obtenerTorneos();
-      } else {
-        setMensajeGrupos('Error al generar grupos');
+        return;
       }
+
+      const data = await res.json().catch(() => ({}));
+
+      // Grupos ya existen → ofrecer regenerar
+      if (res.status === 400 && data.error?.includes('ya fueron generados')) {
+        const confirmar = window.confirm(
+          '⚠️ Ya existen grupos para este torneo.\n\nSi regenerás, se borrarán todos los resultados de partidos de grupos y playoff.\n\n¿Confirmás la regeneración?'
+        );
+        if (!confirmar) return;
+
+        // Borrar grupos existentes
+        const delRes = await fetch(
+          `${process.env.REACT_APP_API_URL}/torneos/${idTorneo}/grupos`,
+          { method: 'DELETE' }
+        );
+        if (!delRes.ok) {
+          setMensajeGrupos('Error al eliminar los grupos existentes');
+          return;
+        }
+
+        // Regenerar
+        const regenRes = await fetch(
+          `${process.env.REACT_APP_API_URL}/torneos/${idTorneo}/generar-grupos`,
+          { method: 'POST' }
+        );
+        if (regenRes.ok) {
+          setTorneoConGrupos(idTorneo);
+          setMensajeGrupos('Grupos regenerados correctamente');
+          obtenerTorneos();
+        } else {
+          setMensajeGrupos('Error al regenerar grupos');
+        }
+        return;
+      }
+
+      setMensajeGrupos(data.error || 'Error al generar grupos');
     } catch (err) {
       console.error('Error generando grupos:', err);
       setMensajeGrupos('Ocurrió un error inesperado');
@@ -323,6 +388,7 @@ function CrearTorneo() {
                 <input
                   type="date"
                   value={fechaFin}
+                  min={fechaInicio || undefined}
                   onChange={(e) => setFechaFin(e.target.value)}
                   required={modalidad !== 'liga'}
                 />
@@ -333,6 +399,7 @@ function CrearTorneo() {
             <input
               type="date"
               value={fecha_cierre_inscripcion}
+              max={fechaInicio || undefined}
               onChange={(e) => setFechaCierreInscripcion(e.target.value)}
               required
             />
@@ -617,7 +684,7 @@ function CrearTorneo() {
                             {e.nombre_jugador2} {e.apellido_jugador2}
                           </span>
                           <button
-                            onClick={() => eliminarEquipo(e.id_equipo)}
+                            onClick={() => eliminarEquipo(e.id_equipo, t.id_torneo)}
                             className="btn-warning"
                           >
                             Eliminar equipo
@@ -675,6 +742,7 @@ function CrearTorneo() {
                     <input
                       type="date"
                       value={formEdit.fecha_fin || ''}
+                      min={formEdit.fecha_inicio || undefined}
                       onChange={(e) =>
                         setFormEdit({ ...formEdit, fecha_fin: e.target.value })
                       }
@@ -688,6 +756,7 @@ function CrearTorneo() {
                 <input
                   type="date"
                   value={formEdit.fecha_cierre_inscripcion || ''}
+                  max={formEdit.fecha_inicio || undefined}
                   onChange={(e) =>
                     setFormEdit({
                       ...formEdit,
