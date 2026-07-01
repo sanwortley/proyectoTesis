@@ -1,6 +1,6 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 // Dirección from — si tenés dominio propio: 'noreply@tudominio.com'
 // Sin dominio verificado usá: 'onboarding@resend.dev' (solo para testing a tu propio mail)
