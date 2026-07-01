@@ -36,7 +36,7 @@ function RegistroOrganizador() {
         }
 
         try {
-            await axios.post('/api/registro-organizadores', formData);
+            await axios.post(`${process.env.REACT_APP_API_URL}/registro-organizadores`, formData);
             setSuccess('¡Organizador registrado con éxito! Redirigiendo...');
             setTimeout(() => navigate('/'), 2000); // Ir al login
         } catch (err) {
