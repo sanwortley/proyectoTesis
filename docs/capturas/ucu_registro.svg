@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 870 560" font-family="Arial,sans-serif" font-size="10">
+  <rect width="870" height="560" fill="white"/>
+  <text x="435" y="17" text-anchor="middle" font-size="13" font-weight="bold">UCU — Módulo Registro de Jugador</text>
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7" fill="none" stroke="#333" stroke-width="1.2"/>
+    </marker>
+    <marker id="blu" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7" fill="none" stroke="#2E4A7A" stroke-width="1.2"/>
+    </marker>
+  </defs>
+
+  <!-- Boundary -->
+  <rect x="145" y="28" width="700" height="510" rx="6" fill="#f7f9fc" stroke="#2E4A7A" stroke-width="1.5"/>
+  <text x="495" y="46" text-anchor="middle" font-size="10" font-weight="bold" fill="#2E4A7A">Sistema — Módulo Registro</text>
+
+  <!-- Actor: Jugador -->
+  <circle cx="60" cy="220" r="14" fill="none" stroke="#333" stroke-width="1.5"/>
+  <line x1="60" y1="234" x2="60" y2="270" stroke="#333" stroke-width="1.5"/>
+  <line x1="42" y1="248" x2="78" y2="248" stroke="#333" stroke-width="1.5"/>
+  <line x1="60" y1="270" x2="42" y2="293" stroke="#333" stroke-width="1.5"/>
+  <line x1="60" y1="270" x2="78" y2="293" stroke="#333" stroke-width="1.5"/>
+  <text x="60" y="307" text-anchor="middle" font-size="9">Jugador</text>
+
+  <!-- UC Central: Registrar Jugador -->
+  <ellipse cx="340" cy="220" rx="92" ry="28" fill="#d6e4f7" stroke="#2E4A7A" stroke-width="1.5"/>
+  <text x="340" y="216" text-anchor="middle" font-weight="bold">Registrar Jugador</text>
+  <text x="340" y="230" text-anchor="middle" font-size="9">(Registro)</text>
+
+  <!-- UC: Completar campos del formulario -->
+  <ellipse cx="580" cy="70" rx="95" ry="23" fill="#e8f0fb" stroke="#2E4A7A" stroke-width="1.2"/>
+  <text x="580" y="66" text-anchor="middle">Completar campos</text>
+  <text x="580" y="79" text-anchor="middle">del formulario</text>
+
+  <!-- UC: Validar campos obligatorios -->
+  <ellipse cx="580" cy="155" rx="95" ry="23" fill="#e8f0fb" stroke="#2E4A7A" stroke-width="1.2"/>
+  <text x="580" y="151" text-anchor="middle">Validar campos</text>
+  <text x="580" y="165" text-anchor="middle">obligatorios</text>
+
+  <!-- UC: Hashear contraseña -->
+  <ellipse cx="580" cy="245" rx="95" ry="23" fill="#e8f0fb" stroke="#2E4A7A" stroke-width="1.2"/>
+  <text x="580" y="241" text-anchor="middle">Hashear contraseña</text>
+  <text x="580" y="255" text-anchor="middle">(bcrypt)</text>
+
+  <!-- UC: Guardar jugador en BD -->
+  <ellipse cx="580" cy="335" rx="95" ry="23" fill="#e8f0fb" stroke="#2E4A7A" stroke-width="1.2"/>
+  <text x="580" y="331" text-anchor="middle">Guardar jugador</text>
+  <text x="580" y="345" text-anchor="middle">en BD</text>
+
+  <!-- UC: Mostrar navbar -->
+  <ellipse cx="340" cy="110" rx="90" ry="23" fill="#e8f0fb" stroke="#2E4A7A" stroke-width="1.2"/>
+  <text x="340" y="115" text-anchor="middle">Mostrar navbar</text>
+
+  <!-- Extends: Mostrar error de validación -->
+  <ellipse cx="760" cy="155" rx="90" ry="24" fill="#fce8e8" stroke="#c00" stroke-width="1.2"/>
+  <text x="760" y="151" text-anchor="middle">Mostrar error</text>
+  <text x="760" y="165" text-anchor="middle">de validación</text>
+
+  <!-- Extends: Mostrar error email duplicado -->
+  <ellipse cx="760" cy="335" rx="90" ry="24" fill="#fce8e8" stroke="#c00" stroke-width="1.2"/>
+  <text x="760" y="331" text-anchor="middle">Mostrar error</text>
+  <text x="760" y="345" text-anchor="middle">email duplicado</text>
+
+  <!-- Extends: Mostrar mensaje de éxito -->
+  <ellipse cx="340" cy="360" rx="90" ry="24" fill="#e8fce8" stroke="#4a7a2e" stroke-width="1.2"/>
+  <text x="340" y="356" text-anchor="middle">Mostrar mensaje</text>
+  <text x="340" y="370" text-anchor="middle">de confirmación</text>
+
+  <!-- Extends: Aplicar diseño responsive -->
+  <ellipse cx="200" cy="90" rx="85" ry="24" fill="#f0f8f0" stroke="#4a7a2e" stroke-width="1"/>
+  <text x="200" y="86" text-anchor="middle" font-size="9">Aplicar diseño</text>
+  <text x="200" y="100" text-anchor="middle" font-size="9">responsive</text>
+
+  <!-- Extends: Respetar estilo gráfico -->
+  <ellipse cx="200" cy="360" rx="85" ry="24" fill="#f0f8f0" stroke="#4a7a2e" stroke-width="1"/>
+  <text x="200" y="356" text-anchor="middle" font-size="9">Respetar estilo</text>
+  <text x="200" y="370" text-anchor="middle" font-size="9">gráfico</text>
+
+  <!-- Navbar Extends: navegar login -->
+  <ellipse cx="210" cy="55" rx="60" ry="20" fill="#f0f4f0" stroke="#888" stroke-width="1"/>
+  <text x="210" y="60" text-anchor="middle" font-size="9">Navegar Login</text>
+
+  <!-- LÍNEAS -->
+  <line x1="74" y1="220" x2="248" y2="220" stroke="#333" stroke-width="1.3"/>
+
+  <!-- Registrar -use-> Completar campos -->
+  <line x1="410" y1="200" x2="485" y2="83" stroke="#2E4A7A" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="448" y="135" text-anchor="middle" font-size="8" fill="#2E4A7A">«use»</text>
+
+  <!-- Registrar -use-> Validar campos -->
+  <line x1="432" y1="210" x2="485" y2="158" stroke="#2E4A7A" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="465" y="178" text-anchor="middle" font-size="8" fill="#2E4A7A">«use»</text>
+
+  <!-- Registrar -use-> Hashear -->
+  <line x1="432" y1="230" x2="485" y2="245" stroke="#2E4A7A" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="465" y="235" text-anchor="middle" font-size="8" fill="#2E4A7A">«use»</text>
+
+  <!-- Registrar -use-> Guardar BD -->
+  <line x1="415" y1="240" x2="485" y2="332" stroke="#2E4A7A" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="445" y="300" text-anchor="middle" font-size="8" fill="#2E4A7A">«use»</text>
+
+  <!-- Registrar -use-> Mostrar navbar -->
+  <line x1="340" y1="192" x2="340" y2="133" stroke="#2E4A7A" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="313" y="162" text-anchor="middle" font-size="8" fill="#2E4A7A">«use»</text>
+
+  <!-- Validar campos Extends→ Mostrar error validación -->
+  <line x1="675" y1="155" x2="670" y2="155" stroke="#333" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="715" y="142" text-anchor="middle" font-size="8">Extends</text>
+
+  <!-- Guardar BD Extends→ Mostrar error email -->
+  <line x1="675" y1="335" x2="670" y2="335" stroke="#333" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="715" y="322" text-anchor="middle" font-size="8">Extends</text>
+
+  <!-- Guardar BD Extends→ Mostrar éxito -->
+  <line x1="485" y1="345" x2="430" y2="360" stroke="#333" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="450" y="345" text-anchor="middle" font-size="8">Extends</text>
+
+  <!-- Aplicar responsive Extends→ Registrar -->
+  <line x1="268" y1="104" x2="295" y2="198" stroke="#4a7a2e" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="266" y="155" text-anchor="middle" font-size="8" fill="#4a7a2e">Extends</text>
+
+  <!-- Respetar estilo Extends→ Registrar -->
+  <line x1="268" y1="348" x2="295" y2="242" stroke="#4a7a2e" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="265" y="295" text-anchor="middle" font-size="8" fill="#4a7a2e">Extends</text>
+
+  <!-- Navbar Extends→ Navegar login -->
+  <line x1="280" y1="100" x2="260" y2="68" stroke="#333" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="255" y="82" text-anchor="middle" font-size="8">Extends</text>
+
+  <!-- Leyenda -->
+  <rect x="160" y="483" width="355" height="46" rx="3" fill="#f9f9f9" stroke="#ccc"/>
+  <text x="338" y="499" text-anchor="middle" font-weight="bold" font-size="9">Leyenda</text>
+  <line x1="170" y1="512" x2="205" y2="512" stroke="#2E4A7A" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="210" y="516" font-size="8">«use» — incluye el caso de uso</text>
+  <line x1="170" y1="524" x2="205" y2="524" stroke="#333" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="210" y="528" font-size="8">Extends — comportamiento alternativo/extendido</text>
+</svg>

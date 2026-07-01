@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 340" font-family="Arial,sans-serif" font-size="10">
+  <rect width="640" height="340" fill="white"/>
+  <text x="320" y="18" text-anchor="middle" font-size="13" font-weight="bold">Diagrama de Secuencia — Cargar Resultados</text>
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="7" refX="7" refY="3.5" orient="auto"><polygon points="0,0 8,3.5 0,7" fill="#333"/></marker>
+    <marker id="open" markerWidth="8" markerHeight="7" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7" fill="none" stroke="#333" stroke-width="1.2"/></marker>
+  </defs>
+  <rect x="20" y="30" width="100" height="28" rx="3" fill="#2E4A7A"/>
+  <text x="70" y="48" text-anchor="middle" fill="white" font-weight="bold">Organizador</text>
+  <rect x="178" y="30" width="90" height="28" rx="3" fill="#2E4A7A"/>
+  <text x="223" y="48" text-anchor="middle" fill="white" font-weight="bold">Frontend</text>
+  <rect x="328" y="30" width="100" height="28" rx="3" fill="#4a7a2e"/>
+  <text x="378" y="48" text-anchor="middle" fill="white" font-weight="bold">Backend API</text>
+  <rect x="498" y="30" width="100" height="28" rx="3" fill="#7a2e2e"/>
+  <text x="548" y="48" text-anchor="middle" fill="white" font-weight="bold">Base de Datos</text>
+
+  <line x1="70" y1="58" x2="70" y2="335" stroke="#999" stroke-width="1" stroke-dasharray="5,4"/>
+  <line x1="223" y1="58" x2="223" y2="335" stroke="#999" stroke-width="1" stroke-dasharray="5,4"/>
+  <line x1="378" y1="58" x2="378" y2="335" stroke="#999" stroke-width="1" stroke-dasharray="5,4"/>
+  <line x1="548" y1="58" x2="548" y2="335" stroke="#999" stroke-width="1" stroke-dasharray="5,4"/>
+
+  <line x1="70" y1="90" x2="218" y2="90" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="145" y="85" text-anchor="middle" font-size="9">1. ingresa sets del grupo A</text>
+  <line x1="223" y1="112" x2="373" y2="112" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="298" y="107" text-anchor="middle" font-size="9">2. POST /grupos/:id/resultados</text>
+  <line x1="378" y1="132" x2="543" y2="132" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="460" y="127" text-anchor="middle" font-size="9">3. UPDATE partidos_grupo + equipos_grupo</text>
+  <line x1="543" y1="152" x2="383" y2="152" stroke="#555" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#open)"/>
+  <text x="460" y="165" text-anchor="middle" font-size="9">4. OK</text>
+  <line x1="373" y1="178" x2="228" y2="178" stroke="#555" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#open)"/>
+  <text x="300" y="173" text-anchor="middle" font-size="9">5. grupos actualizados</text>
+
+  <!-- Al terminar todos los grupos -->
+  <text x="310" y="200" text-anchor="middle" font-size="9" fill="#555">— al completar todos los grupos —</text>
+  <line x1="223" y1="210" x2="373" y2="210" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="298" y="205" text-anchor="middle" font-size="9">6. POST /torneos/:id/generar-playoff</text>
+  <line x1="378" y1="230" x2="543" y2="230" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="460" y="225" text-anchor="middle" font-size="9">7. INSERT partidos_llave (seeding snake)</text>
+  <line x1="543" y1="250" x2="383" y2="250" stroke="#555" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#open)"/>
+  <text x="460" y="263" text-anchor="middle" font-size="9">8. OK</text>
+
+  <!-- Final → ranking -->
+  <text x="310" y="282" text-anchor="middle" font-size="9" fill="#555">— al registrar resultado de la Final —</text>
+  <line x1="378" y1="292" x2="543" y2="292" stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="460" y="287" text-anchor="middle" font-size="9">9. INSERT ranking_jugador (puntos)</text>
+  <line x1="543" y1="312" x2="383" y2="312" stroke="#555" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#open)"/>
+  <text x="460" y="325" text-anchor="middle" font-size="9">10. ranking actualizado</text>
+</svg>

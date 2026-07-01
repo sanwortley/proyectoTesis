@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 280" font-family="Arial,sans-serif" font-size="10">
+  <rect width="660" height="280" fill="white"/>
+  <text x="330" y="18" text-anchor="middle" font-size="13" font-weight="bold">Diagrama de Clases — Crear Torneo</text>
+  <defs>
+    <marker id="open" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6" fill="none" stroke="#333" stroke-width="1.2"/>
+    </marker>
+    <marker id="comp" markerWidth="10" markerHeight="10" refX="0" refY="5" orient="auto">
+      <polygon points="0,5 5,0 10,5 5,10" fill="#333"/>
+    </marker>
+  </defs>
+
+  <!-- TorneoForm (boundary) -->
+  <rect x="10" y="30" width="155" height="18" rx="2" fill="#2E4A7A"/>
+  <text x="87" y="43" text-anchor="middle" fill="white" font-size="9">«boundary»</text>
+  <rect x="10" y="48" width="155" height="18" fill="#dce9f8" stroke="#2E4A7A"/>
+  <text x="87" y="61" text-anchor="middle" font-weight="bold">TorneoForm</text>
+  <rect x="10" y="66" width="155" height="65" fill="white" stroke="#2E4A7A"/>
+  <text x="20" y="79" font-size="9">– nombre: string</text>
+  <text x="20" y="92" font-size="9">– fecha_inicio: date</text>
+  <text x="20" y="105" font-size="9">– max_equipos: int</text>
+  <text x="20" y="118" font-size="9">– modalidad: string</text>
+  <rect x="10" y="131" width="155" height="20" fill="#f0f4fc" stroke="#2E4A7A"/>
+  <text x="20" y="144" font-size="9">+ handleSubmit()</text>
+
+  <!-- TorneoController (control) -->
+  <rect x="220" y="30" width="165" height="18" rx="2" fill="#4a7a2e"/>
+  <text x="302" y="43" text-anchor="middle" fill="white" font-size="9">«control»</text>
+  <rect x="220" y="48" width="165" height="18" fill="#e8f5d8" stroke="#4a7a2e"/>
+  <text x="302" y="61" text-anchor="middle" font-weight="bold">TorneoController</text>
+  <rect x="220" y="66" width="165" height="20" fill="white" stroke="#4a7a2e"/>
+  <text x="230" y="79" font-size="9">(sin atributos de estado)</text>
+  <rect x="220" y="86" width="165" height="52" fill="#f4fcea" stroke="#4a7a2e"/>
+  <text x="230" y="99" font-size="9">+ crearTorneo(datos): Torneo</text>
+  <text x="230" y="112" font-size="9">+ eliminarTorneo(id)</text>
+  <text x="230" y="125" font-size="9">+ generarGrupos(id)</text>
+
+  <!-- Torneo (entity) -->
+  <rect x="445" y="30" width="200" height="18" rx="2" fill="#7a2e2e"/>
+  <text x="545" y="43" text-anchor="middle" fill="white" font-size="9">«entity»</text>
+  <rect x="445" y="48" width="200" height="18" fill="#f8e8e8" stroke="#7a2e2e"/>
+  <text x="545" y="61" text-anchor="middle" font-weight="bold">Torneo</text>
+  <rect x="445" y="66" width="200" height="105" fill="white" stroke="#7a2e2e"/>
+  <text x="455" y="79" font-size="9">– id_torneo: int (PK)</text>
+  <text x="455" y="92" font-size="9">– nombre_torneo: varchar</text>
+  <text x="455" y="105" font-size="9">– fecha_inicio: date</text>
+  <text x="455" y="118" font-size="9">– fecha_fin: date</text>
+  <text x="455" y="131" font-size="9">– max_equipos: int</text>
+  <text x="455" y="144" font-size="9">– modalidad: varchar</text>
+  <text x="455" y="157" font-size="9">– categoria_id: int (FK)</text>
+
+  <!-- Categoria (entity) -->
+  <rect x="445" y="200" width="200" height="18" rx="2" fill="#7a2e2e"/>
+  <text x="545" y="213" text-anchor="middle" fill="white" font-size="9">«entity»</text>
+  <rect x="445" y="218" width="200" height="18" fill="#f8e8e8" stroke="#7a2e2e"/>
+  <text x="545" y="231" text-anchor="middle" font-weight="bold">Categoria</text>
+  <rect x="445" y="236" width="200" height="38" fill="white" stroke="#7a2e2e"/>
+  <text x="455" y="249" font-size="9">– id_categoria: int (PK)</text>
+  <text x="455" y="262" font-size="9">– nombre: varchar</text>
+  <text x="455" y="275" font-size="9">– valor_numerico: int</text>
+
+  <!-- Relations -->
+  <line x1="165" y1="100" x2="220" y2="100" stroke="#333" stroke-width="1.5" marker-end="url(#open)"/>
+  <line x1="385" y1="100" x2="445" y2="100" stroke="#333" stroke-width="1.5" marker-end="url(#open)"/>
+  <text x="395" y="95" font-size="8">crea/gestiona</text>
+  <!-- Torneo uses Categoria -->
+  <line x1="545" y1="171" x2="545" y2="200" stroke="#333" stroke-width="1.5" marker-end="url(#open)"/>
+  <text x="550" y="189" font-size="8">pertenece a</text>
+  <text x="540" y="199" font-size="8">0..1</text>
+</svg>

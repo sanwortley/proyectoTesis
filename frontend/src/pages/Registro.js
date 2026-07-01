@@ -155,6 +155,9 @@ function Registro() {
         />
 
         <button type="submit">Registrarme</button>
+        <button type="button" className="volver-login-boton" onClick={() => navigate('/')}>
+          Volver al Login
+        </button>
       </form>
     </div>
   );

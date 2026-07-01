@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pro Cup Padel — Documentación Sprint 2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --gold: #b8860b;
+    --gold-light: #d4a017;
+    --dark: #1a1a2e;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --border: #d1d5db;
+    --bg-header: #f8f9fa;
+    --accent: #2563eb;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    font-size: 10.5pt;
+    color: var(--text);
+    background: #e5e7eb;
+    line-height: 1.55;
+  }
+
+  /* ============================
+     PAGE SIMULATION
+  ============================ */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    background: white;
+    margin: 0 auto 12px;
+    padding: 20mm 22mm 18mm;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    page-break-after: always;
+    position: relative;
+  }
+
+  .page:last-child { page-break-after: auto; }
+
+  /* ============================
+     COVER PAGE
+  ============================ */
+  .cover {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 257mm;
+  }
+
+  .cover-logo {
+    width: 80px; height: 80px;
+    border: 3px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+    margin-bottom: 28px;
+    background: var(--dark);
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: -1px;
+  }
+
+  .cover-institution {
+    font-size: 10pt;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+  }
+
+  .cover-career {
+    font-size: 10pt;
+    color: var(--muted);
+    margin-bottom: 40px;
+  }
+
+  .cover-title {
+    font-size: 26pt;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+
+  .cover-subtitle {
+    font-size: 13pt;
+    font-weight: 400;
+    color: var(--muted);
+    margin-bottom: 40px;
+  }
+
+  .cover-sprint-badge {
+    display: inline-block;
+    background: var(--dark);
+    color: var(--gold);
+    border: 1.5px solid var(--gold);
+    border-radius: 6px;
+    padding: 6px 22px;
+    font-size: 11pt;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 50px;
+  }
+
+  .cover-divider {
+    width: 60px;
+    height: 3px;
+    background: var(--gold);
+    margin: 0 auto 32px;
+  }
+
+  .cover-meta-table {
+    width: 100%;
+    max-width: 340px;
+    border-collapse: collapse;
+    font-size: 9.5pt;
+    text-align: left;
+  }
+
+  .cover-meta-table td { padding: 5px 10px; border: 1px solid var(--border); }
+  .cover-meta-table td:first-child { font-weight: 600; background: var(--bg-header); width: 40%; color: var(--dark); }
+
+  .cover-footer {
+    position: absolute;
+    bottom: 18mm;
+    left: 0; right: 0;
+    text-align: center;
+    font-size: 8.5pt;
+    color: var(--muted);
+  }
+
+  /* ============================
+     ÍNDICE
+  ============================ */
+  .toc-title {
+    font-size: 18pt;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 24px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--gold);
+  }
+
+  .toc-list { list-style: none; }
+
+  .toc-list li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 5px 0;
+    font-size: 10pt;
+    border-bottom: 1px dotted #d1d5db;
+  }
+
+  .toc-list li.toc-section { font-weight: 600; color: var(--dark); margin-top: 6px; font-size: 10.5pt; }
+  .toc-list li.toc-sub { padding-left: 16px; color: var(--muted); }
+  .toc-num { flex-shrink: 0; margin-left: 8px; color: var(--muted); font-size: 9pt; }
+
+  /* ============================
+     SECTION HEADER
+  ============================ */
+  .section-title {
+    font-size: 15pt;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 18px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-num {
+    background: var(--dark);
+    color: var(--gold);
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11pt;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .subsection-title {
+    font-size: 11.5pt;
+    font-weight: 600;
+    color: var(--dark);
+    margin: 20px 0 10px;
+    padding-left: 10px;
+    border-left: 3px solid var(--gold);
+  }
+
+  .subsubsection-title {
+    font-size: 10.5pt;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 14px 0 8px;
+  }
+
+  p { margin-bottom: 10px; }
+
+  /* ============================
+     TABLES
+  ============================ */
+  .doc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9.5pt;
+    margin-bottom: 18px;
+  }
+
+  .doc-table thead tr {
+    background: var(--dark);
+    color: white;
+  }
+
+  .doc-table th {
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 9pt;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .doc-table td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  .doc-table tbody tr:nth-child(even) { background: #f8fafc; }
+  .doc-table tbody tr:hover { background: #f1f5f9; }
+
+  .doc-table .col-key { font-weight: 600; color: var(--dark); white-space: nowrap; }
+  .doc-table code { font-family: 'Courier New', monospace; font-size: 9pt; background: #f1f5f9; padding: 1px 4px; border-radius: 3px; color: #1e40af; }
+
+  /* ============================
+     USE CASE CARDS
+  ============================ */
+  .cu-card {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 22px;
+    page-break-inside: avoid;
+  }
+
+  .cu-header {
+    background: var(--dark);
+    color: white;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .cu-id {
+    background: var(--gold);
+    color: var(--dark);
+    font-weight: 800;
+    font-size: 9pt;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .cu-name { font-size: 11pt; font-weight: 600; }
+  .cu-actor { font-size: 9pt; color: #9ca3af; margin-left: auto; }
+
+  .cu-body { display: grid; grid-template-columns: 1fr; }
+
+  .cu-row {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cu-row:last-child { border-bottom: none; }
+
+  .cu-label {
+    background: var(--bg-header);
+    padding: 8px 12px;
+    font-weight: 600;
+    font-size: 9pt;
+    color: var(--dark);
+    border-right: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .cu-value { padding: 8px 12px; font-size: 9.5pt; }
+
+  .cu-value ol, .cu-value ul { padding-left: 18px; }
+  .cu-value li { margin-bottom: 3px; }
+
+  /* ============================
+     DER DIAGRAM
+  ============================ */
+  .der-container {
+    background: #fafafa;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    overflow: auto;
+    margin-bottom: 16px;
+  }
+
+  .entity-box {
+    display: inline-block;
+    border: 2px solid var(--dark);
+    border-radius: 6px;
+    font-size: 8.5pt;
+    font-family: 'Courier New', monospace;
+    vertical-align: top;
+    background: white;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    min-width: 110px;
+  }
+
+  .entity-header {
+    background: var(--dark);
+    color: var(--gold);
+    padding: 5px 10px;
+    font-weight: 700;
+    font-size: 9pt;
+    text-align: center;
+    border-radius: 3px 3px 0 0;
+    letter-spacing: 0.5px;
+  }
+
+  .entity-fields { padding: 4px 0; }
+
+  .entity-field {
+    padding: 2px 10px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 8pt;
+    color: #374151;
+  }
+
+  .entity-field:last-child { border-bottom: none; }
+  .field-pk { color: var(--gold-light); font-weight: 700; }
+  .field-fk { color: #2563eb; }
+  .field-tag {
+    font-size: 7pt;
+    padding: 0 3px;
+    border-radius: 2px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .tag-pk { background: #fef9c3; color: #854d0e; }
+  .tag-fk { background: #dbeafe; color: #1e40af; }
+  .tag-uk { background: #f0fdf4; color: #166534; }
+
+  .der-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .der-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .der-relations {
+    margin-top: 12px;
+    font-size: 9pt;
+    color: var(--muted);
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    padding: 10px 14px;
+  }
+
+  .der-relations strong { color: var(--accent); }
+
+  .rel-list { list-style: none; padding: 0; margin-top: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 3px 20px; }
+  .rel-list li { font-size: 8.5pt; padding: 2px 0; color: #374151; }
+  .rel-list li::before { content: "→ "; color: var(--gold-light); font-weight: 700; }
+
+  /* ============================
+     CORRECTION TABLE
+  ============================ */
+  .correction-table { margin-bottom: 20px; }
+  .correction-table td.wrong { color: #dc2626; text-decoration: line-through; }
+  .correction-table td.right { color: #16a34a; font-weight: 500; }
+
+  /* ============================
+     INFO BOXES
+  ============================ */
+  .info-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-left: 4px solid #2563eb;
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 9.5pt;
+  }
+
+  .warn-box {
+    background: #fefce8;
+    border: 1px solid #fde68a;
+    border-left: 4px solid #d97706;
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 9.5pt;
+  }
+
+  /* ============================
+     ARCHITECTURE
+  ============================ */
+  .arch-layer {
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+
+  .arch-layer-label {
+    background: var(--dark);
+    color: var(--gold);
+    padding: 5px 14px;
+    font-size: 8.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .arch-layer-content {
+    display: flex;
+    gap: 10px;
+    padding: 10px 14px;
+    flex-wrap: wrap;
+    background: #f9fafb;
+  }
+
+  .arch-chip {
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    padding: 4px 12px;
+    font-size: 9pt;
+    font-weight: 500;
+    color: var(--dark);
+  }
+
+  .arch-chip.main { border-color: var(--gold); background: #fefce8; }
+
+  /* ============================
+     PAGE HEADER/FOOTER
+  ============================ */
+  .page-header {
+    position: absolute;
+    top: 8mm; left: 22mm; right: 22mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8pt;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 4px;
+  }
+
+  .page-footer {
+    position: absolute;
+    bottom: 8mm; left: 22mm; right: 22mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8pt;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    padding-top: 4px;
+  }
+
+  /* ============================
+     PRINT STYLES
+  ============================ */
+  @media print {
+    body { background: white; }
+    .page {
+      margin: 0;
+      box-shadow: none;
+      padding: 20mm 22mm 18mm;
+      min-height: 297mm;
+    }
+    @page { size: A4; margin: 0; }
+  }
+
+  /* ============================
+     MISC
+  ============================ */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 8pt;
+    font-weight: 600;
+  }
+  .badge-green { background: #dcfce7; color: #166534; }
+  .badge-yellow { background: #fef9c3; color: #854d0e; }
+  .badge-red { background: #fee2e2; color: #991b1b; }
+  .badge-blue { background: #dbeafe; color: #1e40af; }
+
+  .mt-4 { margin-top: 16px; }
+  .mt-2 { margin-top: 8px; }
+  .mb-4 { margin-bottom: 16px; }
+  small { font-size: 8.5pt; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- ===================== PORTADA ===================== -->
+<div class="page">
+  <div class="cover">
+    <div class="cover-logo">PC</div>
+    <div class="cover-institution">Instituto de Educación Superior IES</div>
+    <div class="cover-career">Tecnicatura Superior en Desarrollo de Software</div>
+
+    <div class="cover-divider"></div>
+
+    <div class="cover-title">Pro Cup Padel</div>
+    <div class="cover-subtitle">Sistema de Gestión de Torneos de Pádel</div>
+
+    <div class="cover-sprint-badge">Sprint 2 — Documentación Técnica</div>
+
+    <table class="cover-meta-table">
+      <tr><td>Proyecto</td><td>Pro Cup Padel</td></tr>
+      <tr><td>Sprint</td><td>2 — Gestión de Torneos y Jugadores</td></tr>
+      <tr><td>Estado</td><td><span class="badge badge-green">Revisado — Junio 2026</span></td></tr>
+      <tr><td>Alumno</td><td>Santiago Wortley</td></tr>
+      <tr><td>Año</td><td>2026</td></tr>
+    </table>
+  </div>
+
+  <div class="cover-footer">
+    Tecnicatura Superior en Desarrollo de Software · IES · 2026
+  </div>
+</div>
+
+<!-- ===================== ÍNDICE ===================== -->
+<div class="page">
+  <div class="page-header">
+    <span>Pro Cup Padel — Sprint 2</span>
+    <span>Tabla de Contenidos</span>
+  </div>
+
+  <h2 class="toc-title">Tabla de Contenidos</h2>
+
+  <ul class="toc-list">
+    <li class="toc-section"><span>1. Diagrama Entidad-Relación (DER)</span><span class="toc-num">3</span></li>
+    <li class="toc-sub"><span>1.1 Tablas y relaciones reales</span><span class="toc-num">3</span></li>
+    <li class="toc-sub"><span>1.2 Correcciones respecto al Sprint anterior</span><span class="toc-num">4</span></li>
+
+    <li class="toc-section"><span>2. Diccionario de Datos</span><span class="toc-num">5</span></li>
+    <li class="toc-sub"><span>2.1 categoria</span><span class="toc-num">5</span></li>
+    <li class="toc-sub"><span>2.2 torneo</span><span class="toc-num">5</span></li>
+    <li class="toc-sub"><span>2.3 jugador</span><span class="toc-num">6</span></li>
+    <li class="toc-sub"><span>2.4 equipo</span><span class="toc-num">7</span></li>
+    <li class="toc-sub"><span>2.5 inscripcion</span><span class="toc-num">7</span></li>
+    <li class="toc-sub"><span>2.6 grupos</span><span class="toc-num">8</span></li>
+    <li class="toc-sub"><span>2.7 equipos_grupo</span><span class="toc-num">8</span></li>
+    <li class="toc-sub"><span>2.8 partidos_grupo</span><span class="toc-num">9</span></li>
+    <li class="toc-sub"><span>2.9 partidos_llave</span><span class="toc-num">9</span></li>
+    <li class="toc-sub"><span>2.10 ranking_jugador</span><span class="toc-num">10</span></li>
+    <li class="toc-sub"><span>2.11 audit_log_ingresos</span><span class="toc-num">10</span></li>
+
+    <li class="toc-section"><span>3. Fichas de Caso de Uso</span><span class="toc-num">11</span></li>
+    <li class="toc-sub"><span>CU01 — Registrar Jugador</span><span class="toc-num">11</span></li>
+    <li class="toc-sub"><span>CU02 — Iniciar Sesión</span><span class="toc-num">11</span></li>
+    <li class="toc-sub"><span>CU03 — Crear Torneo</span><span class="toc-num">12</span></li>
+    <li class="toc-sub"><span>CU04 — Inscribir Equipo</span><span class="toc-num">12</span></li>
+    <li class="toc-sub"><span>CU05 — Generar Grupos y Fixture</span><span class="toc-num">13</span></li>
+    <li class="toc-sub"><span>CU06 — Cargar Resultado</span><span class="toc-num">14</span></li>
+    <li class="toc-sub"><span>CU07 — Generar Play-off</span><span class="toc-num">15</span></li>
+    <li class="toc-sub"><span>CU08 — Consultar Ranking</span><span class="toc-num">16</span></li>
+
+    <li class="toc-section"><span>4. Arquitectura del Sistema</span><span class="toc-num">17</span></li>
+    <li class="toc-sub"><span>4.1 Stack tecnológico</span><span class="toc-num">17</span></li>
+    <li class="toc-sub"><span>4.2 Endpoints API</span><span class="toc-num">17</span></li>
+
+    <li class="toc-section"><span>5. Funcionalidades Pendientes</span><span class="toc-num">18</span></li>
+  </ul>
+
+  <div class="page-footer">
+    <span>IES — Tecnicatura Superior en Desarrollo de Software</span>
+    <span>2</span>
+  </div>
+</div>
+
+<!-- ===================== SECCIÓN 1: DER ===================== -->
+<div class="page">
+  <div class="page-header">
+    <span>Pro Cup Padel — Sprint 2</span>
+    <span>Sección 1 — DER</span>
+  </div>
+
+  <h2 class="section-title">
+    <span class="section-num">1</span>
+    Diagrama Entidad-Relación (DER)
+  </h2>
+
+  <h3 class="subsection-title">1.1 Entidades y Relaciones Reales del Sistema</h3>
+
+  <p>El sistema utiliza <strong>11 tablas</strong> en PostgreSQL. A continuación se muestran las entidades con sus atributos principales y las relaciones entre ellas.</p>
+
+  <!-- DER Visual -->
+  <div class="der-container">
+    <div class="der-grid">
+
+      <div class="entity-box">
+        <div class="entity-header">CATEGORIA</div>
+        <div class="entity-fields">
+          <div class="entity-field"><span class="field-pk"><span class="field-tag tag-pk">PK</span> id_categoria</span></div>
+          <div class="entity-field">nombre</div>
+          <div class="entity-field">valor_numerico</div>
+        </div>
+      </div>
+
+      <div class="entity-box">
+        <div class="entity-header">JUGADOR</div>
+        <div class="entity-fields">
+          <div class="entity-field"><span class="field-tag tag-pk">PK</span> id_jugador</div>
+          <div class="entity-field">nombre_jugador</div>
+          <div class="entity-field">apellido_jugador</div>
+          <div class="entity-field">apodo</div>
+          <div class="entity-field"><span class="field-tag tag-uk">UK</span> email</div>
+          <div class="entity-field">telefono</div>
+          <div class="entity-field">password (hash)</div>
+          <div class="entity-field">rol</div>
+          <div class="entity-field">foto_perfil</div>
+          <div class="entity-field"><span class="field-tag tag-fk">FK</span> categoria_id</div>
+        </div>
+      </div>
+
+      <div class="entity-box">
+        <div class="entity-header">TORNEO</div>
+        <div class="entity-fields">
+          <div class="entity-field"><span class="field-tag tag-pk">PK</span> id_torneo</div>
+          <div class="entity-field">nombre_torneo</div>
+          <div class="entity-field">fecha_inicio</div>
+          <div class="entity-field">fecha_fin</div>
+          <div class="entity-field">fecha_cierre_inscripcion</div>
+          <div class="entity-field">max_equipos</div>
+          <div class="entity-field">formato_categoria</div>
+          <div class="entity-field">suma_categoria</div>
+          <div class="entity-field">modalidad</div>
+          <div class="entity-field">dias_juego</div>
+          <div class="entity-field"><span class="field-tag tag-fk">FK</span> categoria_id</div>
+        </div>
+      </div>
+
+      <div class="entity-box">
+        <div class="entity-header">EQUIPO</div>
+        <div class="entity-fields">
+          <div class="entity-field"><span class="field-tag tag-pk">PK</span> id_equipo</div>
+          <div class="entity-field"><span class="field-tag tag-fk">FK</span> jugador1_id</div>
+          <div class="entity-field"><span class="field-tag tag-fk">FK</span> jugador2_id</div>
+          <div class="entity-field">nombre_equipo</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="der-grid-2">
+
+      <div class="entity-box">
+        <div class="entity-header">INSCRIPCION</div>
+        <div class="entity-fields">
+          <div class="entity-field"><span class="field-tag tag-pk">PK</span> id_inscripcion</div>
+          <div class="entity-field"><span class="field-tag tag-fk">FK</span> id_equipo</div>
+          <div class="entity-field"><span class="field-tag tag-fk">FK</span> id_torneo</div>
+          <div class="entity-field">created_at</div>
+        </div>
+      </div>
+
+      <div class="entity-box">
+        <div class="entity-header">GRUPOS</div>
+        <div class="entity-fields">
+          <div class="entity-field"><span class="field-tag tag-pk">PK</span> id_grupo</div>
+          <div class="entity-field"><span class="field-tag tag-fk">FK</span> id_torneo</div>
+          <div class="entity-field">nombre</div>
+        </div>
+      </div>
+
+      <div class="entity-box">
+        <div class="entity-header">EQUIPOS_GRUPO</div>
+        <div class="entity-fields">
+          <div class="entity-field"><span class="field-tag tag-pk">PK</span> id</div>
+          <div class="entity-field"><span class="field-tag tag-fk">FK</span> grupo_id</div>
+          <div class="entity-field"><span class="field-tag tag-fk">FK</span> equipo_id</div>
+          <div class="entity-field">puntos</div>
+          <div class="entity-field">sets_favor / sets_contra</div>
+          <div class="entity-field">games_favor / games_contra</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="der-grid">
+
+      <div class="entity-box">
+        <div class="entity-header">PARTIDOS_GRUPO</div>
+        <div class="entity-fields">
+          <div class="entity-field"><span class="field-tag tag-pk">PK</span> id</div>
+          <div class="entity-field"><span class="field-tag tag-fk">FK</span> grupo_id</div>
+          <div class="entity-field"><span class="field-tag tag-fk">FK</span> equipo1_id</div>
+          <div class="entity-field"><span class="field-tag tag-fk">FK</span> equipo2_id</div>
+          <div class="entity-field">set1..set3 (x2)</div>
+          <div class="entity-field">fecha</div>
+          <div class="entity-field">estado</div>
+        </div>
+      </div>
+
+      <div class="entity-box">
+        <div class="entity-header">PARTIDOS_LLAVE</div>
+        <div class="entity-fields">
+          <div class="entity-field"><span class="field-tag tag-pk">PK</span> id</div>
+          <div class="entity-field"><span class="field-tag tag-fk">FK</span> id_torneo</div>
+          <div class="entity-field">ronda</div>
+          <div class="entity-field">orden</div>
+          <div class="entity-field"><span class="field-tag tag-fk">FK</span> equipo1_id</div>
+          <div class="entity-field"><span class="field-tag tag-fk">FK</span> equipo2_id</div>
+          <div class="entity-field">set1..set3 (x2)</div>
+          <div class="entity-field">estado</div>
+          <div class="entity-field"><span class="field-tag tag-fk">FK</span> ganador_id</div>
+          <div class="entity-field">next_match_id / next_slot</div>
+        </div>
+      </div>
+
+      <div class="entity-box">
+        <div class="entity-header">RANKING_JUGADOR</div>
+        <div class="entity-fields">
+          <div class="entity-field"><span class="field-tag tag-pk">PK</span> id</div>
+          <div class="entity-field"><span class="field-tag tag-fk">FK</span> jugador_id</div>
+          <div class="entity-field">nombre / apellido</div>
+          <div class="entity-field">ultima_pareja</div>
+          <div class="entity-field">torneo_participado</div>
+          <div class="entity-field">fase_llegada</div>
+          <div class="entity-field">puntos</div>
+          <div class="entity-field">categoria</div>
+        </div>
+      </div>
+
+      <div class="entity-box">
+        <div class="entity-header">AUDIT_LOG_INGRESOS</div>
+        <div class="entity-fields">
+          <div class="entity-field"><span class="field-tag tag-pk">PK</span> id</div>
+          <div class="entity-field">jugador_id</div>
+          <div class="entity-field">nombre / apellido</div>
+          <div class="entity-field">ip / user_agent</div>
+          <div class="entity-field">exitoso</div>
+          <div class="entity-field">motivo</div>
+          <div class="entity-field">timestamp</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="der-relations">
+      <strong>Relaciones principales:</strong>
+      <ul class="rel-list">
+        <li>categoria (1) → jugador (N) [categoria_id]</li>
+        <li>categoria (1) → torneo (N) [solo modo categoria_fija]</li>
+        <li>torneo (1) → inscripcion (N)</li>
+        <li>torneo (1) → grupos (N)</li>
+        <li>torneo (1) → partidos_llave (N)</li>
+        <li>jugador (1) → equipo (N) [como jugador1 o jugador2]</li>
+        <li>equipo (1) → inscripcion (N)</li>
+        <li>grupos (1) → equipos_grupo (N)</li>
+        <li>grupos (1) → partidos_grupo (N)</li>
+        <li>equipo (1) → equipos_grupo (N)</li>
+        <li>equipo (1) → partidos_grupo (N) [equipo1/2]</li>
+        <li>equipo (1) → partidos_llave (N) [equipo1/2/ganador]</li>
+        <li>jugador (1) → ranking_jugador (N)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>IES — Tecnicatura Superior en Desarrollo de Software</span>
+    <span>3</span>
+  </div>
+</div>
+
+<!-- ===================== CORRECCIONES DER ===================== -->
+<div class="page">
+  <div class="page-header">
+    <span>Pro Cup Padel — Sprint 2</span>
+    <span>Sección 1.2 — Correcciones DER</span>
+  </div>
+
+  <h3 class="subsection-title">1.2 Correcciones respecto a documentación anterior</h3>
+
+  <p>La siguiente tabla detalla las diferencias entre el DER presentado en el Sprint anterior y el modelo de datos real implementado:</p>
+
+  <table class="doc-table correction-table">
+    <thead>
+      <tr>
+        <th>Entidad / Atributo (anterior)</th>
+        <th>Estado</th>
+        <th>Corrección / Estado real</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="col-key wrong">Entidad "Pareja"</td>
+        <td><span class="badge badge-yellow">Renombrada</span></td>
+        <td class="right">Se llama <code>equipo</code> en la base de datos</td>
+      </tr>
+      <tr>
+        <td class="col-key wrong">Entidad "Partido" (única)</td>
+        <td><span class="badge badge-yellow">División</span></td>
+        <td class="right">Existe como <code>partidos_grupo</code> (fase de grupos) y <code>partidos_llave</code> (play-off)</td>
+      </tr>
+      <tr>
+        <td class="col-key wrong">Entidad "Resultado" separada</td>
+        <td><span class="badge badge-red">No existe</span></td>
+        <td class="right">Los resultados (set1..set3) están embebidos directamente en <code>partidos_grupo</code> y <code>partidos_llave</code></td>
+      </tr>
+      <tr>
+        <td class="col-key wrong">Entidad "Transmision"</td>
+        <td><span class="badge badge-red">No implementada</span></td>
+        <td>Funcionalidad pendiente — sprint futuro</td>
+      </tr>
+      <tr>
+        <td class="col-key wrong">Entidad "Multimedia"</td>
+        <td><span class="badge badge-red">No implementada</span></td>
+        <td>Funcionalidad pendiente — sprint futuro</td>
+      </tr>
+      <tr>
+        <td class="col-key wrong">Jugador.dni</td>
+        <td><span class="badge badge-red">No existe</span></td>
+        <td>La identificación del jugador se hace por <code>email</code> (UNIQUE)</td>
+      </tr>
+      <tr>
+        <td class="col-key wrong">Equipo.id_torneo</td>
+        <td><span class="badge badge-red">No existe</span></td>
+        <td>La relación equipo ↔ torneo pasa por la tabla intermedia <code>inscripcion</code></td>
+      </tr>
+      <tr>
+        <td class="col-key wrong">Equipo.ranking</td>
+        <td><span class="badge badge-red">No existe</span></td>
+        <td>El ranking existe en tabla separada <code>ranking_jugador</code> (por jugador, no por equipo)</td>
+      </tr>
+      <tr>
+        <td class="col-key">— (no documentada)</td>
+        <td><span class="badge badge-green">Nueva</span></td>
+        <td class="right">Tabla <code>grupos</code> — agrupa equipos por torneo</td>
+      </tr>
+      <tr>
+        <td class="col-key">— (no documentada)</td>
+        <td><span class="badge badge-green">Nueva</span></td>
+        <td class="right">Tabla <code>equipos_grupo</code> — estadísticas de cada equipo en su grupo</td>
+      </tr>
+      <tr>
+        <td class="col-key">— (no documentada)</td>
+        <td><span class="badge badge-green">Nueva</span></td>
+        <td class="right">Tabla <code>categoria</code> — categorías disponibles (2da a 8va)</td>
+      </tr>
+      <tr>
+        <td class="col-key">— (no documentada)</td>
+        <td><span class="badge badge-green">Nueva</span></td>
+        <td class="right">Tabla <code>audit_log_ingresos</code> — auditoría de intentos de login</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="info-box">
+    <strong>Nota sobre Transmision y Multimedia:</strong> Estas entidades fueron identificadas en la etapa de análisis pero no forman parte del alcance actual. Se documentan como <em>pendientes</em> en la Sección 5 de este documento.
+  </div>
+
+  <div class="page-footer">
+    <span>IES — Tecnicatura Superior en Desarrollo de Software</span>
+    <span>4</span>
+  </div>
+</div>
+
+<!-- ===================== SECCIÓN 2: DICCIONARIO ===================== -->
+<div class="page">
+  <div class="page-header">
+    <span>Pro Cup Padel — Sprint 2</span>
+    <span>Sección 2 — Diccionario de Datos</span>
+  </div>
+
+  <h2 class="section-title">
+    <span class="section-num">2</span>
+    Diccionario de Datos
+  </h2>
+
+  <h3 class="subsection-title">2.1 Tabla: <code>categoria</code></h3>
+  <table class="doc-table">
+    <thead><tr><th>Columna</th><th>Tipo</th><th>Restricciones</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td class="col-key"><code>id_categoria</code></td><td>SERIAL</td><td>PK, NOT NULL</td><td>Identificador único auto-incremental</td></tr>
+      <tr><td class="col-key"><code>nombre</code></td><td>VARCHAR(50)</td><td>NOT NULL</td><td>Nombre de la categoría (ej: "4ta", "5ta")</td></tr>
+      <tr><td class="col-key"><code>valor_numerico</code></td><td>INT</td><td>NOT NULL, CHECK (2..8)</td><td>Valor entero usado en cálculos de suma y ranking</td></tr>
+    </tbody>
+  </table>
+  <small>Valores: 2da=2, 3ra=3, 4ta=4, 5ta=5, 6ta=6, 7ma=7, 8va=8</small>
+
+  <h3 class="subsection-title mt-4">2.2 Tabla: <code>torneo</code></h3>
+  <table class="doc-table">
+    <thead><tr><th>Columna</th><th>Tipo</th><th>Restricciones</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td class="col-key"><code>id_torneo</code></td><td>SERIAL</td><td>PK</td><td>Identificador único</td></tr>
+      <tr><td class="col-key"><code>nombre_torneo</code></td><td>VARCHAR(100)</td><td>NOT NULL</td><td>Nombre descriptivo del torneo</td></tr>
+      <tr><td class="col-key"><code>fecha_inicio</code></td><td>DATE</td><td>NOT NULL</td><td>Inicio del torneo</td></tr>
+      <tr><td class="col-key"><code>fecha_fin</code></td><td>DATE</td><td>NOT NULL</td><td>Fin del torneo (auto-calculada en modo liga)</td></tr>
+      <tr><td class="col-key"><code>fecha_cierre_inscripcion</code></td><td>DATE</td><td>NOT NULL</td><td>Fecha límite para inscribirse</td></tr>
+      <tr><td class="col-key"><code>max_equipos</code></td><td>INT</td><td>NOT NULL</td><td>Cupo máximo de equipos</td></tr>
+      <tr><td class="col-key"><code>categoria_id</code></td><td>INT</td><td>FK → categoria, NULLABLE</td><td>Categoría única (solo modo <em>categoria_fija</em>)</td></tr>
+      <tr><td class="col-key"><code>formato_categoria</code></td><td>VARCHAR(20)</td><td>NOT NULL, IN ('categoria_fija','suma')</td><td>Modo de validación de categorías al inscribirse</td></tr>
+      <tr><td class="col-key"><code>suma_categoria</code></td><td>INT</td><td>NULLABLE</td><td>Suma objetivo de categorías (solo modo <em>suma</em>)</td></tr>
+      <tr><td class="col-key"><code>modalidad</code></td><td>VARCHAR(50)</td><td>NOT NULL, DEFAULT 'fin_de_semana'</td><td>'fin_de_semana' (grupos múltiples) o 'liga' (grupo único con fixture)</td></tr>
+      <tr><td class="col-key"><code>dias_juego</code></td><td>VARCHAR(100)</td><td>NULLABLE</td><td>Días de juego para liga (ej: "miercoles,viernes")</td></tr>
+    </tbody>
+  </table>
+
+  <div class="warn-box">
+    <strong>Restricción de integridad:</strong> Si <code>formato_categoria = 'categoria_fija'</code> entonces <code>categoria_id NOT NULL</code> y <code>suma_categoria IS NULL</code>. Si <code>formato_categoria = 'suma'</code> entonces <code>suma_categoria NOT NULL</code> y <code>categoria_id IS NULL</code>.
+  </div>
+
+  <div class="page-footer">
+    <span>IES — Tecnicatura Superior en Desarrollo de Software</span>
+    <span>5</span>
+  </div>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <span>Pro Cup Padel — Sprint 2</span>
+    <span>Sección 2 — Diccionario de Datos (cont.)</span>
+  </div>
+
+  <h3 class="subsection-title">2.3 Tabla: <code>jugador</code></h3>
+  <table class="doc-table">
+    <thead><tr><th>Columna</th><th>Tipo</th><th>Restricciones</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td class="col-key"><code>id_jugador</code></td><td>SERIAL</td><td>PK</td><td>Identificador único</td></tr>
+      <tr><td class="col-key"><code>nombre_jugador</code></td><td>VARCHAR(100)</td><td>NOT NULL</td><td>Nombre de pila</td></tr>
+      <tr><td class="col-key"><code>apellido_jugador</code></td><td>VARCHAR(100)</td><td>NOT NULL</td><td>Apellido</td></tr>
+      <tr><td class="col-key"><code>apodo</code></td><td>VARCHAR(50)</td><td>NULLABLE</td><td>Apodo opcional, se usa para el nombre del equipo</td></tr>
+      <tr><td class="col-key"><code>email</code></td><td>VARCHAR(100)</td><td>UNIQUE, NOT NULL</td><td>Email — también es el usuario de login</td></tr>
+      <tr><td class="col-key"><code>telefono</code></td><td>VARCHAR(20)</td><td>NULLABLE</td><td>Teléfono de contacto</td></tr>
+      <tr><td class="col-key"><code>password</code></td><td>VARCHAR(255)</td><td>NOT NULL</td><td>Hash bcrypt(10) de la contraseña</td></tr>
+      <tr><td class="col-key"><code>rol</code></td><td>VARCHAR(20)</td><td>IN ('jugador','organizador')</td><td>Rol en el sistema — determina permisos</td></tr>
+      <tr><td class="col-key"><code>fecha_registro</code></td><td>TIMESTAMP</td><td>DEFAULT NOW()</td><td>Fecha y hora de alta en el sistema</td></tr>
+      <tr><td class="col-key"><code>categoria_id</code></td><td>INT</td><td>FK → categoria, NULLABLE</td><td>Categoría del jugador (2da a 8va)</td></tr>
+      <tr><td class="col-key"><code>foto_perfil</code></td><td>TEXT</td><td>NULLABLE</td><td>Path relativo a imagen de perfil (uploads/perfiles/...)</td></tr>
+    </tbody>
+  </table>
+  <small>Nota: No existe campo <em>dni</em>. La identificación es por <code>email</code>.</small>
+
+  <h3 class="subsection-title mt-4">2.4 Tabla: <code>equipo</code></h3>
+  <table class="doc-table">
+    <thead><tr><th>Columna</th><th>Tipo</th><th>Restricciones</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td class="col-key"><code>id_equipo</code></td><td>SERIAL</td><td>PK</td><td>Identificador único</td></tr>
+      <tr><td class="col-key"><code>jugador1_id</code></td><td>INT</td><td>FK → jugador</td><td>Primer integrante de la pareja</td></tr>
+      <tr><td class="col-key"><code>jugador2_id</code></td><td>INT</td><td>FK → jugador</td><td>Segundo integrante de la pareja</td></tr>
+      <tr><td class="col-key"><code>nombre_equipo</code></td><td>VARCHAR(100)</td><td>NOT NULL</td><td>Nombre auto-generado: "Apellido1/Apellido2" (o con apodo)</td></tr>
+    </tbody>
+  </table>
+  <small>Nota: No existe <em>id_torneo</em> ni <em>ranking</em> en esta tabla. La relación con torneos es a través de <code>inscripcion</code>.</small>
+
+  <h3 class="subsection-title mt-4">2.5 Tabla: <code>inscripcion</code></h3>
+  <table class="doc-table">
+    <thead><tr><th>Columna</th><th>Tipo</th><th>Restricciones</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td class="col-key"><code>id_inscripcion</code></td><td>SERIAL</td><td>PK</td><td>Identificador único</td></tr>
+      <tr><td class="col-key"><code>id_equipo</code></td><td>INT</td><td>FK → equipo, ON DELETE CASCADE</td><td>Equipo inscripto</td></tr>
+      <tr><td class="col-key"><code>id_torneo</code></td><td>INT</td><td>FK → torneo, ON DELETE CASCADE</td><td>Torneo en que se inscribió</td></tr>
+      <tr><td class="col-key"><code>created_at</code></td><td>TIMESTAMP</td><td>DEFAULT NOW()</td><td>Fecha y hora de inscripción</td></tr>
+    </tbody>
+  </table>
+
+  <div class="info-box">
+    <strong>Validaciones de negocio al inscribir:</strong> (1) Inscripción dentro del período abierto. (2) Ningún jugador ya inscripto en este torneo. (3) Sin superposición de fechas con otros torneos. (4) Categorías compatibles con el <code>formato_categoria</code> del torneo.
+  </div>
+
+  <div class="page-footer">
+    <span>IES — Tecnicatura Superior en Desarrollo de Software</span>
+    <span>6</span>
+  </div>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <span>Pro Cup Padel — Sprint 2</span>
+    <span>Sección 2 — Diccionario de Datos (cont.)</span>
+  </div>
+
+  <h3 class="subsection-title">2.6 Tabla: <code>grupos</code></h3>
+  <table class="doc-table">
+    <thead><tr><th>Columna</th><th>Tipo</th><th>Restricciones</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td class="col-key"><code>id_grupo</code></td><td>SERIAL</td><td>PK</td><td>Identificador único</td></tr>
+      <tr><td class="col-key"><code>id_torneo</code></td><td>INT</td><td>FK → torneo, ON DELETE CASCADE</td><td>Torneo al que pertenece el grupo</td></tr>
+      <tr><td class="col-key"><code>nombre</code></td><td>VARCHAR(50)</td><td>NOT NULL</td><td>"Grupo A", "Grupo B"... o "Liga Única" en modo liga</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="subsection-title mt-4">2.7 Tabla: <code>equipos_grupo</code></h3>
+  <table class="doc-table">
+    <thead><tr><th>Columna</th><th>Tipo</th><th>Restricciones</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td class="col-key"><code>id</code></td><td>SERIAL</td><td>PK</td><td>Identificador único</td></tr>
+      <tr><td class="col-key"><code>grupo_id</code></td><td>INT</td><td>FK → grupos, ON DELETE CASCADE</td><td>Grupo al que pertenece el equipo</td></tr>
+      <tr><td class="col-key"><code>equipo_id</code></td><td>INT</td><td>FK → equipo, ON DELETE CASCADE</td><td>Equipo dentro del grupo</td></tr>
+      <tr><td class="col-key"><code>puntos</code></td><td>INT</td><td>DEFAULT 0</td><td>Puntos acumulados (3 por victoria, 0 por derrota)</td></tr>
+      <tr><td class="col-key"><code>partidos_jugados</code></td><td>INT</td><td>DEFAULT 0</td><td>Contador de partidos disputados</td></tr>
+      <tr><td class="col-key"><code>sets_favor</code></td><td>INT</td><td>DEFAULT 0</td><td>Sets ganados (primer criterio de desempate)</td></tr>
+      <tr><td class="col-key"><code>sets_contra</code></td><td>INT</td><td>DEFAULT 0</td><td>Sets perdidos</td></tr>
+      <tr><td class="col-key"><code>games_favor</code></td><td>INT</td><td>DEFAULT 0</td><td>Games ganados (segundo criterio de desempate)</td></tr>
+      <tr><td class="col-key"><code>games_contra</code></td><td>INT</td><td>DEFAULT 0</td><td>Games perdidos</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="subsection-title mt-4">2.8 Tabla: <code>partidos_grupo</code></h3>
+  <table class="doc-table">
+    <thead><tr><th>Columna</th><th>Tipo</th><th>Restricciones</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td class="col-key"><code>id</code></td><td>SERIAL</td><td>PK</td><td>Identificador único</td></tr>
+      <tr><td class="col-key"><code>grupo_id</code></td><td>INT</td><td>FK → grupos, ON DELETE CASCADE</td><td>Grupo al que pertenece el partido</td></tr>
+      <tr><td class="col-key"><code>equipo1_id</code></td><td>INT</td><td>FK → equipo, NOT NULL</td><td>Primer equipo (local)</td></tr>
+      <tr><td class="col-key"><code>equipo2_id</code></td><td>INT</td><td>FK → equipo, NOT NULL</td><td>Segundo equipo (visitante)</td></tr>
+      <tr><td class="col-key"><code>set1_equipo1</code></td><td>INT</td><td>NULLABLE</td><td>Games del equipo 1 en el set 1</td></tr>
+      <tr><td class="col-key"><code>set1_equipo2</code></td><td>INT</td><td>NULLABLE</td><td>Games del equipo 2 en el set 1</td></tr>
+      <tr><td class="col-key"><code>set2_equipo1</code></td><td>INT</td><td>NULLABLE</td><td>Games del equipo 1 en el set 2</td></tr>
+      <tr><td class="col-key"><code>set2_equipo2</code></td><td>INT</td><td>NULLABLE</td><td>Games del equipo 2 en el set 2</td></tr>
+      <tr><td class="col-key"><code>set3_equipo1</code></td><td>INT</td><td>NULLABLE</td><td>Games del equipo 1 en el set 3 (si hubo 3er set)</td></tr>
+      <tr><td class="col-key"><code>set3_equipo2</code></td><td>INT</td><td>NULLABLE</td><td>Games del equipo 2 en el set 3</td></tr>
+      <tr><td class="col-key"><code>fecha</code></td><td>TIMESTAMP</td><td>NULLABLE</td><td>Fecha asignada (auto-calculada en modo liga)</td></tr>
+      <tr><td class="col-key"><code>estado</code></td><td>VARCHAR(20)</td><td>IN ('no_iniciado','iniciado','finalizado')</td><td>Estado actual del partido</td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer">
+    <span>IES — Tecnicatura Superior en Desarrollo de Software</span>
+    <span>7</span>
+  </div>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <span>Pro Cup Padel — Sprint 2</span>
+    <span>Sección 2 — Diccionario de Datos (cont.)</span>
+  </div>
+
+  <h3 class="subsection-title">2.9 Tabla: <code>partidos_llave</code></h3>
+  <table class="doc-table">
+    <thead><tr><th>Columna</th><th>Tipo</th><th>Restricciones</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td class="col-key"><code>id</code></td><td>SERIAL</td><td>PK</td><td>Identificador único</td></tr>
+      <tr><td class="col-key"><code>id_torneo</code></td><td>INT</td><td>FK → torneo, NOT NULL</td><td>Torneo al que pertenece el cruce</td></tr>
+      <tr><td class="col-key"><code>ronda</code></td><td>VARCHAR(20)</td><td>NOT NULL</td><td>'OCTAVOS', 'CUARTOS', 'SEMIS' o 'FINAL'</td></tr>
+      <tr><td class="col-key"><code>orden</code></td><td>INT</td><td>NOT NULL</td><td>Posición visual en el bracket (1, 2, 3...)</td></tr>
+      <tr><td class="col-key"><code>equipo1_id</code></td><td>INT</td><td>FK → equipo, NULLABLE</td><td>Primer equipo (puede poblarse al avanzar rondas)</td></tr>
+      <tr><td class="col-key"><code>equipo2_id</code></td><td>INT</td><td>FK → equipo, NULLABLE</td><td>Segundo equipo</td></tr>
+      <tr><td class="col-key"><code>set1..set3 (×2)</code></td><td>INT ×6</td><td>NULLABLE</td><td>Score por set (misma estructura que partidos_grupo)</td></tr>
+      <tr><td class="col-key"><code>estado</code></td><td>VARCHAR(20)</td><td>IN ('no_iniciado','iniciado','finalizado')</td><td>Estado del cruce</td></tr>
+      <tr><td class="col-key"><code>ganador_id</code></td><td>INT</td><td>FK → equipo, NULLABLE</td><td>Equipo ganador — calculado automáticamente</td></tr>
+      <tr><td class="col-key"><code>next_match_id</code></td><td>INT</td><td>NULLABLE</td><td>ID del partido al que avanza el ganador</td></tr>
+      <tr><td class="col-key"><code>next_slot</code></td><td>INT</td><td>NULLABLE (1 o 2)</td><td>Slot del siguiente partido (equipo1 o equipo2)</td></tr>
+      <tr><td class="col-key"><code>created_at</code></td><td>TIMESTAMP</td><td>DEFAULT NOW()</td><td>Fecha de creación del cruce</td></tr>
+      <tr><td class="col-key"><code>updated_at</code></td><td>TIMESTAMP</td><td>DEFAULT NOW()</td><td>Última actualización</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="subsection-title mt-4">2.10 Tabla: <code>ranking_jugador</code></h3>
+  <table class="doc-table">
+    <thead><tr><th>Columna</th><th>Tipo</th><th>Restricciones</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td class="col-key"><code>id</code></td><td>SERIAL</td><td>PK</td><td>Identificador único</td></tr>
+      <tr><td class="col-key"><code>jugador_id</code></td><td>INT</td><td>FK → jugador, ON DELETE CASCADE</td><td>Jugador al que corresponde el registro</td></tr>
+      <tr><td class="col-key"><code>nombre</code></td><td>VARCHAR(100)</td><td>NOT NULL</td><td>Nombre (desnormalizado para velocidad de consulta)</td></tr>
+      <tr><td class="col-key"><code>apellido</code></td><td>VARCHAR(100)</td><td>NOT NULL</td><td>Apellido</td></tr>
+      <tr><td class="col-key"><code>ultima_pareja</code></td><td>VARCHAR(150)</td><td>NULLABLE</td><td>Nombre del equipo en el último torneo jugado</td></tr>
+      <tr><td class="col-key"><code>torneo_participado</code></td><td>VARCHAR(150)</td><td>NULLABLE</td><td>Nombre del último torneo disputado</td></tr>
+      <tr><td class="col-key"><code>fase_llegada</code></td><td>VARCHAR(50)</td><td>NULLABLE</td><td>Última fase alcanzada (ej: "SEMIS", "FINAL")</td></tr>
+      <tr><td class="col-key"><code>puntos</code></td><td>INT</td><td>NOT NULL, DEFAULT 0</td><td>Puntos acumulados (suma de todos los torneos)</td></tr>
+      <tr><td class="col-key"><code>categoria</code></td><td>VARCHAR(50)</td><td>NOT NULL</td><td><code>valor_numerico</code> de la categoría al momento del torneo</td></tr>
+    </tbody>
+  </table>
+  <small>Escala de puntos: Campeón 2000 · Subcampeón 1200 · Semis 720 · Cuartos 360 · Octavos 180</small>
+
+  <h3 class="subsection-title mt-4">2.11 Tabla: <code>audit_log_ingresos</code></h3>
+  <table class="doc-table">
+    <thead><tr><th>Columna</th><th>Tipo</th><th>Restricciones</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td class="col-key"><code>id</code></td><td>SERIAL</td><td>PK</td><td>Identificador único</td></tr>
+      <tr><td class="col-key"><code>jugador_id</code></td><td>INT</td><td>NULLABLE</td><td>ID del jugador (null si el usuario no existe)</td></tr>
+      <tr><td class="col-key"><code>nombre</code></td><td>VARCHAR(100)</td><td>NULLABLE</td><td>Nombre al momento del intento de login</td></tr>
+      <tr><td class="col-key"><code>apellido</code></td><td>VARCHAR(100)</td><td>NULLABLE</td><td>Apellido al momento del intento</td></tr>
+      <tr><td class="col-key"><code>ip</code></td><td>VARCHAR(50)</td><td>NULLABLE</td><td>Dirección IP de origen de la solicitud</td></tr>
+      <tr><td class="col-key"><code>user_agent</code></td><td>TEXT</td><td>NULLABLE</td><td>Navegador o cliente HTTP utilizado</td></tr>
+      <tr><td class="col-key"><code>exitoso</code></td><td>BOOLEAN</td><td>DEFAULT FALSE</td><td>true = login exitoso · false = intento fallido</td></tr>
+      <tr><td class="col-key"><code>motivo</code></td><td>TEXT</td><td>NULLABLE</td><td>Motivo del fallo si exitoso = false</td></tr>
+      <tr><td class="col-key"><code>timestamp</code></td><td>TIMESTAMP</td><td>DEFAULT NOW()</td><td>Fecha y hora exacta del intento</td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer">
+    <span>IES — Tecnicatura Superior en Desarrollo de Software</span>
+    <span>8</span>
+  </div>
+</div>
+
+<!-- ===================== SECCIÓN 3: CASOS DE USO ===================== -->
+<div class="page">
+  <div class="page-header">
+    <span>Pro Cup Padel — Sprint 2</span>
+    <span>Sección 3 — Casos de Uso</span>
+  </div>
+
+  <h2 class="section-title">
+    <span class="section-num">3</span>
+    Fichas de Caso de Uso
+  </h2>
+
+  <!-- CU01 -->
+  <div class="cu-card">
+    <div class="cu-header">
+      <span class="cu-id">CU01</span>
+      <span class="cu-name">Registrar Jugador</span>
+      <span class="cu-actor">Actor: Usuario no registrado</span>
+    </div>
+    <div class="cu-body">
+      <div class="cu-row">
+        <span class="cu-label">Precondición</span>
+        <div class="cu-value">El email no debe estar registrado previamente en el sistema.</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Flujo principal</span>
+        <div class="cu-value">
+          <ol>
+            <li>El usuario accede al formulario de registro público.</li>
+            <li>Completa: nombre, apellido, email, teléfono, contraseña (dos veces) y categoría.</li>
+            <li>El sistema valida que ambas contraseñas coincidan.</li>
+            <li>El sistema valida que se haya seleccionado una categoría.</li>
+            <li>El sistema aplica hash bcrypt(10) a la contraseña.</li>
+            <li>El sistema inserta el registro en <code>jugador</code> con <code>rol='jugador'</code>.</li>
+            <li>El sistema devuelve los datos del jugador creado (sin contraseña).</li>
+          </ol>
+        </div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Flujos alternativos</span>
+        <div class="cu-value">Email duplicado → error 400. Contraseñas distintas → error 400. Sin categoría → error 400.</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Postcondición</span>
+        <div class="cu-value">Nuevo registro en tabla <code>jugador</code>. El usuario puede iniciar sesión.</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Notas</span>
+        <div class="cu-value">El registro de organizadores usa un endpoint separado (<code>POST /registro-organizadores</code>) protegido por <code>ADMIN_SECRET</code>. No está disponible en la interfaz pública.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CU02 -->
+  <div class="cu-card">
+    <div class="cu-header">
+      <span class="cu-id">CU02</span>
+      <span class="cu-name">Iniciar Sesión</span>
+      <span class="cu-actor">Actor: Jugador u Organizador</span>
+    </div>
+    <div class="cu-body">
+      <div class="cu-row">
+        <span class="cu-label">Precondición</span>
+        <div class="cu-value">El usuario debe tener cuenta registrada en el sistema.</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Flujo principal</span>
+        <div class="cu-value">
+          <ol>
+            <li>El usuario ingresa email y contraseña.</li>
+            <li>El sistema busca al jugador por email (búsqueda insensible a mayúsculas).</li>
+            <li>El sistema valida la contraseña con <code>bcrypt.compare()</code>.</li>
+            <li>El sistema registra el intento en <code>audit_log_ingresos</code> (exitoso = true).</li>
+            <li>El sistema genera y devuelve un token JWT con expiración de 6 horas.</li>
+            <li>El frontend almacena el token y datos del usuario en <code>localStorage</code>.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Flujos alternativos</span>
+        <div class="cu-value">Email no encontrado → error 404, log con exitoso=false. Contraseña incorrecta → error 401, log con motivo.</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Postcondición</span>
+        <div class="cu-value">Token JWT activo (6h). Acceso habilitado a recursos protegidos según rol.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>IES — Tecnicatura Superior en Desarrollo de Software</span>
+    <span>9</span>
+  </div>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <span>Pro Cup Padel — Sprint 2</span>
+    <span>Sección 3 — Casos de Uso (cont.)</span>
+  </div>
+
+  <!-- CU03 -->
+  <div class="cu-card">
+    <div class="cu-header">
+      <span class="cu-id">CU03</span>
+      <span class="cu-name">Crear Torneo</span>
+      <span class="cu-actor">Actor: Organizador</span>
+    </div>
+    <div class="cu-body">
+      <div class="cu-row">
+        <span class="cu-label">Precondición</span>
+        <div class="cu-value">Usuario autenticado con <code>rol='organizador'</code>.</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Flujo principal</span>
+        <div class="cu-value">
+          <ol>
+            <li>El organizador ingresa nombre, fechas (inicio, fin, cierre) y cupo máximo de equipos.</li>
+            <li>Selecciona el <strong>formato de categoría</strong>: "Categoría Fija" o "Suma".</li>
+            <li>Si Categoría Fija: selecciona una categoría (2da a 8va). Si Suma: ingresa el número objetivo (ej: 9 = 5ta+4ta).</li>
+            <li>Selecciona la <strong>modalidad</strong>: "Fin de semana" o "Liga".</li>
+            <li>Si Liga: ingresa los días de juego (ej: "miercoles,viernes").</li>
+            <li>El sistema valida la combinación formato + categoría/suma.</li>
+            <li>El sistema inserta el nuevo torneo en la tabla <code>torneo</code>.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Restricciones</span>
+        <div class="cu-value"><em>categoria_fija</em> requiere <code>categoria_id</code>. <em>suma</em> requiere <code>suma_categoria</code> numérico. Ambos son mutuamente excluyentes.</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Postcondición</span>
+        <div class="cu-value">Nuevo torneo disponible en estado "Inscripción abierta". Los jugadores pueden inscribirse hasta la fecha de cierre.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CU04 -->
+  <div class="cu-card">
+    <div class="cu-header">
+      <span class="cu-id">CU04</span>
+      <span class="cu-name">Inscribir Equipo</span>
+      <span class="cu-actor">Actor: Organizador</span>
+    </div>
+    <div class="cu-body">
+      <div class="cu-row">
+        <span class="cu-label">Precondición</span>
+        <div class="cu-value">Torneo en período de inscripción. Ambos jugadores registrados en el sistema.</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Flujo principal</span>
+        <div class="cu-value">
+          <ol>
+            <li>El organizador selecciona el torneo y los dos jugadores de la pareja.</li>
+            <li>El sistema verifica que la inscripción esté dentro del período válido.</li>
+            <li>El sistema verifica que ningún jugador esté ya inscripto en este torneo.</li>
+            <li>El sistema verifica que no haya superposición de fechas con otros torneos.</li>
+            <li>El sistema valida categorías según el formato del torneo:
+              <ul>
+                <li><em>categoria_fija:</em> ambos jugadores deben tener la misma categoría que el torneo.</li>
+                <li><em>suma:</em> la suma de <code>valor_numerico</code> de ambos debe igualar <code>suma_categoria</code>.</li>
+              </ul>
+            </li>
+            <li>El sistema crea un <code>equipo</code> con nombre auto-generado "Apellido1/Apellido2".</li>
+            <li>El sistema registra la <code>inscripcion</code>.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Flujos alternativos</span>
+        <div class="cu-value">Categorías incompatibles → error 400 con detalle. Superposición de fechas → error 400. Cupo completo → error 400.</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Postcondición</span>
+        <div class="cu-value">Nuevo registro en <code>equipo</code> e <code>inscripcion</code>. El equipo aparece en la lista del torneo.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>IES — Tecnicatura Superior en Desarrollo de Software</span>
+    <span>10</span>
+  </div>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <span>Pro Cup Padel — Sprint 2</span>
+    <span>Sección 3 — Casos de Uso (cont.)</span>
+  </div>
+
+  <!-- CU05 -->
+  <div class="cu-card">
+    <div class="cu-header">
+      <span class="cu-id">CU05</span>
+      <span class="cu-name">Generar Grupos y Fixture</span>
+      <span class="cu-actor">Actor: Organizador / Sistema</span>
+    </div>
+    <div class="cu-body">
+      <div class="cu-row">
+        <span class="cu-label">Precondición</span>
+        <div class="cu-value">Torneo con al menos 2 equipos inscriptos. Grupos no generados previamente.</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Flujo — Fin de Semana</span>
+        <div class="cu-value">
+          <ol>
+            <li>El sistema asigna los equipos aleatoriamente a grupos de 3-5 equipos.</li>
+            <li>Por cada grupo genera partidos round-robin (todos contra todos).</li>
+            <li>Crea registros en <code>grupos</code>, <code>equipos_grupo</code> y <code>partidos_grupo</code>.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Flujo — Liga</span>
+        <div class="cu-value">
+          <ol>
+            <li>El sistema crea un único grupo llamado "Liga Única" con todos los equipos.</li>
+            <li>Genera un fixture round-robin completo (todos contra todos).</li>
+            <li>Asigna fechas a cada jornada usando los <code>dias_juego</code> configurados en el torneo.</li>
+            <li>Actualiza automáticamente la <code>fecha_fin</code> del torneo con la fecha de la última jornada.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Postcondición</span>
+        <div class="cu-value">Partidos de grupos disponibles en el sistema. En modo liga, cada partido tiene fecha asignada.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CU06 -->
+  <div class="cu-card">
+    <div class="cu-header">
+      <span class="cu-id">CU06</span>
+      <span class="cu-name">Cargar Resultado de Partido</span>
+      <span class="cu-actor">Actor: Organizador</span>
+    </div>
+    <div class="cu-body">
+      <div class="cu-row">
+        <span class="cu-label">Precondición</span>
+        <div class="cu-value">Torneo con grupos generados. Partido en estado <em>no_iniciado</em>.</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Flujo — Fase de Grupos</span>
+        <div class="cu-value">
+          <ol>
+            <li>El organizador selecciona el torneo y la pestaña Grupos.</li>
+            <li>Puede filtrar partidos por nombre de equipo o jugador (barra de búsqueda).</li>
+            <li>En modo liga: puede filtrar por jornada usando el desplegable de fechas.</li>
+            <li>Selecciona un partido y hace clic en "Cargar Resultado".</li>
+            <li>Ingresa el score de cada set: games del equipo 1 vs games del equipo 2.</li>
+            <li>El sistema calcula sets ganados y determina el ganador (no es manual).</li>
+            <li>Actualiza <code>partidos_grupo</code> (estado = 'finalizado') y las estadísticas en <code>equipos_grupo</code>.</li>
+            <li>Si todos los partidos del torneo quedan finalizados → genera el playoff automáticamente.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Flujo — Play-off</span>
+        <div class="cu-value">
+          <ol>
+            <li>El organizador selecciona la pestaña Play-off.</li>
+            <li>Visualiza el bracket organizado por rondas (CUARTOS → SEMIS → FINAL).</li>
+            <li>Carga el resultado del cruce (mismo mecanismo: sets por score).</li>
+            <li>El sistema calcula el ganador y lo pasa automáticamente al siguiente cruce.</li>
+            <li>Al completar la FINAL, el sistema genera los registros de ranking del torneo.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Nota importante</span>
+        <div class="cu-value">El sistema no usa un campo "ganador" seleccionado manualmente. El ganador se determina siempre contando sets ganados a partir del score ingresado.</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Postcondición</span>
+        <div class="cu-value">Resultado guardado, estadísticas actualizadas, ganador avanza en el bracket.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>IES — Tecnicatura Superior en Desarrollo de Software</span>
+    <span>11</span>
+  </div>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <span>Pro Cup Padel — Sprint 2</span>
+    <span>Sección 3 — Casos de Uso (cont.)</span>
+  </div>
+
+  <!-- CU07 -->
+  <div class="cu-card">
+    <div class="cu-header">
+      <span class="cu-id">CU07</span>
+      <span class="cu-name">Generar Play-off</span>
+      <span class="cu-actor">Actor: Sistema (automático) u Organizador (manual)</span>
+    </div>
+    <div class="cu-body">
+      <div class="cu-row">
+        <span class="cu-label">Precondición</span>
+        <div class="cu-value">Todos los partidos de la fase de grupos finalizados. Playoff no generado previamente.</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Lógica — 1 Grupo (Liga)</span>
+        <div class="cu-value">
+          Bracket dinámico según cantidad de equipos:
+          <ul>
+            <li>≥ 8 equipos: los 8 primeros → CUARTOS + SEMIS + FINAL</li>
+            <li>≥ 4 equipos: los 4 primeros → SEMIS + FINAL</li>
+            <li>&lt; 4 equipos: los 2 primeros → FINAL directa</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Lógica — 2 Grupos</span>
+        <div class="cu-value">Top 2 de cada grupo (4 equipos) → SEMIS + FINAL.</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Lógica — 3 Grupos</span>
+        <div class="cu-value">Top 2 de cada grupo (6 equipos) + los 2 mejores terceros ("mejor tercero") = 8 equipos → CUARTOS + SEMIS + FINAL.</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Lógica — 4+ Grupos</span>
+        <div class="cu-value">Top 2 de cada grupo → CUARTOS u OCTAVOS según total de clasificados (snake-seeding).</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Seeding (bracket)</span>
+        <div class="cu-value">Formato estándar: 1° vs 8°, 4° vs 5°, 2° vs 7°, 3° vs 6°. Cada partido tiene <code>next_match_id</code> y <code>next_slot</code> para el avance automático del ganador.</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Postcondición</span>
+        <div class="cu-value">Registros en <code>partidos_llave</code> con vínculos de avance automático configurados.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CU08 -->
+  <div class="cu-card">
+    <div class="cu-header">
+      <span class="cu-id">CU08</span>
+      <span class="cu-name">Consultar Ranking</span>
+      <span class="cu-actor">Actor: Jugador (público, sin login)</span>
+    </div>
+    <div class="cu-body">
+      <div class="cu-row">
+        <span class="cu-label">Precondición</span>
+        <div class="cu-value">Al menos un torneo completado con resultado final registrado.</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Flujo principal</span>
+        <div class="cu-value">
+          <ol>
+            <li>El usuario accede a la página de Ranking (no requiere autenticación).</li>
+            <li>Puede filtrar por categoría usando el desplegable.</li>
+            <li>El sistema consulta <code>ranking_jugador</code> ordenado por <code>puntos DESC</code>.</li>
+            <li>Se muestra: posición, jugador, última pareja, último torneo, fase alcanzada y puntos totales.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Escala de puntos</span>
+        <div class="cu-value">Campeón: 2000 · Subcampeón: 1200 · Semis: 720 · Cuartos: 360 · Octavos: 180</div>
+      </div>
+      <div class="cu-row">
+        <span class="cu-label">Postcondición</span>
+        <div class="cu-value">Solo lectura — no modifica datos.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>IES — Tecnicatura Superior en Desarrollo de Software</span>
+    <span>12</span>
+  </div>
+</div>
+
+<!-- ===================== SECCIÓN 4: ARQUITECTURA ===================== -->
+<div class="page">
+  <div class="page-header">
+    <span>Pro Cup Padel — Sprint 2</span>
+    <span>Sección 4 — Arquitectura</span>
+  </div>
+
+  <h2 class="section-title">
+    <span class="section-num">4</span>
+    Arquitectura del Sistema
+  </h2>
+
+  <h3 class="subsection-title">4.1 Stack Tecnológico</h3>
+
+  <div class="arch-layer">
+    <div class="arch-layer-label">Frontend — Capa de Presentación</div>
+    <div class="arch-layer-content">
+      <div class="arch-chip main">React 19</div>
+      <div class="arch-chip">React Router DOM 6</div>
+      <div class="arch-chip">Recharts (gráficos)</div>
+      <div class="arch-chip">lucide-react (íconos SVG)</div>
+      <div class="arch-chip">axios (HTTP)</div>
+      <div class="arch-chip">Puerto 5173</div>
+    </div>
+  </div>
+
+  <div class="arch-layer">
+    <div class="arch-layer-label">Backend — Capa de Negocio y API REST</div>
+    <div class="arch-layer-content">
+      <div class="arch-chip main">Node.js + Express 5.1</div>
+      <div class="arch-chip">JWT (6h expiry)</div>
+      <div class="arch-chip">bcrypt (10 rounds)</div>
+      <div class="arch-chip">multer (upload fotos)</div>
+      <div class="arch-chip">node-postgres (pg)</div>
+      <div class="arch-chip">Puerto 3000</div>
+    </div>
+  </div>
+
+  <div class="arch-layer">
+    <div class="arch-layer-label">Base de Datos — Capa de Persistencia</div>
+    <div class="arch-layer-content">
+      <div class="arch-chip main">PostgreSQL 13</div>
+      <div class="arch-chip">11 tablas</div>
+      <div class="arch-chip">Transacciones ACID</div>
+      <div class="arch-chip">Puerto 5432</div>
+    </div>
+  </div>
+
+  <div class="arch-layer">
+    <div class="arch-layer-label">Infraestructura — Deploy y Orquestación</div>
+    <div class="arch-layer-content">
+      <div class="arch-chip main">Docker Compose</div>
+      <div class="arch-chip">Script startup.bat</div>
+      <div class="arch-chip">patch_schema.sql (migraciones)</div>
+    </div>
+  </div>
+
+  <h3 class="subsection-title mt-4">4.2 Endpoints API (resumen)</h3>
+
+  <table class="doc-table">
+    <thead><tr><th>Método</th><th>Ruta</th><th>Auth</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td><code>POST</code></td><td><code>/api/registro</code></td><td>—</td><td>Registro de jugador</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/login</code></td><td>—</td><td>Login → devuelve JWT</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/jugadores</code></td><td>—</td><td>Listar todos los jugadores</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/jugadores</code></td><td>Organizador</td><td>Crear jugador desde admin</td></tr>
+      <tr><td><code>PUT</code></td><td><code>/api/jugadores/:id</code></td><td>JWT propio u Org.</td><td>Editar perfil (con foto)</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/torneos</code></td><td>—</td><td>Listar torneos (con filtro año)</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/torneos</code></td><td>—</td><td>Crear torneo</td></tr>
+      <tr><td><code>PUT</code></td><td><code>/api/torneos/:id</code></td><td>—</td><td>Editar torneo</td></tr>
+      <tr><td><code>DELETE</code></td><td><code>/api/torneos/:id</code></td><td>—</td><td>Eliminar torneo</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/inscripcion</code></td><td>—</td><td>Inscribir equipo (con validaciones)</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/torneos/:id/grupos</code></td><td>—</td><td>Ver grupos, equipos y partidos</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/torneos/:id/generar-grupos</code></td><td>—</td><td>Generar grupos y fixture</td></tr>
+      <tr><td><code>PUT</code></td><td><code>/api/partidos-grupo/:id</code></td><td>—</td><td>Cargar resultado (grupos)</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/torneos/:id/playoff</code></td><td>—</td><td>Ver bracket completo</td></tr>
+      <tr><td><code>POST</code></td><td><code>/api/torneos/:id/playoff</code></td><td>—</td><td>Generar playoff manualmente</td></tr>
+      <tr><td><code>PUT</code></td><td><code>/api/torneos/:id/playoff/partidos/:id</code></td><td>—</td><td>Cargar resultado (playoff)</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/ranking</code></td><td>—</td><td>Consultar ranking global</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/categorias</code></td><td>—</td><td>Listar categorías disponibles</td></tr>
+      <tr><td><code>GET</code></td><td><code>/api/dashboard/kpis</code></td><td>—</td><td>KPIs del organizador</td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer">
+    <span>IES — Tecnicatura Superior en Desarrollo de Software</span>
+    <span>13</span>
+  </div>
+</div>
+
+<!-- ===================== SECCIÓN 5: PENDIENTES ===================== -->
+<div class="page">
+  <div class="page-header">
+    <span>Pro Cup Padel — Sprint 2</span>
+    <span>Sección 5 — Funcionalidades Pendientes</span>
+  </div>
+
+  <h2 class="section-title">
+    <span class="section-num">5</span>
+    Funcionalidades Pendientes
+  </h2>
+
+  <p>Las siguientes funcionalidades fueron identificadas en la etapa de análisis y forman parte del roadmap del proyecto, pero no pertenecen al alcance del Sprint 2:</p>
+
+  <table class="doc-table mt-4">
+    <thead><tr><th>Funcionalidad</th><th>Estado</th><th>Descripción</th><th>Sprint estimado</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="col-key">Transmisión en vivo</td>
+        <td><span class="badge badge-yellow">Pendiente</span></td>
+        <td>Integración con servicios de streaming para transmitir partidos en tiempo real</td>
+        <td>Sprint 4</td>
+      </tr>
+      <tr>
+        <td class="col-key">Módulo Multimedia</td>
+        <td><span class="badge badge-yellow">Pendiente</span></td>
+        <td>Galería de fotos y videos de partidos y torneos</td>
+        <td>Sprint 4</td>
+      </tr>
+      <tr>
+        <td class="col-key">Notificaciones</td>
+        <td><span class="badge badge-yellow">Pendiente</span></td>
+        <td>Alertas por email o push al inscribirse, al cargar resultados, etc.</td>
+        <td>Sprint 3</td>
+      </tr>
+      <tr>
+        <td class="col-key">App móvil</td>
+        <td><span class="badge badge-yellow">Pendiente</span></td>
+        <td>Versión nativa para Android/iOS</td>
+        <td>Sprint 5+</td>
+      </tr>
+      <tr>
+        <td class="col-key">Edición de resultado</td>
+        <td><span class="badge badge-yellow">Pendiente</span></td>
+        <td>Corrección de resultados ya cargados (con revertido de estadísticas)</td>
+        <td>Sprint 3</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="warn-box mt-4">
+    <strong>Nota sobre Transmision y Multimedia en el DER anterior:</strong> Estas entidades aparecían en el diagrama de Sprint 1 como parte del análisis de requerimientos futuros. En el sistema actual <strong>no existe ninguna tabla ni endpoint</strong> relacionado con estas funcionalidades. Serán incorporadas en sprints posteriores.
+  </div>
+
+  <br><br>
+
+  <h2 class="section-title mt-4">
+    <span class="section-num">6</span>
+    Estado de Implementación — Resumen
+  </h2>
+
+  <table class="doc-table">
+    <thead><tr><th>Módulo</th><th>Estado</th><th>Observaciones</th></tr></thead>
+    <tbody>
+      <tr><td>Registro y Login de jugadores</td><td><span class="badge badge-green">Completado</span></td><td>Con auditoría de ingresos</td></tr>
+      <tr><td>Gestión de jugadores (admin)</td><td><span class="badge badge-green">Completado</span></td><td>CRUD completo + foto de perfil</td></tr>
+      <tr><td>Gestión de torneos</td><td><span class="badge badge-green">Completado</span></td><td>Categoría fija y suma, fin de semana y liga</td></tr>
+      <tr><td>Inscripción de equipos</td><td><span class="badge badge-green">Completado</span></td><td>Con validaciones de categoría y solapamiento</td></tr>
+      <tr><td>Generación de grupos y fixture</td><td><span class="badge badge-green">Completado</span></td><td>Aleatorio (fin de semana) o con fechas (liga)</td></tr>
+      <tr><td>Carga de resultados — grupos</td><td><span class="badge badge-green">Completado</span></td><td>Set a set, con filtros de búsqueda y fecha</td></tr>
+      <tr><td>Generación de playoff</td><td><span class="badge badge-green">Completado</span></td><td>Automático + manual, 4 lógicas según N grupos</td></tr>
+      <tr><td>Carga de resultados — playoff</td><td><span class="badge badge-green">Completado</span></td><td>Con avance automático de ganadores</td></tr>
+      <tr><td>Ranking de jugadores</td><td><span class="badge badge-green">Completado</span></td><td>Con filtro por categoría</td></tr>
+      <tr><td>Dashboard del organizador</td><td><span class="badge badge-green">Completado</span></td><td>KPIs, gráficos, alertas, actividad reciente</td></tr>
+      <tr><td>Transmisión / Multimedia</td><td><span class="badge badge-yellow">Pendiente</span></td><td>Sprint futuro</td></tr>
+    </tbody>
+  </table>
+
+  <div class="cover-footer" style="position: relative; margin-top: 40px; text-align: center; color: #6b7280; font-size: 8.5pt; border-top: 1px solid #e5e7eb; padding-top: 12px;">
+    Pro Cup Padel — Documentación técnica Sprint 2 · IES Tecnicatura Superior en Desarrollo de Software · Junio 2026
+  </div>
+
+  <div class="page-footer">
+    <span>IES — Tecnicatura Superior en Desarrollo de Software</span>
+    <span>14</span>
+  </div>
+</div>
+
+</body>
+</html>

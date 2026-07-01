@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 280" font-family="Arial,sans-serif" font-size="10">
+  <rect width="660" height="280" fill="white"/>
+  <text x="330" y="18" text-anchor="middle" font-size="13" font-weight="bold">Diagrama de Clases — Visualización de Torneos</text>
+  <defs>
+    <marker id="open" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6" fill="none" stroke="#333" stroke-width="1.2"/>
+    </marker>
+  </defs>
+
+  <!-- TorneosView -->
+  <rect x="10" y="30" width="160" height="18" rx="2" fill="#2E4A7A"/>
+  <text x="90" y="43" text-anchor="middle" fill="white" font-size="9">«boundary»</text>
+  <rect x="10" y="48" width="160" height="18" fill="#dce9f8" stroke="#2E4A7A"/>
+  <text x="90" y="61" text-anchor="middle" font-weight="bold">TorneosView</text>
+  <rect x="10" y="66" width="160" height="52" fill="white" stroke="#2E4A7A"/>
+  <text x="20" y="79" font-size="9">– mesFiltro: string</text>
+  <text x="20" y="92" font-size="9">– categoriaFiltro: int</text>
+  <text x="20" y="105" font-size="9">– vistaActiva: string</text>
+  <rect x="10" y="118" width="160" height="30" fill="#f0f4fc" stroke="#2E4A7A"/>
+  <text x="20" y="131" font-size="9">+ filtrarTorneos()</text>
+  <text x="20" y="144" font-size="9">+ cambiarVista()</text>
+
+  <!-- TorneosController -->
+  <rect x="230" y="30" width="165" height="18" rx="2" fill="#4a7a2e"/>
+  <text x="312" y="43" text-anchor="middle" fill="white" font-size="9">«control»</text>
+  <rect x="230" y="48" width="165" height="18" fill="#e8f5d8" stroke="#4a7a2e"/>
+  <text x="312" y="61" text-anchor="middle" font-weight="bold">TorneosController</text>
+  <rect x="230" y="66" width="165" height="20" fill="white" stroke="#4a7a2e"/>
+  <text x="240" y="79" font-size="9">(sin atributos de estado)</text>
+  <rect x="230" y="86" width="165" height="40" fill="#f4fcea" stroke="#4a7a2e"/>
+  <text x="240" y="99" font-size="9">+ getTorneos(filtros)</text>
+  <text x="240" y="112" font-size="9">+ getFixture(torneoId)</text>
+
+  <!-- Torneo -->
+  <rect x="455" y="30" width="190" height="18" rx="2" fill="#7a2e2e"/>
+  <text x="550" y="43" text-anchor="middle" fill="white" font-size="9">«entity»</text>
+  <rect x="455" y="48" width="190" height="18" fill="#f8e8e8" stroke="#7a2e2e"/>
+  <text x="550" y="61" text-anchor="middle" font-weight="bold">Torneo</text>
+  <rect x="455" y="66" width="190" height="65" fill="white" stroke="#7a2e2e"/>
+  <text x="465" y="79" font-size="9">– id_torneo: int (PK)</text>
+  <text x="465" y="92" font-size="9">– nombre_torneo: varchar</text>
+  <text x="465" y="105" font-size="9">– fecha_inicio: date</text>
+  <text x="465" y="118" font-size="9">– modalidad: varchar</text>
+
+  <!-- Grupos -->
+  <rect x="455" y="170" width="190" height="18" rx="2" fill="#555"/>
+  <text x="550" y="183" text-anchor="middle" fill="white" font-size="9">«entity»</text>
+  <rect x="455" y="188" width="190" height="18" fill="#f0f0f0" stroke="#555"/>
+  <text x="550" y="201" text-anchor="middle" font-weight="bold">Grupos / PartidoGrupo</text>
+  <rect x="455" y="206" width="190" height="52" fill="white" stroke="#555"/>
+  <text x="465" y="219" font-size="9">– id_grupo: int (PK)</text>
+  <text x="465" y="232" font-size="9">– nombre: varchar</text>
+  <text x="465" y="245" font-size="9">– id_torneo: int (FK)</text>
+  <text x="465" y="258" font-size="9">– partidos[]: PartidoGrupo</text>
+
+  <!-- Relations -->
+  <line x1="170" y1="105" x2="230" y2="100" stroke="#333" stroke-width="1.5" marker-end="url(#open)"/>
+  <line x1="395" y1="100" x2="455" y2="90" stroke="#333" stroke-width="1.5" marker-end="url(#open)"/>
+  <text x="400" y="87" font-size="8">consulta</text>
+  <line x1="395" y1="112" x2="455" y2="210" stroke="#333" stroke-width="1.5" marker-end="url(#open)"/>
+  <text x="400" y="170" font-size="8">muestra</text>
+  <!-- Torneo → Grupos -->
+  <line x1="550" y1="131" x2="550" y2="170" stroke="#555" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#open)"/>
+  <text x="555" y="155" font-size="8">1..*</text>
+</svg>

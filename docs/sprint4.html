@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pro Cup Padel — Sprint 4 / Informe Final</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Arial:wght@400;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+    font-size: 11pt;
+    color: #000;
+    background: #ccc;
+    line-height: 1.55;
+  }
+
+  .page {
+    width: 277mm;
+    min-height: 190mm;
+    background: white;
+    margin: 16px auto;
+    padding: 16mm 18mm;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+    page-break-after: always;
+    position: relative;
+  }
+
+  /* ── PORTADA ── */
+  .cover {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 155mm;
+    gap: 0;
+  }
+  .cover-title {
+    font-size: 22pt;
+    font-weight: normal;
+    margin-bottom: 40px;
+    line-height: 1.3;
+  }
+  .ies-logo-wrap { margin-bottom: 40px; }
+  .ies-top-text {
+    color: #1565C0;
+    font-weight: bold;
+    font-size: 13pt;
+    letter-spacing: 2px;
+    line-height: 1.4;
+    margin-bottom: 4px;
+  }
+  .ies-box {
+    display: inline-block;
+    background: #1a237e;
+    color: white;
+    font-size: 30pt;
+    font-weight: 900;
+    padding: 14px 28px;
+    border: 3px solid #111;
+    letter-spacing: 2px;
+    font-family: Arial, sans-serif;
+  }
+  .cover-info {
+    font-size: 11pt;
+    margin-top: 50px;
+    text-align: left;
+    line-height: 2;
+  }
+  .cover-info strong { font-weight: bold; text-decoration: underline; }
+
+  /* ── HEADINGS ── */
+  h1 { font-size: 18pt; font-weight: bold; text-align: center; margin: 16px 0 10px; }
+  h2 { font-size: 14pt; font-weight: bold; margin: 22px 0 8px; border-bottom: 1px solid #ddd; padding-bottom: 3px; }
+  h3 { font-size: 12pt; font-weight: bold; margin: 16px 0 6px; }
+  h4 { font-size: 11pt; font-weight: bold; margin: 12px 0 4px; }
+  p  { margin: 6px 0 8px; }
+
+  /* ── TABLES ── */
+  table { border-collapse: collapse; width: 100%; margin: 10px 0 14px; font-size: 10pt; }
+  th {
+    background: #2E4A7A;
+    color: white;
+    padding: 7px 9px;
+    text-align: left;
+    font-weight: bold;
+    border: 1px solid #2E4A7A;
+  }
+  td { border: 1px solid #bbb; padding: 6px 9px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f5f7fa; }
+  .table-center th, .table-center td { text-align: center; }
+
+  /* ── FICHA CASO USO ── */
+  .ficha-table th { background: #4A86C8; }
+  .ficha-alt td:first-child { background: #E8F0FB; font-weight: bold; }
+
+  /* ── CODE ── */
+  pre {
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-left: 3px solid #2E4A7A;
+    padding: 10px 12px;
+    font-size: 8.5pt;
+    overflow-x: auto;
+    margin: 8px 0 14px;
+    line-height: 1.4;
+  }
+  code { font-size: 9pt; }
+
+  /* ── PLACEHOLDER IMAGEN ── */
+  .img-placeholder {
+    background: #f0f0f0;
+    border: 2px dashed #aaa;
+    padding: 30px 20px;
+    text-align: center;
+    color: #666;
+    margin: 10px 0 14px;
+    font-size: 10pt;
+    font-style: italic;
+  }
+
+  /* ── REQS LIST ── */
+  ul { margin: 6px 0 10px 20px; }
+  ul li { margin-bottom: 3px; }
+  ol { margin: 6px 0 10px 22px; }
+  ol li { margin-bottom: 4px; }
+
+  /* ── INDEX ── */
+  .toc-entry { display: flex; gap: 4px; margin: 4px 0; font-size: 10.5pt; }
+  .toc-num   { min-width: 36px; font-weight: bold; }
+  .toc-dots  { flex: 1; border-bottom: 1px dotted #999; margin-bottom: 3px; }
+  .toc-page  { min-width: 20px; text-align: right; }
+  .toc-section { margin-top: 12px; font-weight: bold; font-size: 11pt; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin-bottom: 6px; }
+
+  /* ── PRINT ── */
+  .captura-img {
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 8px 0 14px;
+    display: block;
+  }
+
+  @page {
+    size: A4;
+    margin: 18mm 22mm;
+  }
+
+  @media print {
+    body { background: white; }
+    .page {
+      box-shadow: none;
+      margin: 0;
+      padding: 0;
+      width: auto;
+      min-height: 0;
+      page-break-after: auto;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     PORTADA
+═══════════════════════════════════════════════════ -->
+<div class="page" style="page-break-after:always">
+  <div class="cover">
+    <div class="cover-title">
+      Analista de Sistemas<br>Trabajo Final
+    </div>
+
+    <div class="ies-logo-wrap">
+      <img src="capturas/logo_ies.png" style="width:180px;" alt="Logo IES Colegio Universitario">
+    </div>
+
+    <div class="cover-info">
+      <p><strong>Director de la carrera</strong>: Esteban Lopez Belcuore</p>
+      <p><strong>Integrantes del Trabajo</strong>: Lucas Ignacio Cepeda Jerez — Santiago Wortley</p>
+      <p><strong>Sistema</strong>: Pro Cup Pádel — Sistema de Gestión de Torneos</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     ÍNDICE
+═══════════════════════════════════════════════════ -->
+<div class="page" style="page-break-after:always">
+  <h1>Índice de Contenidos</h1>
+
+  <div style="margin-top:20px;">
+
+    <!-- ── PARTE 1 ── -->
+    <div class="toc-section">PARTE 1 — RELEVAMIENTO Y PROPUESTA (PP2)</div>
+
+    <div class="toc-entry"><span class="toc-num">1.</span><span>Introducción</span><span class="toc-dots"></span><span class="toc-page">3</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">1.1.</span><span>Carta de Presentación</span><span class="toc-dots"></span><span class="toc-page">3</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">1.2.</span><span>Pedido del Usuario</span><span class="toc-dots"></span><span class="toc-page">3</span></div>
+
+    <div class="toc-entry"><span class="toc-num">2.</span><span>Relevamiento</span><span class="toc-dots"></span><span class="toc-page">4</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">2.1.</span><span>Contextual y del Negocio</span><span class="toc-dots"></span><span class="toc-page">4</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">2.2.</span><span>Estructura de la Organización</span><span class="toc-dots"></span><span class="toc-page">5</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">2.3.</span><span>Procesos de Negocio</span><span class="toc-dots"></span><span class="toc-page">9</span></div>
+    <div class="toc-entry" style="margin-left:32px;"><span class="toc-num">2.3.1.</span><span>Gestión de Reservas y Turnos (cursograma + descripción)</span><span class="toc-dots"></span><span class="toc-page">13</span></div>
+    <div class="toc-entry" style="margin-left:32px;"><span class="toc-num">2.3.2.</span><span>Gestión de Facturación y Cobros (cursograma + descripción)</span><span class="toc-dots"></span><span class="toc-page">14</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">2.4.</span><span>Tecnología</span><span class="toc-dots"></span><span class="toc-page">15</span></div>
+    <div class="toc-entry" style="margin-left:32px;"><span class="toc-num">2.4.1.</span><span>Tecnología existente en la empresa</span><span class="toc-dots"></span><span class="toc-page">15</span></div>
+    <div class="toc-entry" style="margin-left:32px;"><span class="toc-num">2.4.2.</span><span>Tecnología existente en el mercado (aplicable)</span><span class="toc-dots"></span><span class="toc-page">15</span></div>
+
+    <div class="toc-entry"><span class="toc-num">3.</span><span>Propuesta</span><span class="toc-dots"></span><span class="toc-page">16</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">3.1.</span><span>Diagnóstico y Propuesta</span><span class="toc-dots"></span><span class="toc-page">16</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">3.2.</span><span>Propuesta General</span><span class="toc-dots"></span><span class="toc-page">16</span></div>
+
+    <!-- ── PARTE 2 ── -->
+    <div class="toc-section">PARTE 2 — MODELADO Y DESARROLLO DEL SISTEMA (PP3)</div>
+
+    <div class="toc-entry"><span class="toc-num">4.</span><span>Objetivos, Límites y Alcance</span><span class="toc-dots"></span><span class="toc-page">3</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">4.1.</span><span>Objetivo General</span><span class="toc-dots"></span><span class="toc-page">3</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">4.2.</span><span>Objetivos Específicos</span><span class="toc-dots"></span><span class="toc-page">3</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">4.3.</span><span>Límites del Sistema</span><span class="toc-dots"></span><span class="toc-page">3</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">4.4.</span><span>Alcance</span><span class="toc-dots"></span><span class="toc-page">4</span></div>
+
+    <div class="toc-entry"><span class="toc-num">5.</span><span>Especificación de Requerimientos</span><span class="toc-dots"></span><span class="toc-page">4</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">5.1.</span><span>Requerimientos Funcionales</span><span class="toc-dots"></span><span class="toc-page">4</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">5.2.</span><span>Requerimientos No Funcionales</span><span class="toc-dots"></span><span class="toc-page">5</span></div>
+
+    <div class="toc-entry"><span class="toc-num">6.</span><span>Análisis y Diseño del Producto</span><span class="toc-dots"></span><span class="toc-page">5</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">6.1.</span><span>Modelado Ambiental</span><span class="toc-dots"></span><span class="toc-page">5</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">6.2.</span><span>Modelado de Paquetes</span><span class="toc-dots"></span><span class="toc-page">6</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">6.3.</span><span>Modelado de los Casos de Uso</span><span class="toc-dots"></span><span class="toc-page">6</span></div>
+    <div class="toc-entry" style="margin-left:32px;"><span class="toc-num">6.3.1.</span><span>Módulo: Autenticación y Roles</span><span class="toc-dots"></span><span class="toc-page">7</span></div>
+    <div class="toc-entry" style="margin-left:48px;"><span class="toc-num">6.3.1.1.</span><span>Login</span><span class="toc-dots"></span><span class="toc-page">7</span></div>
+    <div class="toc-entry" style="margin-left:48px;"><span class="toc-num">6.3.1.2.</span><span>Registro</span><span class="toc-dots"></span><span class="toc-page">9</span></div>
+    <div class="toc-entry" style="margin-left:32px;"><span class="toc-num">6.3.2.</span><span>Módulo: Administración de Torneos</span><span class="toc-dots"></span><span class="toc-page">11</span></div>
+    <div class="toc-entry" style="margin-left:48px;"><span class="toc-num">6.3.2.1.</span><span>Crear Torneo</span><span class="toc-dots"></span><span class="toc-page">11</span></div>
+    <div class="toc-entry" style="margin-left:32px;"><span class="toc-num">6.3.3.</span><span>Módulo: Gestión de Inscripciones</span><span class="toc-dots"></span><span class="toc-page">13</span></div>
+    <div class="toc-entry" style="margin-left:48px;"><span class="toc-num">6.3.3.1.</span><span>Inscribirse a Torneo</span><span class="toc-dots"></span><span class="toc-page">13</span></div>
+    <div class="toc-entry" style="margin-left:32px;"><span class="toc-num">6.3.4.</span><span>Módulo: Fixture y Resultados</span><span class="toc-dots"></span><span class="toc-page">15</span></div>
+    <div class="toc-entry" style="margin-left:48px;"><span class="toc-num">6.3.4.1.</span><span>Cargar Resultados</span><span class="toc-dots"></span><span class="toc-page">15</span></div>
+    <div class="toc-entry" style="margin-left:32px;"><span class="toc-num">6.3.5.</span><span>Módulo: Visualización de Torneos</span><span class="toc-dots"></span><span class="toc-page">17</span></div>
+    <div class="toc-entry" style="margin-left:48px;"><span class="toc-num">6.3.5.1.</span><span>Ver Torneos</span><span class="toc-dots"></span><span class="toc-page">17</span></div>
+
+    <div class="toc-entry"><span class="toc-num">7.</span><span>Implementación del Software (desarrollo)</span><span class="toc-dots"></span><span class="toc-page">19</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">7.1.</span><span>Módulo: Autenticación y Roles</span><span class="toc-dots"></span><span class="toc-page">19</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">7.2.</span><span>Módulo: Administración de Torneos</span><span class="toc-dots"></span><span class="toc-page">20</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">7.3.</span><span>Módulo: Gestión de Inscripciones</span><span class="toc-dots"></span><span class="toc-page">20</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">7.4.</span><span>Módulo: Fixture y Resultados</span><span class="toc-dots"></span><span class="toc-page">20</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">7.5.</span><span>Módulo: Visualización de Torneos</span><span class="toc-dots"></span><span class="toc-page">21</span></div>
+
+    <div class="toc-entry"><span class="toc-num">8.</span><span>Integración y Testing</span><span class="toc-dots"></span><span class="toc-page">21</span></div>
+
+    <div class="toc-entry"><span class="toc-num">9.</span><span>Estructura de Datos</span><span class="toc-dots"></span><span class="toc-page">22</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">9.1.</span><span>Modelo de Clases / DER</span><span class="toc-dots"></span><span class="toc-page">22</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">9.2.</span><span>Diccionario de Datos</span><span class="toc-dots"></span><span class="toc-page">22</span></div>
+
+    <div class="toc-entry"><span class="toc-num">10.</span><span>Especificaciones del Sistema</span><span class="toc-dots"></span><span class="toc-page">25</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">10.1.</span><span>Despliegue</span><span class="toc-dots"></span><span class="toc-page">25</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">10.2.</span><span>Hardware Mínimo y Óptimo</span><span class="toc-dots"></span><span class="toc-page">25</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">10.3.</span><span>Software de Base y Aplicación</span><span class="toc-dots"></span><span class="toc-page">26</span></div>
+    <div class="toc-entry" style="margin-left:16px;"><span class="toc-num">10.4.</span><span>Seguridad y Auditoría</span><span class="toc-dots"></span><span class="toc-page">26</span></div>
+  </div>
+</div>
+
+
+<!-- PAG S1-1: INTRODUCCIÓN + PEDIDO DEL USUARIO -->
+<div class="page">
+  <h2>1. Introducción</h2>
+  <h3>1.1. Carta de Presentación</h3>
+  <p style="font-size:9.5pt;color:#555;font-style:italic;margin-bottom:6px;">(Ver Respuesta al Usuario — página siguiente)</p>
+  <h3 style="margin-top:14px;">1.2. Pedido del Usuario</h3>
+  <p>
+    El presente trabajo corresponde al Seminario I de la carrera Analista de Sistemas del IES Colegio Universitario.
+    Su objetivo es relevar y analizar la situación actual del torneo de pádel <em>Pro Cup Pádel</em>, identificar las
+    problemáticas existentes en su gestión y proponer soluciones tecnológicas que optimicen los procesos del negocio.
+  </p>
+  <p>
+    El torneo <em>Pro Cup Pádel</em>, organizado por Ariel Gramajo en la ciudad de Frías, provincia de Santiago del
+    Estero, opera actualmente con procesos manuales que generan ineficiencias en la inscripción de equipos, el
+    seguimiento de resultados, la comunicación con participantes y la gestión financiera.
+  </p>
+  <p>
+    A través de entrevistas con el fundador, jugadores y público asistente, cuestionarios y observación directa,
+    se identificaron los requerimientos funcionales y no funcionales del sistema propuesto, sentando las bases para
+    su posterior desarrollo en los Sprints del Seminario II.
+  </p>
+
+  <h2>2. Pedido del Usuario</h2>
+
+  <div style="border:1px solid #bbb;padding:18px 22px;margin:12px 0;font-size:10.5pt;line-height:1.7;background:#fafafa;page-break-inside:avoid">
+    <!-- Membrete Pro Cup Pádel -->
+    <div style="display:flex;align-items:center;gap:16px;border-bottom:2px solid #1a237e;padding-bottom:12px;margin-bottom:14px;">
+      <img src="capturas/logoprocup.png" style="height:70px;object-fit:contain;" alt="Logo Pro Cup Pádel">
+      <div>
+        <div style="font-size:14pt;font-weight:900;color:#1a237e;letter-spacing:2px;line-height:1.2;">Pro Cup Pádel</div>
+        <div style="font-size:8.5pt;color:#555;margin-top:3px;">Torneo Amateur — Frías, Santiago del Estero</div>
+      </div>
+    </div>
+    <p style="text-align:right;">Frías, Santiago del Estero, 15 de Octubre de 2024</p>
+    <br>
+    <p><strong>A quienes corresponda:</strong></p>
+    <br>
+    <p>
+      Por medio de la presente me dirijo a ustedes a fin de solicitarles el desarrollo de un sistema informático para
+      la gestión del torneo de pádel denominado <strong>"Pro Cup Pádel"</strong>, que organizo en esta ciudad desde
+      el año 2020.
+    </p>
+    <p>
+      Actualmente la administración del torneo se realiza de manera totalmente manual: las inscripciones se reciben
+      por mensajes de WhatsApp o de forma presencial, los grupos se arman en papel, los resultados se anotan en
+      planillas y el ranking se calcula manualmente al cierre de cada fecha.
+    </p>
+    <p>
+      Esta situación genera demoras, errores y dificultades tanto para los organizadores como para los jugadores
+      y el público que desea seguir el torneo. Por ello, solicito el desarrollo de una solución digital que permita:
+    </p>
+    <ul>
+      <li>Gestionar las inscripciones de equipos de forma online.</li>
+      <li>Organizar los grupos automáticamente según la cantidad de equipos inscriptos.</li>
+      <li>Registrar y publicar los resultados de los partidos en tiempo real.</li>
+      <li>Generar automáticamente el cuadro de playoff al finalizar la fase de grupos.</li>
+      <li>Mantener un ranking actualizado de jugadores por categoría.</li>
+      <li>Ofrecer información al público de forma clara y accesible desde cualquier dispositivo.</li>
+    </ul>
+    <p>Quedo a disposición para brindar toda la información necesaria para el correcto relevamiento del sistema.</p>
+    <div style="margin-top:30px;">
+      <p>Atentamente,</p>
+      <br>
+      <img src="capturas/firma_cliente.png" style="height:64px;object-fit:contain;display:block;margin-bottom:4px;" alt="Firma Ariel Gramajo">
+      <p><strong>Ariel Gramajo</strong><br>Organizador — Pro Cup Pádel<br>San Martín 406, Frías, Santiago del Estero</p>
+    </div>
+  </div>
+</div>
+
+<!-- PAG S1-2: RESPUESTA + HISTORIA -->
+<div class="page">
+  <h2>1.1. Carta de Presentación</h2>
+
+  <div style="border:1px solid #bbb;padding:18px 22px;margin:12px 0;font-size:10.5pt;line-height:1.7;background:#fafafa;page-break-inside:avoid">
+    <p style="text-align:right;">Córdoba, 16 de Octubre de 2024</p>
+    <p><strong>Sr. Ariel Gramajo</strong><br>Organizador — Pro Cup Pádel<br>San Martín 406, Frías, Santiago del Estero</p>
+    <br>
+    <p><strong>De nuestra mayor consideración:</strong></p>
+    <br>
+    <p>
+      En respuesta a su solicitud de fecha 15 de Octubre de 2024, nos complace informarle que hemos recibido y
+      analizado los requerimientos para el desarrollo del sistema de gestión del torneo <em>Pro Cup Pádel</em>.
+    </p>
+    <p>
+      Tras una primera evaluación del pedido, podemos confirmar que el proyecto es técnicamente viable y se
+      encuentra dentro de las posibilidades de nuestro equipo de trabajo. Nos comprometemos a realizar el
+      relevamiento completo del negocio, identificar los requerimientos funcionales y no funcionales, y desarrollar
+      una solución web que contemple todos los puntos enumerados en su solicitud.
+    </p>
+    <p>
+      El sistema propuesto se desarrollará como una aplicación web moderna, accesible desde computadoras y
+      dispositivos móviles, con una interfaz intuitiva tanto para los organizadores como para los jugadores y el
+      público en general.
+    </p>
+    <p>
+      En los próximos días nos pondremos en contacto para coordinar las entrevistas de relevamiento y acordar los
+      plazos de entrega de cada etapa del proyecto.
+    </p>
+    <div style="margin-top:30px;">
+      <p>Sin otro particular, saludamos a usted atentamente.</p>
+      <br>
+      <div style="margin-top:16px;">
+        <p><strong>Cepeda Jerez, Lucas Ignacio — Wortley, Santiago</strong></p>
+      </div>
+      <p style="margin-top:8px;font-size:9pt;color:#555;">IES Colegio Universitario — Córdoba, 16 de Octubre de 2024</p>
+    </div>
+  </div>
+
+  <h2>2. Relevamiento</h2>
+  <h3>2.1. Contextual y del Negocio</h3>
+  <h4>Historia — Pro Cup Pádel</h4>
+
+  <div style="display:flex;align-items:center;gap:20px;margin-bottom:12px;">
+    <img src="capturas/logoprocup.png" style="height:90px;object-fit:contain;" alt="Logo Pro Cup Pádel">
+    <div>
+      <div style="font-size:9pt;color:#555;font-style:italic;">Torneo Amateur de Pádel — Frías, Santiago del Estero</div>
+    </div>
+  </div>
+
+  <p>
+    <strong>Pro Cup Pádel</strong> es un torneo de pádel amateur fundado en el año 2020 por Ariel Gramajo en la
+    ciudad de Frías, provincia de Santiago del Estero. Surgió durante el período de pandemia como una iniciativa
+    para promover la actividad física y la integración social en la comunidad local.
+  </p>
+  <p>
+    Desde sus inicios, el torneo se destacó por su carácter inclusivo, convocando a jugadores de distintos
+    niveles de experiencia organizados en categorías (Primera, Segunda y Tercera). Con el tiempo, el evento
+    creció en participantes y ediciones, consolidándose como uno de los torneos de pádel más importantes
+    de la región noroeste de Santiago del Estero y zonas limítrofes con Córdoba.
+  </p>
+  <p>
+    En la actualidad, el torneo se desarrolla de forma semestral, con inscripciones abiertas para equipos de
+    dobles, fase de grupos y playoff final. La organización se apoya completamente en medios informales
+    (WhatsApp, Instagram y planillas en papel), lo que motivó la búsqueda de una solución tecnológica
+    que acompañe el crecimiento del evento.
+  </p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;">
+    <div style="text-align:center;">
+      <img src="capturas/imagen1.jpg" style="max-width:100%;border-radius:4px;" alt="Instalaciones del complejo deportivo">
+      <div style="font-size:8pt;color:#555;margin-top:4px;font-style:italic;">Instalaciones del complejo deportivo — Frías, Santiago del Estero</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="capturas/imagen2.jpg" style="max-width:100%;border-radius:4px;" alt="Partidos en cancha durante el torneo">
+      <div style="font-size:8pt;color:#555;margin-top:4px;font-style:italic;">Partidos en cancha durante el torneo — Pro Cup Pádel 2024</div>
+    </div>
+  </div>
+</div>
+
+<!-- PAG S1-3: RELEVAMIENTO + REQUERIMIENTOS FUNCIONALES -->
+<div class="page">
+  <h3>2.2. Estructura de la Organización</h3>
+  <p>
+    El relevamiento se realizó durante el mes de octubre de 2024 mediante entrevistas presenciales, cuestionarios
+    y observación directa de los procesos. Se identificaron los siguientes actores principales del negocio:
+  </p>
+  <table>
+    <thead><tr><th>Actor</th><th>Rol en el negocio</th><th>Necesidades identificadas</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Organizador</strong></td><td>Ariel Gramajo — fundador y director del torneo</td><td>Gestión de inscripciones, grupos, resultados y cobros</td></tr>
+      <tr><td><strong>Jugador</strong></td><td>Participante inscripto (dobles)</td><td>Inscripción online, ver fixture, resultados y ranking</td></tr>
+      <tr><td><strong>Espectador</strong></td><td>Público general interesado en el torneo</td><td>Acceso a información del torneo desde cualquier dispositivo</td></tr>
+      <tr><td><strong>Árbitro / Colaborador</strong></td><td>Asistente en el desarrollo de los partidos</td><td>Acceso a los cruces del fixture y estado actual</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Situación Actual</h4>
+  <p>
+    El proceso de inscripción se realiza por WhatsApp o en forma presencial. El organizador arma los grupos manualmente,
+    genera el fixture en papel y publica fotografías por Instagram. Los resultados se anotan en planillas y el ranking
+    se calcula al cierre de la fecha de forma manual.
+    Los cobros se realizan exclusivamente en efectivo o por transferencia bancaria, sin sistema de registro digital.
+    No existe auditoría de las operaciones ni historial de jugadores.
+  </p>
+  <div style="text-align:center;margin:10px 0 4px;">
+    <img src="capturas/fixture.png" style="max-width:100%;border-radius:4px;" alt="Planillas de inscripción y fixture en papel actualmente utilizados por el organizador">
+  </div>
+
+</div>
+
+<!-- PAG S1-4: FLUJO DE DATOS + TÉCNICA -->
+<div class="page">
+  <h4>Flujo de Datos e Información</h4>
+  <table>
+    <thead><tr><th>Tipo</th><th>Flujo</th><th>Medio actual</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Ventas (efectivo)</strong></td><td>Jugador abona inscripción → Organizador recibe → Habilita equipo</td><td>Presencial / efectivo</td></tr>
+      <tr><td><strong>Ventas (transferencia)</strong></td><td>Jugador transfiere → Envía comprobante → Organizador verifica → Habilita equipo</td><td>Bancario / WhatsApp</td></tr>
+      <tr><td><strong>Gastos (efectivo)</strong></td><td>Organizador paga canchas, trofeos, materiales → Registra en planilla</td><td>Presencial / papel</td></tr>
+      <tr><td><strong>Gastos (transferencia)</strong></td><td>Organizador transfiere a proveedor → Guarda comprobante</td><td>Bancario</td></tr>
+      <tr><td><strong>Resultados</strong></td><td>Árbitro informa resultado → Organizador anota → Publica en Instagram</td><td>Oral / papel / redes</td></tr>
+      <tr><td><strong>Información pública</strong></td><td>Organizador publica fixture y resultados → Jugadores y público consultan</td><td>Instagram / WhatsApp</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Técnica para Hallar Datos</h4>
+  <h5 style="font-size:11pt;font-weight:bold;margin:12px 0 4px;">Entrevistas</h5>
+  <table>
+    <thead><tr><th>Entrevistado</th><th>Perfil</th><th>Temas relevados</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Ariel Gramajo</strong></td><td>Fundador y organizador</td><td>Historia del torneo, procesos actuales, problemáticas, expectativas</td></tr>
+      <tr><td><strong>Jugadores (4 participantes)</strong></td><td>Jugadores activos de distintas categorías</td><td>Dificultades en inscripción, acceso a resultados, comunicación</td></tr>
+      <tr><td><strong>Público asistente (3 personas)</strong></td><td>Espectadores frecuentes</td><td>Acceso a información, interés en seguimiento online del torneo</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- PAG S1-5: CUESTIONARIOS + TRANSACCIONES -->
+<div class="page">
+  <h5 style="font-size:11pt;font-weight:bold;margin:12px 0 4px;">Cuestionario</h5>
+  <p>Se distribuyó un cuestionario escrito entre jugadores participantes. Preguntas formuladas:</p>
+  <ol>
+    <li>¿Cómo se enteró de la existencia del torneo Pro Cup Pádel?</li>
+    <li>¿Cómo realizó su inscripción? (WhatsApp / presencial / otro)</li>
+    <li>¿Tuvo dificultades durante el proceso de inscripción? ¿Cuáles?</li>
+    <li>¿Cómo accede a los resultados de los partidos?</li>
+    <li>¿Le resultaría útil poder consultar el fixture y ranking desde su celular en tiempo real?</li>
+    <li>¿Recibiría con agrado notificaciones por correo sobre sus partidos y resultados?</li>
+    <li>¿Qué información considera más importante que el sistema ofrezca al público?</li>
+    <li>¿Estaría dispuesto a inscribirse de forma online si existiera esa posibilidad?</li>
+  </ol>
+
+  <h4>Transacciones</h4>
+  <h5 style="font-size:11pt;font-weight:bold;margin:10px 0 4px;">Ventas</h5>
+  <table>
+    <thead><tr><th>Transacción</th><th>Descripción</th><th>Registros actuales</th></tr></thead>
+    <tbody>
+      <tr><td>Cobro de inscripción</td><td>Pago por equipo para participar en un torneo (por categoría)</td><td>Planilla manual / sin comprobante digital</td></tr>
+      <tr><td>Venta de productos en evento</td><td>Bebidas y refrigerios durante los torneos</td><td>Sin registro formal</td></tr>
+    </tbody>
+  </table>
+  <h5 style="font-size:11pt;font-weight:bold;margin:10px 0 4px;">Compras</h5>
+  <table>
+    <thead><tr><th>Transacción</th><th>Descripción</th><th>Registros actuales</th></tr></thead>
+    <tbody>
+      <tr><td>Alquiler de canchas</td><td>Pago de cancha al complejo deportivo por fecha de torneo</td><td>Recibo en papel</td></tr>
+      <tr><td>Trofeos y premios</td><td>Medallas, trofeos y premios para ganadores</td><td>Factura / ticket de compra</td></tr>
+      <tr><td>Materiales y publicidad</td><td>Impresión de flyers, banner, pelotas</td><td>Sin registro formal</td></tr>
+    </tbody>
+  </table>
+  <h5 style="font-size:11pt;font-weight:bold;margin:10px 0 4px;">Financieras</h5>
+  <table>
+    <thead><tr><th>Transacción</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td>Registro de ingresos</td><td>Consolidación de todos los cobros del torneo por fecha y categoría</td></tr>
+      <tr><td>Registro de egresos</td><td>Consolidación de todos los gastos operativos por fecha</td></tr>
+      <tr><td>Balance de resultados</td><td>Cálculo de rentabilidad por torneo (ingresos − gastos)</td></tr>
+    </tbody>
+  </table>
+  <h5 style="font-size:11pt;font-weight:bold;margin:10px 0 4px;">Personal</h5>
+  <table>
+    <thead><tr><th>Rol</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td>Organizador principal</td><td>Coordina todas las actividades; toma decisiones sobre fixture y grupos</td></tr>
+      <tr><td>Colaboradores / árbitros</td><td>Asisten en el seguimiento de partidos y comunicación de resultados</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- PAG S1-6: DOCUMENTOS + PROCESOS DE NEGOCIOS -->
+<div class="page">
+  <h4>Documentos</h4>
+  <h5 style="font-size:11pt;font-weight:bold;margin:10px 0 4px;">Documentos Internos</h5>
+  <table>
+    <thead><tr><th>Documento</th><th>Descripción</th><th>Soporte</th></tr></thead>
+    <tbody>
+      <tr><td>Planilla de inscripción</td><td>Lista de equipos inscriptos con nombres, categoría y estado de pago</td><td>Papel / Excel</td></tr>
+      <tr><td>Fixture de grupos</td><td>Cuadro de partidos de la fase de grupos por categoría y fecha</td><td>Papel</td></tr>
+      <tr><td>Planilla de resultados</td><td>Registro de sets ganados por cada equipo en cada partido</td><td>Papel</td></tr>
+      <tr><td>Cuadro de playoff</td><td>Llave de eliminación directa generada al finalizar la fase de grupos</td><td>Papel / imagen digital</td></tr>
+      <tr><td>Planilla de ingresos y gastos</td><td>Registro manual de cobros y pagos por fecha de torneo</td><td>Excel</td></tr>
+    </tbody>
+  </table>
+  <h5 style="font-size:11pt;font-weight:bold;margin:10px 0 4px;">Documentos Externos</h5>
+  <table>
+    <thead><tr><th>Documento</th><th>Descripción</th><th>Soporte</th></tr></thead>
+    <tbody>
+      <tr><td>Publicaciones en Instagram</td><td>Fixture, resultados y fotos publicadas en la red social</td><td>Digital (Instagram)</td></tr>
+      <tr><td>Mensajes de WhatsApp</td><td>Comunicaciones sobre inscripciones, horarios y resultados</td><td>Digital (WhatsApp)</td></tr>
+      <tr><td>Facturas y tickets</td><td>Comprobantes de compras de materiales, trofeos y alquiler de canchas</td><td>Papel</td></tr>
+      <tr><td>Comprobantes de transferencia</td><td>Capturas de transferencias bancarias de inscripciones</td><td>Digital (imagen)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>2.3. Procesos de Negocio</h3>
+  <table>
+    <thead><tr><th>#</th><th>Proceso</th><th>Descripción</th><th>Actores</th></tr></thead>
+    <tbody>
+      <tr><td>P-01</td><td>Apertura de inscripciones</td><td>Publicación del torneo, categorías disponibles y período de inscripción</td><td>Organizador</td></tr>
+      <tr><td>P-02</td><td>Inscripción de equipos</td><td>Recepción de datos del equipo y cobro de la inscripción</td><td>Jugador / Organizador</td></tr>
+      <tr><td>P-03</td><td>Cierre de inscripciones</td><td>Verificación del cupo, cierre del período y confirmación a equipos</td><td>Organizador</td></tr>
+      <tr><td>P-04</td><td>Generación de grupos y fixture</td><td>Distribución de equipos en grupos y elaboración del cuadro de partidos</td><td>Organizador</td></tr>
+      <tr><td>P-05</td><td>Desarrollo de fase de grupos</td><td>Realización de partidos, registro de resultados y actualización de posiciones</td><td>Jugadores / Árbitros / Org.</td></tr>
+      <tr><td>P-06</td><td>Generación del Playoff</td><td>Clasificación de equipos y armado del cuadro de eliminación directa</td><td>Organizador</td></tr>
+      <tr><td>P-07</td><td>Desarrollo del Playoff</td><td>Realización y registro de partidos de eliminación hasta la final</td><td>Jugadores / Árbitros / Org.</td></tr>
+      <tr><td>P-08</td><td>Cierre y premiación</td><td>Entrega de premios, publicación del ranking final y cierre del torneo</td><td>Organizador / Jugadores</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- PAG S1-7: TIEMPOS + ANÁLISIS OCTUBRE (tabla) -->
+<div class="page">
+  <h4>Tiempos de Procesos</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>Proceso</th>
+        <th style="text-align:center;">Duración actual (manual)</th>
+        <th style="text-align:center;">Con sistema propuesto</th>
+        <th style="text-align:center;">Reducción</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Apertura de inscripciones</td><td style="text-align:center;">2–3 horas</td><td style="text-align:center;">15 minutos</td><td style="text-align:center;">~90%</td></tr>
+      <tr><td>Inscripción por equipo</td><td style="text-align:center;">10–15 min (presencial)</td><td style="text-align:center;">3–5 min (online)</td><td style="text-align:center;">~70%</td></tr>
+      <tr><td>Cierre y verificación de cupos</td><td style="text-align:center;">1–2 horas</td><td style="text-align:center;">Automático</td><td style="text-align:center;">~100%</td></tr>
+      <tr><td>Generación de grupos</td><td style="text-align:center;">2–4 horas</td><td style="text-align:center;">Inmediato</td><td style="text-align:center;">~100%</td></tr>
+      <tr><td>Registro de resultados</td><td style="text-align:center;">5–10 min por partido</td><td style="text-align:center;">1–2 min por partido</td><td style="text-align:center;">~80%</td></tr>
+      <tr><td>Actualización de posiciones</td><td style="text-align:center;">30–60 min por fecha</td><td style="text-align:center;">Automático</td><td style="text-align:center;">~100%</td></tr>
+      <tr><td>Generación del Playoff</td><td style="text-align:center;">1–2 horas</td><td style="text-align:center;">Inmediato</td><td style="text-align:center;">~100%</td></tr>
+      <tr><td>Publicación al público</td><td style="text-align:center;">30–60 min por publicación</td><td style="text-align:center;">Tiempo real</td><td style="text-align:center;">~100%</td></tr>
+    </tbody>
+  </table>
+
+  <div style="text-align:center;margin-top:14px;">
+    <img src="capturas/analisis octubre.png" style="max-width:620px;width:100%;" alt="Análisis de Datos — Mes Octubre 2024">
+  </div>
+</div>
+
+<!-- PAG S1-8: GRÁFICO OCTUBRE -->
+<div class="page">
+  <div style="text-align:center;">
+    <img src="capturas/graficoingresogasto.png" style="max-width:640px;width:100%;" alt="Gráfico 1 — Ingresos y Gastos diarios — Octubre 2024">
+  </div>
+</div>
+
+<!-- PAG S1-9: GRÁFICOS SEMESTRE -->
+<div class="page">
+  <div style="text-align:center;">
+    <img src="capturas/analisissemestre.png" style="max-width:580px;width:100%;" alt="Gráfico 2 — Análisis Semestre Mayo–Octubre 2024">
+  </div>
+
+  <div style="text-align:center;">
+    <img src="capturas/analisistorta.png" style="max-width:480px;width:100%;" alt="Gráfico 3 — Distribución porcentual del semestre">
+  </div>
+</div>
+
+<!-- PAG S1-10: CURSOGRAMA 1 -->
+<div class="page">
+  <h3>2.3.1. Gestión de Reservas y Turnos</h3>
+  <div style="text-align:center;">
+  <svg viewBox="0 0 720 500" font-family="Arial,sans-serif" font-size="9" style="width:100%;max-width:720px;">
+    <defs>
+      <marker id="ca1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <path d="M0,0 L8,3 L0,6" fill="none" stroke="#333" stroke-width="1.2"/>
+      </marker>
+    </defs>
+    <rect x="0" y="0" width="720" height="32" fill="#2E4A7A"/>
+    <text x="120" y="21" text-anchor="middle" fill="white" font-weight="bold" font-size="10">JUGADOR</text>
+    <text x="360" y="21" text-anchor="middle" fill="white" font-weight="bold" font-size="10">ORGANIZADOR</text>
+    <text x="600" y="21" text-anchor="middle" fill="white" font-weight="bold" font-size="10">SISTEMA</text>
+    <line x1="240" y1="32" x2="240" y2="500" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>
+    <line x1="480" y1="32" x2="480" y2="500" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>
+    <rect x="0"   y="32" width="240" height="468" fill="#f9fbff" opacity="0.5"/>
+    <rect x="240" y="32" width="240" height="468" fill="#fffaf9" opacity="0.5"/>
+    <rect x="480" y="32" width="240" height="468" fill="#f9fff9" opacity="0.5"/>
+    <!-- Step 1 -->
+    <rect x="20" y="50" width="200" height="36" rx="4" fill="#d6e4f7" stroke="#2E4A7A" stroke-width="1.2"/>
+    <text x="120" y="64" text-anchor="middle" font-weight="bold">Solicita inscripción</text>
+    <text x="120" y="78" text-anchor="middle" font-size="8">(WhatsApp / presencial)</text>
+    <line x1="120" y1="86" x2="120" y2="105" stroke="#333" stroke-width="1.2" marker-end="url(#ca1)"/>
+    <!-- Step 2 -->
+    <rect x="20" y="105" width="200" height="36" rx="4" fill="#d6e4f7" stroke="#2E4A7A" stroke-width="1.2"/>
+    <text x="120" y="119" text-anchor="middle" font-weight="bold">Entrega datos del equipo</text>
+    <text x="120" y="133" text-anchor="middle" font-size="8">(nombres, categoría)</text>
+    <line x1="220" y1="123" x2="260" y2="123" stroke="#333" stroke-width="1.2" marker-end="url(#ca1)"/>
+    <!-- Step 3 -->
+    <rect x="260" y="105" width="200" height="36" rx="4" fill="#fff0dc" stroke="#c87800" stroke-width="1.2"/>
+    <text x="360" y="119" text-anchor="middle" font-weight="bold">Verifica disponibilidad</text>
+    <text x="360" y="133" text-anchor="middle" font-size="8">de cupos en planilla</text>
+    <line x1="360" y1="141" x2="360" y2="158" stroke="#333" stroke-width="1.2" marker-end="url(#ca1)"/>
+    <!-- Decision -->
+    <polygon points="360,158 425,183 360,208 295,183" fill="#fffde7" stroke="#c87800" stroke-width="1.2"/>
+    <text x="360" y="180" text-anchor="middle" font-size="8.5" font-weight="bold">¿Hay cupo?</text>
+    <text x="438" y="180" font-size="8" fill="green">SÍ</text>
+    <line x1="425" y1="183" x2="500" y2="183" stroke="#333" stroke-width="1.2" marker-end="url(#ca1)"/>
+    <text x="295" y="225" text-anchor="middle" font-size="8" fill="red">NO → Notifica cupo completo</text>
+    <line x1="360" y1="208" x2="360" y2="228" stroke="#c00" stroke-width="1" marker-end="url(#ca1)"/>
+    <rect x="260" y="228" width="200" height="24" rx="3" fill="#fce8e8" stroke="#c00" stroke-width="1"/>
+    <text x="360" y="244" text-anchor="middle" font-size="8">Informa al jugador: cupo completo</text>
+    <!-- Step 4: Cobro -->
+    <rect x="500" y="160" width="200" height="36" rx="4" fill="#fff0dc" stroke="#c87800" stroke-width="1.2"/>
+    <text x="600" y="174" text-anchor="middle" font-weight="bold">Solicita pago</text>
+    <text x="600" y="188" text-anchor="middle" font-size="8">de inscripción</text>
+    <!-- Step 5: Jugador paga -->
+    <line x1="500" y1="183" x2="500" y2="278" stroke="#c87800" stroke-width="1" stroke-dasharray="3,2"/>
+    <line x1="500" y1="278" x2="220" y2="278" stroke="#c87800" stroke-width="1" stroke-dasharray="3,2"/>
+    <rect x="20" y="265" width="200" height="36" rx="4" fill="#d6e4f7" stroke="#2E4A7A" stroke-width="1.2"/>
+    <text x="120" y="279" text-anchor="middle" font-weight="bold">Realiza pago</text>
+    <text x="120" y="293" text-anchor="middle" font-size="8">(efectivo / transferencia)</text>
+    <line x1="220" y1="283" x2="260" y2="340" stroke="#333" stroke-width="1.2" marker-end="url(#ca1)"/>
+    <!-- Step 6: Org registra -->
+    <rect x="260" y="340" width="200" height="36" rx="4" fill="#fff0dc" stroke="#c87800" stroke-width="1.2"/>
+    <text x="360" y="354" text-anchor="middle" font-weight="bold">Registra inscripción</text>
+    <text x="360" y="368" text-anchor="middle" font-size="8">en planilla manual</text>
+    <line x1="460" y1="358" x2="500" y2="358" stroke="#333" stroke-width="1.2" marker-end="url(#ca1)"/>
+    <!-- Step 7: Sistema registra -->
+    <rect x="500" y="340" width="200" height="36" rx="4" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.2"/>
+    <text x="600" y="354" text-anchor="middle" font-weight="bold">Registra en BD</text>
+    <text x="600" y="368" text-anchor="middle" font-size="8">Envía confirmación por email</text>
+    <line x1="600" y1="376" x2="600" y2="420" stroke="#333" stroke-width="1" stroke-dasharray="3,2"/>
+    <line x1="600" y1="420" x2="220" y2="420" stroke="#333" stroke-width="1.2" marker-end="url(#ca1)"/>
+    <!-- Step 8: Jugador recibe -->
+    <rect x="20" y="420" width="200" height="36" rx="4" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.2"/>
+    <text x="120" y="434" text-anchor="middle" font-weight="bold">Recibe confirmación</text>
+    <text x="120" y="448" text-anchor="middle" font-size="8">e información del torneo</text>
+  </svg>
+  </div>
+</div>
+
+<!-- PAG S1-11: CURSOGRAMA 2 -->
+<div class="page">
+  <h3>2.3.2. Gestión de Facturación y Cobros</h3>
+  <div style="text-align:center;">
+  <svg viewBox="0 0 720 460" font-family="Arial,sans-serif" font-size="9" style="width:100%;max-width:720px;">
+    <defs>
+      <marker id="ca2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <path d="M0,0 L8,3 L0,6" fill="none" stroke="#333" stroke-width="1.2"/>
+      </marker>
+    </defs>
+    <rect x="0" y="0" width="720" height="32" fill="#2E4A7A"/>
+    <text x="120" y="21" text-anchor="middle" fill="white" font-weight="bold" font-size="10">JUGADOR</text>
+    <text x="360" y="21" text-anchor="middle" fill="white" font-weight="bold" font-size="10">ORGANIZADOR</text>
+    <text x="600" y="21" text-anchor="middle" fill="white" font-weight="bold" font-size="10">SISTEMA</text>
+    <line x1="240" y1="32" x2="240" y2="460" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>
+    <line x1="480" y1="32" x2="480" y2="460" stroke="#bbb" stroke-width="1" stroke-dasharray="4,3"/>
+    <rect x="0"   y="32" width="240" height="428" fill="#f9fbff" opacity="0.5"/>
+    <rect x="240" y="32" width="240" height="428" fill="#fffaf9" opacity="0.5"/>
+    <rect x="480" y="32" width="240" height="428" fill="#f9fff9" opacity="0.5"/>
+    <!-- 1: Jugador informa método -->
+    <rect x="20" y="50" width="200" height="36" rx="4" fill="#d6e4f7" stroke="#2E4A7A" stroke-width="1.2"/>
+    <text x="120" y="64" text-anchor="middle" font-weight="bold">Informa método de pago</text>
+    <text x="120" y="78" text-anchor="middle" font-size="8">Efectivo o Transferencia</text>
+    <line x1="120" y1="86" x2="120" y2="105" stroke="#333" stroke-width="1.2" marker-end="url(#ca2)"/>
+    <!-- Decision -->
+    <polygon points="120,105 195,130 120,155 45,130" fill="#fffde7" stroke="#c87800" stroke-width="1.2"/>
+    <text x="120" y="127" text-anchor="middle" font-size="8.5" font-weight="bold">¿Método?</text>
+    <!-- Efectivo -->
+    <text x="28" y="127" text-anchor="middle" font-size="8" fill="#555">Efectivo</text>
+    <line x1="45" y1="130" x2="20" y2="130" stroke="#555" stroke-width="1"/>
+    <line x1="20" y1="130" x2="20" y2="175" stroke="#555" stroke-width="1" marker-end="url(#ca2)"/>
+    <rect x="20" y="175" width="200" height="36" rx="4" fill="#d6e4f7" stroke="#2E4A7A" stroke-width="1.2"/>
+    <text x="120" y="189" text-anchor="middle" font-weight="bold">Entrega efectivo</text>
+    <text x="120" y="203" text-anchor="middle" font-size="8">al organizador</text>
+    <!-- Transferencia -->
+    <text x="215" y="123" font-size="8" fill="#555">Transf.</text>
+    <line x1="195" y1="130" x2="220" y2="130" stroke="#555" stroke-width="1"/>
+    <line x1="220" y1="130" x2="220" y2="235" stroke="#555" stroke-width="1" marker-end="url(#ca2)"/>
+    <rect x="20" y="235" width="200" height="36" rx="4" fill="#d6e4f7" stroke="#2E4A7A" stroke-width="1.2"/>
+    <text x="120" y="249" text-anchor="middle" font-weight="bold">Realiza transferencia</text>
+    <text x="120" y="263" text-anchor="middle" font-size="8">y envía comprobante</text>
+    <!-- Organizador verifica (ambos confluyen) -->
+    <line x1="120" y1="211" x2="360" y2="300" stroke="#333" stroke-width="1.2" marker-end="url(#ca2)"/>
+    <line x1="220" y1="271" x2="360" y2="300" stroke="#333" stroke-width="1.2" marker-end="url(#ca2)"/>
+    <rect x="260" y="300" width="200" height="36" rx="4" fill="#fff0dc" stroke="#c87800" stroke-width="1.2"/>
+    <text x="360" y="314" text-anchor="middle" font-weight="bold">Verifica pago recibido</text>
+    <text x="360" y="328" text-anchor="middle" font-size="8">(efectivo o transferencia)</text>
+    <line x1="360" y1="336" x2="360" y2="355" stroke="#333" stroke-width="1.2" marker-end="url(#ca2)"/>
+    <rect x="260" y="355" width="200" height="36" rx="4" fill="#fff0dc" stroke="#c87800" stroke-width="1.2"/>
+    <text x="360" y="369" text-anchor="middle" font-weight="bold">Registra ingreso</text>
+    <text x="360" y="383" text-anchor="middle" font-size="8">en planilla de cobros</text>
+    <line x1="460" y1="373" x2="500" y2="373" stroke="#333" stroke-width="1.2" marker-end="url(#ca2)"/>
+    <rect x="500" y="355" width="200" height="36" rx="4" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.2"/>
+    <text x="600" y="369" text-anchor="middle" font-weight="bold">Actualiza estado</text>
+    <text x="600" y="383" text-anchor="middle" font-size="8">de inscripción en BD</text>
+    <line x1="360" y1="391" x2="120" y2="418" stroke="#333" stroke-width="1.2" marker-end="url(#ca2)"/>
+    <rect x="20" y="418" width="200" height="32" rx="4" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.2"/>
+    <text x="120" y="432" text-anchor="middle" font-weight="bold">Recibe comprobante</text>
+    <text x="120" y="445" text-anchor="middle" font-size="8">de pago confirmado</text>
+  </svg>
+  </div>
+</div>
+
+<!-- PAG S1-12: EVENTOS ESTRATÉGICOS + RELEVAMIENTO TECNOLÓGICO -->
+<div class="page">
+  <h4>Eventos Estratégicos de Negocio</h4>
+  <table>
+    <thead><tr><th>#</th><th>Evento</th><th>Descripción</th><th>Impacto</th></tr></thead>
+    <tbody>
+      <tr><td>E-01</td><td>Apertura de inscripciones</td><td>Se habilita la inscripción de equipos para una nueva edición del torneo</td><td>Alto — genera demanda de cupos y cobros</td></tr>
+      <tr><td>E-02</td><td>Cierre de inscripciones</td><td>Se cierra el período de inscripción; equipos confirmados pasan a la siguiente etapa</td><td>Alto — define los grupos y el fixture</td></tr>
+      <tr><td>E-03</td><td>Generación del fixture</td><td>Se distribuyen los equipos en grupos y se publican los cruces</td><td>Alto — información crítica para jugadores</td></tr>
+      <tr><td>E-04</td><td>Inicio de fecha de torneo</td><td>Comienzo de una jornada de partidos; se activa el registro en tiempo real</td><td>Alto — operación central del negocio</td></tr>
+      <tr><td>E-05</td><td>Cierre de fase de grupos</td><td>Finaliza la fase inicial; se calculan las posiciones finales</td><td>Alto — determina los clasificados al playoff</td></tr>
+      <tr><td>E-06</td><td>Generación del Playoff</td><td>Se arma el cuadro de eliminación directa con los equipos clasificados</td><td>Muy alto — genera gran expectativa</td></tr>
+      <tr><td>E-07</td><td>Final del torneo</td><td>Partido definitorio y premiación de campeones</td><td>Muy alto — cierre del evento</td></tr>
+      <tr><td>E-08</td><td>Publicación del ranking</td><td>Se actualiza el ranking oficial de jugadores por categoría</td><td>Alto — motivación para futuros torneos</td></tr>
+    </tbody>
+  </table>
+
+  <h3>2.4. Tecnología</h3>
+  <h4>2.4.1. Tecnología existente en la empresa</h4>
+  <p>El torneo opera sin sistema informático de soporte. Herramientas utilizadas actualmente:</p>
+  <ul>
+    <li><strong>WhatsApp:</strong> comunicación con jugadores, inscripciones y resultados.</li>
+    <li><strong>Instagram:</strong> publicación de fixture, resultados y fotos del evento.</li>
+    <li><strong>Excel / Google Sheets:</strong> registro manual de inscripciones, grupos y cobros.</li>
+    <li><strong>Papel:</strong> fixture impreso, planillas de resultados en cancha, comprobantes de pago.</li>
+  </ul>
+
+  <h4>2.4.2. Tecnología existente en el mercado (aplicable)</h4>
+  <table>
+    <thead><tr><th>Capa</th><th>Tecnología propuesta</th><th>Justificación</th></tr></thead>
+    <tbody>
+      <tr><td>Frontend</td><td>React.js + CSS responsive</td><td>Interfaz moderna, componentizada, compatible con todos los dispositivos</td></tr>
+      <tr><td>Backend</td><td>Node.js + Express</td><td>Servidor liviano y escalable; amplio ecosistema de librerías</td></tr>
+      <tr><td>Base de datos</td><td>PostgreSQL</td><td>Base de datos relacional robusta, ideal para la estructura del torneo</td></tr>
+      <tr><td>Autenticación</td><td>JWT (JSON Web Tokens)</td><td>Estándar seguro para autenticación stateless en APIs REST</td></tr>
+      <tr><td>Hosting</td><td>Servidor cloud (VPS)</td><td>Disponibilidad 24/7, escalable según la demanda</td></tr>
+      <tr><td>Correo</td><td>Resend (API de email)</td><td>Envío de notificaciones automáticas a jugadores mediante API transaccional</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- PAG S1-12b: REQUERIMIENTOS -->
+<div class="page">
+  <h2>3. Propuesta</h2>
+  <h3>3.2. Propuesta General</h3>
+  <h4>Análisis de los Requerimientos del Usuario</h4>
+  <h5 style="font-size:11pt;font-weight:bold;margin:12px 0 4px;">Requerimientos Funcionales</h5>
+  <table>
+    <thead><tr><th style="width:8%">#</th><th>Requerimiento</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:bold;color:#2E4A7A;">RF-01</td><td>Gestión de torneos</td><td>El sistema debe permitir crear, editar y eliminar torneos, definiendo nombre, categorías, fechas y cupo máximo de equipos.</td></tr>
+      <tr><td style="font-weight:bold;color:#2E4A7A;">RF-02</td><td>Registro de jugadores</td><td>Los jugadores deben poder registrarse con sus datos personales y acceder con credenciales propias.</td></tr>
+      <tr><td style="font-weight:bold;color:#2E4A7A;">RF-03</td><td>Inscripción de equipos</td><td>Los jugadores registrados deben poder inscribirse formando un equipo de dobles con otro jugador del sistema.</td></tr>
+      <tr><td style="font-weight:bold;color:#2E4A7A;">RF-04</td><td>Generación de grupos</td><td>El sistema debe generar automáticamente los grupos de la fase inicial distribuyendo los equipos de forma equitativa.</td></tr>
+      <tr><td style="font-weight:bold;color:#2E4A7A;">RF-05</td><td>Carga de resultados</td><td>El organizador debe poder registrar el resultado de cada partido y el sistema debe actualizar las posiciones automáticamente.</td></tr>
+      <tr><td style="font-weight:bold;color:#2E4A7A;">RF-06</td><td>Generación de Playoff</td><td>Al finalizar la fase de grupos, el sistema debe generar automáticamente el cuadro de eliminación directa con snake seeding.</td></tr>
+      <tr><td style="font-weight:bold;color:#2E4A7A;">RF-07</td><td>Ranking de jugadores</td><td>El sistema debe mantener y publicar un ranking actualizado de jugadores por puntos acumulados.</td></tr>
+      <tr><td style="font-weight:bold;color:#2E4A7A;">RF-08</td><td>Notificaciones por email</td><td>El sistema debe enviar notificaciones automáticas al confirmar inscripción y ante cambios en el torneo.</td></tr>
+    </tbody>
+  </table>
+  <h5 style="font-size:11pt;font-weight:bold;margin:16px 0 4px;">Requerimientos No Funcionales</h5>
+  <table>
+    <thead><tr><th style="width:8%">#</th><th>Requerimiento</th><th>Descripción</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:bold;color:#2E4A7A;">RNF-01</td><td>Seguridad</td><td>Contraseñas hasheadas (bcrypt), acceso administrativo por JWT, registro de auditoría de todas las acciones sensibles.</td></tr>
+      <tr><td style="font-weight:bold;color:#2E4A7A;">RNF-02</td><td>Usabilidad</td><td>Interfaz responsive adaptada a móviles, tablets y computadoras. Navegación intuitiva sin conocimientos técnicos.</td></tr>
+      <tr><td style="font-weight:bold;color:#2E4A7A;">RNF-03</td><td>Rendimiento</td><td>Páginas con carga menor a 3 segundos. Respuestas de base de datos menores a 500 ms bajo uso normal.</td></tr>
+      <tr><td style="font-weight:bold;color:#2E4A7A;">RNF-04</td><td>Disponibilidad</td><td>Sistema disponible 24/7, con tiempo de inactividad planificado no mayor al 1% mensual.</td></tr>
+      <tr><td style="font-weight:bold;color:#2E4A7A;">RNF-05</td><td>Escalabilidad</td><td>Arquitectura que soporte crecimiento en torneos, jugadores y categorías sin degradación del rendimiento.</td></tr>
+      <tr><td style="font-weight:bold;color:#2E4A7A;">RNF-06</td><td>Mantenibilidad</td><td>Código modularizado y documentado para facilitar mantenimiento y futuras actualizaciones.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- PAG S1-13: DIAGNÓSTICO + PROPUESTA -->
+<div class="page">
+  <h3>3.1. Diagnóstico y Propuesta</h3>
+  <p>A partir del relevamiento realizado, se identifican las siguientes problemáticas principales:</p>
+  <ul>
+    <li>Las inscripciones son gestionadas manualmente por WhatsApp y en forma presencial, generando demoras, errores y pérdida de información.</li>
+    <li>No existe un sistema de registro de cobros; los ingresos y gastos se anotan en planillas informales sin auditoría.</li>
+    <li>El fixture y los grupos se arman manualmente, consumiendo varias horas del organizador y con riesgo de error.</li>
+    <li>Los resultados se registran en papel y se publican con demora en redes sociales, sin actualización en tiempo real.</li>
+    <li>No existe un ranking oficial actualizado de jugadores; el cálculo es manual y propenso a errores.</li>
+    <li>La comunicación con jugadores depende de WhatsApp e Instagram, sin notificaciones formales ni automatizadas.</li>
+    <li>No existe historial digital de torneos anteriores, equipos, resultados ni estadísticas.</li>
+    <li>El público no puede acceder a información del torneo de forma independiente y actualizada.</li>
+  </ul>
+
+  <h4>Propuesta de Solución</h4>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:50%">Problemática Diagnosticada</th>
+        <th style="width:50%">Propuesta del Sistema</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Inscripciones manuales por WhatsApp/presencial, sin registro centralizado</td>
+        <td>Módulo de inscripción online: jugadores se registran y forman equipos directamente, con confirmación automática por email</td>
+      </tr>
+      <tr>
+        <td>Resultados registrados en papel y publicados manualmente en redes sociales</td>
+        <td>Módulo de carga de resultados: el organizador ingresa los sets desde cualquier dispositivo y el sistema actualiza posiciones en tiempo real</td>
+      </tr>
+      <tr>
+        <td>Sin ranking oficial de jugadores; cálculo manual propenso a errores</td>
+        <td>Ranking automático: el sistema calcula y publica el ranking por categoría tras cada resultado cargado</td>
+      </tr>
+      <tr>
+        <td>Sin acceso público a información del torneo fuera de redes sociales</td>
+        <td>Portal web público: cualquier usuario consulta torneos, fixture, resultados y ranking sin necesidad de cuenta</td>
+      </tr>
+      <tr>
+        <td>Comunicación informal; jugadores no reciben avisos formales de partidos ni cambios</td>
+        <td>Notificaciones automáticas por email: confirmación de inscripción, avisos de inicio y cambios en el fixture</td>
+      </tr>
+      <tr>
+        <td>Fixture y grupos armados manualmente, consumiendo horas del organizador</td>
+        <td>Generación automática de grupos y playoff con snake seeding</td>
+      </tr>
+      <tr>
+        <td>Sin auditoría de operaciones ni historial de acciones en el sistema</td>
+        <td>Módulo de auditoría: registro automático de todas las acciones relevantes con marca de tiempo y usuario</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════
+     SECCIÓN 4 — OBJETIVOS, LÍMITES Y ALCANCE
+═══════════════════════════════════════════════════ -->
+<div class="page">
+  <h2>4. Objetivos, Límites y Alcance</h2>
+
+  <h3>4.1 Objetivo General</h3>
+  <p>
+    Desarrollar un sistema web integral denominado <strong>Pro Cup Pádel</strong> para la gestión
+    de torneos de pádel amateur, que permita administrar de forma centralizada las inscripciones,
+    la generación automática de fixtures por fases (grupos y eliminación directa), la carga de
+    resultados y el mantenimiento de un ranking histórico actualizado por categoría, reemplazando
+    los procesos manuales actuales y brindando transparencia a jugadores y organizadores.
+  </p>
+
+  <h3>4.2 Objetivos Específicos</h3>
+  <ul>
+    <li>Implementar un sistema de autenticación con roles diferenciados (Organizador, Jugador, Espectador).</li>
+    <li>Automatizar la generación de grupos (round-robin) y el armado del cuadro de eliminación directa (playoff) con seeding snake.</li>
+    <li>Permitir la carga de resultados de partidos de grupos y de llaves, con avance automático de ganadores al siguiente cruce.</li>
+    <li>Actualizar automáticamente el ranking de jugadores al finalizar la final de cada torneo.</li>
+    <li>Proveer notificaciones por correo electrónico a los jugadores al inscribirse y 24 horas antes del inicio del torneo.</li>
+    <li>Ofrecer una interfaz pública para que espectadores puedan consultar torneos, fixtures y ranking sin necesidad de registro.</li>
+  </ul>
+
+  <h3>4.3 Límites del Sistema</h3>
+  <p>El sistema <strong>no incluye</strong> las siguientes funcionalidades:</p>
+  <ul>
+    <li>Procesamiento de pagos o cobro de aranceles de inscripción.</li>
+    <li>Gestión de reservas de canchas de pádel.</li>
+    <li>Transmisión o vinculación de video en vivo (el sistema no implementa streaming ni enlaces a transmisiones).</li>
+    <li>Gestión contable o financiera del club organizador.</li>
+    <li>Aplicación móvil nativa (el sistema es web responsive).</li>
+    <li>Generación de certificados o actas de resultados en formato impreso automatizado.</li>
+  </ul>
+
+  <h3>4.4 Alcance</h3>
+  <p>El sistema abarca los siguientes módulos funcionales:</p>
+  <table>
+    <tr><th>Módulo</th><th>Descripción</th></tr>
+    <tr><td>Autenticación y Roles</td><td>Registro, login y gestión de sesiones con JWT. Roles: Organizador, Jugador, Espectador.</td></tr>
+    <tr><td>Administración de Torneos</td><td>Creación, edición, eliminación y configuración de torneos (categoría, fechas, modalidad, cupos).</td></tr>
+    <tr><td>Gestión de Inscripciones</td><td>Inscripción de equipos (parejas) a torneos disponibles, con validación de categoría y cupos.</td></tr>
+    <tr><td>Fixture y Resultados</td><td>Generación automática de grupos y playoff. Carga de resultados y avance de ganadores.</td></tr>
+    <tr><td>Gestión de Jugadores</td><td>Alta, edición, gestión de foto de perfil y administración de jugadores por parte del organizador.</td></tr>
+    <tr><td>Ranking y Estadísticas</td><td>Ranking histórico por categoría, actualizado automáticamente con puntos por fase alcanzada.</td></tr>
+    <tr><td>Auditoría de Accesos</td><td>Registro automático de todos los intentos de inicio de sesión con IP, resultado y marca temporal.</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SECCIÓN 5 — ESPECIFICACIÓN DE REQUERIMIENTOS
+═══════════════════════════════════════════════════ -->
+<div class="page">
+  <h2>5. Especificación de Requerimientos</h2>
+
+  <h3>5.1 Requerimientos Funcionales</h3>
+  <table>
+    <tr><th>ID</th><th>Descripción</th><th>Módulo</th><th>Prioridad</th></tr>
+    <tr><td>RF-01</td><td>El sistema permite el registro de nuevos jugadores con nombre, apellido, email, teléfono y contraseña.</td><td>Autenticación</td><td>Alta</td></tr>
+    <tr><td>RF-02</td><td>El sistema autentica usuarios por email y contraseña, emitiendo un token JWT con expiración de 24 horas.</td><td>Autenticación</td><td>Alta</td></tr>
+    <tr><td>RF-03</td><td>El organizador puede crear, editar y eliminar torneos con sus fechas, categoría, modalidad y cupos máximos.</td><td>Adm. Torneos</td><td>Alta</td></tr>
+    <tr><td>RF-04</td><td>El organizador puede inscribir equipos de forma manual desde el panel de administración.</td><td>Inscripciones</td><td>Alta</td></tr>
+    <tr><td>RF-05</td><td>Los jugadores registrados pueden inscribirse ellos mismos a torneos disponibles seleccionando un compañero.</td><td>Inscripciones</td><td>Alta</td></tr>
+    <tr><td>RF-06</td><td>El sistema verifica que ambos jugadores de un equipo sean de la categoría requerida por el torneo.</td><td>Inscripciones</td><td>Alta</td></tr>
+    <tr><td>RF-07</td><td>El sistema genera automáticamente los grupos (round-robin) al ejecutar "Generar Grupos".</td><td>Fixture</td><td>Alta</td></tr>
+    <tr><td>RF-08</td><td>El organizador puede cargar resultados de sets de partidos de grupos, guardando grupo por grupo.</td><td>Resultados</td><td>Alta</td></tr>
+    <tr><td>RF-09</td><td>Al finalizar la fase de grupos, el sistema genera automáticamente el cuadro de playoff con seeding snake.</td><td>Fixture</td><td>Alta</td></tr>
+    <tr><td>RF-10</td><td>El organizador puede cargar resultados del playoff; el ganador avanza automáticamente al siguiente cruce.</td><td>Resultados</td><td>Alta</td></tr>
+    <tr><td>RF-11</td><td>Al finalizar la Final, el ranking se actualiza automáticamente según la fase alcanzada por cada equipo.</td><td>Ranking</td><td>Alta</td></tr>
+    <tr><td>RF-12</td><td>Al inscribirse un equipo, el sistema envía un email de confirmación al organizador.</td><td>Notificaciones</td><td>Media</td></tr>
+    <tr><td>RF-13</td><td>El sistema envía un recordatorio 24 horas antes del inicio del torneo a todos los jugadores inscriptos.</td><td>Notificaciones</td><td>Media</td></tr>
+    <tr><td>RF-14</td><td>Los espectadores pueden consultar torneos, fixtures y ranking sin necesidad de iniciar sesión.</td><td>Visualización</td><td>Alta</td></tr>
+    <tr><td>RF-15</td><td>El organizador puede eliminar un equipo con confirmación; si tiene partidos generados, se advierte al usuario.</td><td>Adm. Torneos</td><td>Media</td></tr>
+    <tr><td>RF-16</td><td>Si los grupos ya fueron generados, el sistema permite regenerarlos previo borrado de los existentes.</td><td>Fixture</td><td>Media</td></tr>
+    <tr><td>RF-17</td><td>El sistema registra todos los ingresos al sistema (exitosos y fallidos) en un log de auditoría.</td><td>Auditoría</td><td>Media</td></tr>
+  </table>
+
+  <h3>5.2 Requerimientos No Funcionales</h3>
+  <table>
+    <tr><th>ID</th><th>Descripción</th><th>Tipo</th></tr>
+    <tr><td>RNF-01</td><td>El tiempo de respuesta de las operaciones de consulta no debe superar los 2 segundos bajo condiciones normales de uso.</td><td>Rendimiento</td></tr>
+    <tr><td>RNF-02</td><td>Las contraseñas deben almacenarse con hash bcrypt (10 rounds), nunca en texto plano.</td><td>Seguridad</td></tr>
+    <tr><td>RNF-03</td><td>Los tokens JWT deben tener una expiración de 6 horas. Las rutas protegidas validan el token en cada solicitud.</td><td>Seguridad</td></tr>
+    <tr><td>RNF-04</td><td>La interfaz debe ser responsive, adaptándose a dispositivos móviles, tablets y escritorio.</td><td>Usabilidad</td></tr>
+    <tr><td>RNF-05</td><td>El sistema debe estar disponible 24/7 mediante despliegue en contenedores Docker.</td><td>Disponibilidad</td></tr>
+    <tr><td>RNF-06</td><td>La base de datos debe mantener integridad referencial mediante restricciones de clave foránea (CASCADE donde corresponda).</td><td>Integridad</td></tr>
+    <tr><td>RNF-07</td><td>El sistema debe registrar un log de auditoría de todos los ingresos, incluyendo IP, agente de usuario y resultado.</td><td>Auditoría</td></tr>
+    <tr><td>RNF-08</td><td>El acceso a rutas administrativas debe estar restringido al rol "organizador" mediante middleware de autorización.</td><td>Seguridad</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SECCIÓN 6 — ANÁLISIS Y DISEÑO
+═══════════════════════════════════════════════════ -->
+<div class="page">
+  <h2>6. Análisis y Diseño del Producto</h2>
+
+  <h3>6.1 Modelado Ambiental — Casos de Uso Integral</h3>
+  <p>El sistema identifica tres tipos de actores con distintos niveles de acceso:</p>
+  <table>
+    <tr><th>Actor</th><th>Descripción</th><th>Permisos</th></tr>
+    <tr><td><strong>Espectador</strong></td><td>Usuario no registrado</td><td>Ver torneos, ranking, llaves y calendario</td></tr>
+    <tr><td><strong>Jugador</strong></td><td>Usuario registrado</td><td>Inscribirse a torneos, consultar sus estadísticas, ver transmisiones</td></tr>
+    <tr><td><strong>Organizador</strong></td><td>Administrador del sistema</td><td>Crear torneos, generar fixtures, cargar resultados, configurar ranking, gestionar jugadores</td></tr>
+  </table>
+
+  <h3>6.2 Modelado de Paquetes</h3>
+  <p>
+    El diagrama de paquetes muestra cómo el sistema está organizado en módulos funcionales con responsabilidades claras.
+    La <strong>Interfaz de Usuario</strong> actúa como punto de entrada que se comunica con todos los módulos.
+    El módulo de <strong>Autenticación y Roles</strong> controla el acceso a los demás paquetes.
+    El paquete <strong>core</strong> del sistema es <strong>Administración de Torneos</strong> junto con
+    <strong>Fixture y Resultados</strong>, ya que encapsulan la lógica de negocio principal.
+  </p>
+
+  <div class="img-placeholder">
+    <img src="capturas/diagrama_paquetes.svg" class="captura-img" alt="Diagrama de Paquetes">
+  </div>
+
+  <p>
+    Las dependencias principales son: la Interfaz de Usuario consume todos los módulos; Fixture y Resultados
+    depende de Gestión de Inscripciones y Administración de Torneos; Ranking y Estadísticas depende de
+    Fixture y Resultados; Gestión de Jugadores es utilizada por Gestión de Inscripciones.
+  </p>
+
+  <h3>6.3 Modelado de los Casos de Uso</h3>
+  <p>
+    Se seleccionaron <strong>6 módulos</strong> para el modelado completo, cubriendo la totalidad
+    del flujo funcional del sistema: desde el acceso hasta la visualización de resultados y ranking.
+    Para cada caso de uso se presentan: requerimientos específicos, prototipo de interfaz,
+    ficha de caso de uso, vista estática (diagrama de clases) y vista dinámica (diagrama de secuencia).
+  </p>
+</div>
+
+<!-- ══════════════════════════════════════
+     6.3.1 — LOGIN
+══════════════════════════════════════ -->
+<div class="page">
+  <h3>6.3.1 — Módulo: Autenticación y Roles — Caso de Uso: Iniciar Sesión (Login)</h3>
+
+  <h4>6.3.1.1 Requerimientos Específicos</h4>
+  <table>
+    <tr><th>ID</th><th>Requerimiento</th></tr>
+    <tr><td>REQ-L01</td><td>El sistema debe permitir el ingreso mediante dirección de email registrada.</td></tr>
+    <tr><td>REQ-L02</td><td>La contraseña ingresada debe verificarse contra el hash bcrypt almacenado.</td></tr>
+    <tr><td>REQ-L03</td><td>Al autenticarse correctamente, el sistema debe emitir un token JWT con una expiración de 6 horas.</td></tr>
+    <tr><td>REQ-L04</td><td>El token JWT debe contener el id, nombre, apellido y rol del usuario para su uso en el frontend.</td></tr>
+    <tr><td>REQ-L05</td><td>El sistema debe redirigir al usuario al panel correspondiente según su rol (organizador → /crear-torneo; jugador → /torneos).</td></tr>
+    <tr><td>REQ-L06</td><td>Si las credenciales son incorrectas, el sistema debe mostrar un mensaje de error sin especificar cuál campo falló.</td></tr>
+    <tr><td>REQ-L07</td><td>El sistema debe ofrecer la opción de "Entrar como invitado", permitiendo acceso limitado (espectador).</td></tr>
+    <tr><td>REQ-L08</td><td>Cada intento de ingreso (exitoso o fallido) debe registrarse en la tabla de auditoría con IP y agente de usuario.</td></tr>
+  </table>
+
+  <h4>6.3.1.2 Prototipo de Interfaz</h4>
+  <img src="capturas/login.png" class="captura-img" alt="Pantalla de Login">
+
+  <h4>6.3.1.3 Diagrama de Asociaciones de Caso de Uso</h4>
+  <img src="capturas/ucu_login.svg" class="captura-img" alt="Diagrama de Caso de Uso — Login">
+
+  <h4>6.3.1.4 Ficha de Caso de Uso</h4>
+  <table class="ficha-table">
+    <tr><td colspan="2"><strong>Nombre del Caso de Uso:</strong> Iniciar Sesión</td></tr>
+    <tr><td colspan="2"><strong>Actor principal:</strong> Usuario (Espectador, Jugador, Organizador)</td></tr>
+    <tr><th style="width:50%">Curso Normal</th><th>Curso Alternativo</th></tr>
+    <tr><td>1. El actor accede a la pantalla de inicio de sesión.</td><td></td></tr>
+    <tr><td>2. Visualiza dos campos: email y contraseña.</td><td>2.1 Si los campos están vacíos, el botón "Ingresar" permanece deshabilitado.</td></tr>
+    <tr><td>3. Ingresa su dirección de correo electrónico.</td><td>3.1 Si el actor elige "Entrar como invitado", accede a la interfaz limitada de espectador.</td></tr>
+    <tr><td>4. Ingresa su contraseña asociada.</td><td></td></tr>
+    <tr><td>5. Presiona el botón "Ingresar".</td><td>5.1 Si las credenciales son incorrectas, se muestra mensaje de error sin redirigir.</td></tr>
+    <tr><td>6. El sistema valida las credenciales contra la base de datos.</td><td>6.1 Si el servidor no responde, se informa al usuario que no es posible iniciar sesión.</td></tr>
+    <tr><td>7. Si son correctas, redirige al usuario a su panel según el rol.</td><td></td></tr>
+    <tr><td>8. El sistema registra el ingreso en el log de auditoría.</td><td></td></tr>
+    <tr><td>9. Fin del caso de uso.</td><td></td></tr>
+  </table>
+
+  <h4>6.3.1.5 Vista Estática — Diagrama de Clases</h4>
+  <img src="capturas/clases_login.svg" class="captura-img" alt="Diagrama de Clases — Login">
+
+  <h4>6.3.1.6 Vista Dinámica — Diagrama de Secuencia</h4>
+  <img src="capturas/seq_login.svg" class="captura-img" alt="Diagrama de Secuencia — Login">
+</div>
+
+<!-- ══════════════════════════════════════
+     6.3.2 — REGISTRO
+══════════════════════════════════════ -->
+<div class="page">
+  <h3>6.3.2 — Módulo: Autenticación y Roles — Caso de Uso: Registro</h3>
+
+  <h4>6.3.2.1 Requerimientos Específicos</h4>
+  <table>
+    <tr><th>ID</th><th>Requerimiento</th></tr>
+    <tr><td>REQ-R01</td><td>El correo electrónico debe ser único; el sistema debe rechazar registros con email ya existente.</td></tr>
+    <tr><td>REQ-R02</td><td>La contraseña debe confirmarse con un segundo campo; ambas deben coincidir para habilitar el registro.</td></tr>
+    <tr><td>REQ-R03</td><td>El teléfono de contacto debe tener formato numérico válido (mínimo 7 dígitos).</td></tr>
+    <tr><td>REQ-R04</td><td>El sistema debe asignar el rol "jugador" por defecto a todo nuevo usuario registrado.</td></tr>
+    <tr><td>REQ-R05</td><td>La contraseña debe almacenarse hasheada con bcrypt (10 rounds) antes de persistir en la base de datos.</td></tr>
+    <tr><td>REQ-R06</td><td>Todos los campos son obligatorios; el botón "Crear cuenta" permanece deshabilitado hasta que todos sean completados.</td></tr>
+    <tr><td>REQ-R07</td><td>Al registrarse exitosamente, el sistema redirige al usuario a la pantalla de inicio de sesión.</td></tr>
+  </table>
+
+  <h4>6.3.2.2 Prototipo de Interfaz</h4>
+  <img src="capturas/registro.png" class="captura-img" alt="Pantalla de Registro">
+
+  <h4>6.3.2.3 Diagrama de Asociaciones de Caso de Uso</h4>
+  <img src="capturas/ucu_registro.svg" class="captura-img" alt="Diagrama de Caso de Uso — Registro">
+
+  <h4>6.3.2.4 Ficha de Caso de Uso</h4>
+  <table class="ficha-table">
+    <tr><td colspan="2"><strong>Nombre del Caso de Uso:</strong> Registro</td></tr>
+    <tr><td colspan="2"><strong>Actor principal:</strong> Jugador</td></tr>
+    <tr><th style="width:50%">Curso Normal</th><th>Curso Alternativo</th></tr>
+    <tr><td>1. El jugador accede a la pantalla de registro.</td><td></td></tr>
+    <tr><td>2. El sistema muestra el formulario de registro.</td><td>2.1 Si el formulario no carga, se muestra un mensaje de error general.</td></tr>
+    <tr><td>3. El jugador completa nombre, apellido, email, teléfono, contraseña y confirmación.</td><td>3.1 Si falta algún campo obligatorio, el botón permanece deshabilitado.</td></tr>
+    <tr><td>4. El sistema valida que todos los campos estén completos.</td><td></td></tr>
+    <tr><td>5. El sistema valida que el correo electrónico no esté registrado.</td><td>5.1 Si el correo ya existe, se muestra un mensaje de error.</td></tr>
+    <tr><td>6. El sistema valida que las contraseñas coincidan.</td><td>6.1 Si las contraseñas no coinciden, se muestra un mensaje de error.</td></tr>
+    <tr><td>7. Se habilita el botón "Crear cuenta".</td><td>7.1 Si el teléfono es inválido, el campo se marca en rojo.</td></tr>
+    <tr><td>8. El jugador presiona "Crear cuenta".</td><td>8.1 Si hay error al guardar, se muestra mensaje y se ofrece reintentar.</td></tr>
+    <tr><td>9. El sistema guarda los datos y redirige al login.</td><td></td></tr>
+    <tr><td>10. Fin del caso de uso.</td><td></td></tr>
+  </table>
+
+  <h4>6.3.2.5 Vista Estática — Diagrama de Clases</h4>
+  <img src="capturas/clases_registro.svg" class="captura-img" alt="Diagrama de Clases — Registro">
+
+  <h4>6.3.2.6 Vista Dinámica — Diagrama de Secuencia</h4>
+  <img src="capturas/seq_registro.svg" class="captura-img" alt="Diagrama de Secuencia — Registro">
+</div>
+
+<!-- ══════════════════════════════════════
+     6.3.3 — CREAR TORNEO
+══════════════════════════════════════ -->
+<div class="page">
+  <h3>6.3.3 — Módulo: Administración de Torneos — Caso de Uso: Crear Torneo</h3>
+
+  <h4>6.3.3.1 Requerimientos Específicos</h4>
+  <table>
+    <tr><th>ID</th><th>Requerimiento</th></tr>
+    <tr><td>REQ-CT01</td><td>La fecha de fin no puede ser anterior a la fecha de inicio del torneo.</td></tr>
+    <tr><td>REQ-CT02</td><td>La fecha de cierre de inscripción no puede ser posterior a la fecha de inicio del torneo.</td></tr>
+    <tr><td>REQ-CT03</td><td>El torneo requiere un mínimo de 2 equipos inscriptos para poder generar la fase de grupos.</td></tr>
+    <tr><td>REQ-CT04</td><td>La categoría puede configurarse como fija (una categoría específica) o como suma (combinación de dos categorías).</td></tr>
+    <tr><td>REQ-CT05</td><td>Si los grupos ya fueron generados y se inscribe un equipo tardíamente, el sistema permite regenerar los grupos previo borrado de los existentes, con confirmación del organizador.</td></tr>
+    <tr><td>REQ-CT06</td><td>Al eliminar un torneo, se eliminan en cascada todos sus grupos, partidos e inscripciones asociadas.</td></tr>
+    <tr><td>REQ-CT07</td><td>Al eliminar un equipo que ya tiene partidos generados, el sistema advierte al organizador antes de proceder.</td></tr>
+    <tr><td>REQ-CT08</td><td>El sistema soporta la modalidad "fin de semana" (fase de grupos + playoff) y "liga" (round-robin continuo).</td></tr>
+  </table>
+
+  <h4>6.3.3.2 Prototipo de Interfaz</h4>
+  <img src="capturas/creartorneoadmin.png" class="captura-img" alt="Pantalla Crear Torneo — Admin">
+
+  <h4>6.3.3.3 Diagrama de Asociaciones de Caso de Uso</h4>
+  <img src="capturas/ucu_crear_torneo.svg" class="captura-img" alt="Diagrama de Caso de Uso — Crear Torneo">
+
+  <h4>6.3.3.4 Ficha de Caso de Uso</h4>
+  <table class="ficha-table">
+    <tr><td colspan="2"><strong>Nombre del Caso de Uso:</strong> Crear Torneo</td></tr>
+    <tr><td colspan="2"><strong>Actor principal:</strong> Organizador</td></tr>
+    <tr><th style="width:50%">Curso Normal</th><th>Curso Alternativo</th></tr>
+    <tr><td>1. El actor accede con su cuenta de organizador.</td><td></td></tr>
+    <tr><td>2. Selecciona la opción "Crear Torneo" desde el menú principal.</td><td></td></tr>
+    <tr><td>3. El sistema muestra el formulario de creación.</td><td>3.1 Si el formulario no carga, se muestra mensaje de error.</td></tr>
+    <tr><td>4. Completa el nombre del torneo.</td><td></td></tr>
+    <tr><td>5. Selecciona la categoría del torneo.</td><td></td></tr>
+    <tr><td>6. Elige la fecha de inicio.</td><td></td></tr>
+    <tr><td>7. Elige la fecha de cierre de inscripción (debe ser anterior al inicio).</td><td>7.1 Si la fecha de cierre es posterior al inicio, se muestra error.</td></tr>
+    <tr><td>8. Ingresa la cantidad máxima de equipos.</td><td>8.1 Si el valor no es numérico, el campo se marca en rojo.</td></tr>
+    <tr><td>9. Se habilita el botón "Crear Torneo".</td><td>9.1 Si falta algún campo, el botón permanece deshabilitado.</td></tr>
+    <tr><td>10. Presiona "Crear Torneo".</td><td></td></tr>
+    <tr><td>11. El sistema guarda y muestra confirmación.</td><td>11.1 Si falla la conexión, se informa y permite reintentar.</td></tr>
+    <tr><td>12. Fin del caso de uso.</td><td></td></tr>
+  </table>
+
+  <h4>6.3.3.5 Vista Estática — Diagrama de Clases</h4>
+  <img src="capturas/clases_crear_torneo.svg" class="captura-img" alt="Diagrama de Clases — Crear Torneo">
+
+  <h4>6.3.3.6 Vista Dinámica — Diagrama de Secuencia</h4>
+  <img src="capturas/seq_crear_torneo.svg" class="captura-img" alt="Diagrama de Secuencia — Crear Torneo">
+</div>
+
+<!-- ══════════════════════════════════════
+     6.3.4 — INSCRIPCIÓN
+══════════════════════════════════════ -->
+<div class="page">
+  <h3>6.3.4 — Módulo: Gestión de Inscripciones — Caso de Uso: Inscribirse a Torneo</h3>
+
+  <h4>6.3.4.1 Requerimientos Específicos</h4>
+  <table>
+    <tr><th>ID</th><th>Requerimiento</th></tr>
+    <tr><td>REQ-I01</td><td>Un jugador no puede inscribirse dos veces al mismo torneo.</td></tr>
+    <tr><td>REQ-I02</td><td>En torneos de categoría fija, solo pueden inscribirse jugadores de esa categoría específica.</td></tr>
+    <tr><td>REQ-I03</td><td>En torneos de suma de categorías, la suma de los valores numéricos de ambos jugadores debe igualar el objetivo del torneo.</td></tr>
+    <tr><td>REQ-I04</td><td>El sistema debe verificar que haya cupos disponibles antes de permitir la inscripción.</td></tr>
+    <tr><td>REQ-I05</td><td>El nombre del equipo se genera automáticamente con los apellidos de los dos jugadores (Ej: "García/López").</td></tr>
+    <tr><td>REQ-I06</td><td>Al inscribirse exitosamente, el sistema muestra un modal de confirmación con el nombre del equipo y el torneo.</td></tr>
+    <tr><td>REQ-I07</td><td>Al inscribirse, el sistema envía un email de notificación al organizador con los datos del equipo inscripto.</td></tr>
+    <tr><td>REQ-I08</td><td>El organizador puede inscribir equipos directamente desde el panel de administración sin restricción de categoría propia.</td></tr>
+  </table>
+
+  <h4>6.3.4.2 Prototipo de Interfaz</h4>
+  <img src="capturas/inscribiradmin.png" class="captura-img" alt="Pantalla Inscripción — Admin">
+  <img src="capturas/inscripcionjugador.png" class="captura-img" alt="Pantalla Inscripción — Jugador">
+
+  <h4>6.3.4.3 Diagrama de Asociaciones de Caso de Uso</h4>
+  <img src="capturas/ucu_inscripcion.svg" class="captura-img" alt="Diagrama de Caso de Uso — Inscripción">
+
+  <h4>6.3.4.4 Ficha de Caso de Uso</h4>
+  <table class="ficha-table">
+    <tr><td colspan="2"><strong>Nombre del Caso de Uso:</strong> Inscripción</td></tr>
+    <tr><td colspan="2"><strong>Actor principal:</strong> Jugador</td></tr>
+    <tr><th style="width:50%">Curso Normal</th><th>Curso Alternativo</th></tr>
+    <tr><td>1. El jugador inicia sesión en el sistema.</td><td></td></tr>
+    <tr><td>2. Selecciona "Inscribirse a Torneo" desde el menú.</td><td></td></tr>
+    <tr><td>3. El sistema muestra el formulario de inscripción.</td><td>3.1 Si no carga, se muestra error general.</td></tr>
+    <tr><td>4. El torneo actual del jugador se precarga automáticamente.</td><td></td></tr>
+    <tr><td>5. El jugador selecciona un compañero del listado.</td><td>5.1 Si no selecciona compañero, se bloquea el botón.</td></tr>
+    <tr><td>6. Selecciona el torneo disponible.</td><td>6.1 Si el torneo está lleno, aparece deshabilitado.</td></tr>
+    <tr><td>7. El sistema valida la compatibilidad de categorías.</td><td>7.1 Si los jugadores no cumplen el requisito de categoría, se informa.</td></tr>
+    <tr><td>8. El jugador presiona "Inscribirse".</td><td>8.1 Si hay error al guardar, se muestra mensaje y opción de reintentar.</td></tr>
+    <tr><td>9. El sistema guarda la inscripción y muestra modal de éxito.</td><td></td></tr>
+    <tr><td>10. Se envía email de confirmación al organizador.</td><td></td></tr>
+    <tr><td>11. Fin del caso de uso.</td><td></td></tr>
+  </table>
+
+  <h4>6.3.4.5 Vista Estática — Diagrama de Clases</h4>
+  <img src="capturas/clases_inscripcion.svg" class="captura-img" alt="Diagrama de Clases — Inscripción">
+
+  <h4>6.3.4.6 Vista Dinámica — Diagrama de Secuencia</h4>
+  <img src="capturas/seq_inscripcion.svg" class="captura-img" alt="Diagrama de Secuencia — Inscripción">
+</div>
+
+<!-- ══════════════════════════════════════
+     6.3.5 — CARGAR RESULTADOS
+══════════════════════════════════════ -->
+<div class="page">
+  <h3>6.3.5 — Módulo: Fixture y Resultados — Caso de Uso: Cargar Resultados</h3>
+
+  <h4>6.3.5.1 Requerimientos Específicos</h4>
+  <table>
+    <tr><th>ID</th><th>Requerimiento</th></tr>
+    <tr><td>REQ-CR01</td><td>El organizador puede guardar los resultados de todos los partidos de un grupo con un único botón por grupo.</td></tr>
+    <tr><td>REQ-CR02</td><td>Los resultados se expresan en sets (máximo 3 sets por partido), ingresando los games por set de cada equipo.</td></tr>
+    <tr><td>REQ-CR03</td><td>Al completar todos los resultados de la fase de grupos, el sistema genera automáticamente el cuadro de playoff mediante seeding snake.</td></tr>
+    <tr><td>REQ-CR04</td><td>En el playoff, al registrar el ganador de un partido, el sistema actualiza automáticamente el siguiente cruce.</td></tr>
+    <tr><td>REQ-CR05</td><td>Al registrar el resultado de la Final, el ranking se actualiza automáticamente y el sistema muestra una notificación de confirmación.</td></tr>
+    <tr><td>REQ-CR06</td><td>El organizador puede forzar la actualización del ranking manualmente como medida de contingencia, mediante un botón diferenciado visualmente.</td></tr>
+    <tr><td>REQ-CR07</td><td>Los resultados de rondas del playoff se guardan por ronda completa (no partido por partido).</td></tr>
+  </table>
+
+  <h4>6.3.5.2 Prototipo de Interfaz</h4>
+  <img src="capturas/resultadosadmin.png" class="captura-img" alt="Pantalla Cargar Resultados — Admin">
+
+  <h4>6.3.5.3 Diagrama de Asociaciones de Caso de Uso</h4>
+  <img src="capturas/ucu_resultados.svg" class="captura-img" alt="Diagrama de Caso de Uso — Cargar Resultados">
+
+  <h4>6.3.5.4 Ficha de Caso de Uso</h4>
+  <table class="ficha-table">
+    <tr><td colspan="2"><strong>Nombre del Caso de Uso:</strong> Cargar Resultados</td></tr>
+    <tr><td colspan="2"><strong>Actor principal:</strong> Organizador</td></tr>
+    <tr><th style="width:50%">Curso Normal</th><th>Curso Alternativo</th></tr>
+    <tr><td>1. El actor accede al sistema como organizador.</td><td></td></tr>
+    <tr><td>2. Selecciona "Cargar Resultados" desde el menú.</td><td></td></tr>
+    <tr><td>3. El sistema muestra los partidos de la fase activa.</td><td>3.1 Si no cargan, se muestra mensaje de error.</td></tr>
+    <tr><td>4. El actor ingresa los resultados de sets para cada partido del grupo.</td><td>4.1 Si falta algún resultado, el sistema lo indica visualmente.</td></tr>
+    <tr><td>5. Presiona el botón "Guardar Grupo X".</td><td>5.1 Si hay fallo de conexión, se ofrece reintentar.</td></tr>
+    <tr><td>6. El sistema guarda los resultados y actualiza las estadísticas del grupo.</td><td></td></tr>
+    <tr><td>7. Al terminar todos los grupos, el sistema genera el playoff automáticamente.</td><td>7.1 Si el playoff no puede generarse, se guarda un log del error.</td></tr>
+    <tr><td>8. El actor carga resultados del playoff ronda por ronda.</td><td></td></tr>
+    <tr><td>9. Al finalizar la Final, el ranking se actualiza automáticamente.</td><td>9.1 Si el ranking no se actualiza, el botón de contingencia permite forzarlo.</td></tr>
+    <tr><td>10. Se muestra mensaje de confirmación visual.</td><td></td></tr>
+    <tr><td>11. Fin del caso de uso.</td><td></td></tr>
+  </table>
+
+  <h4>6.3.5.5 Vista Estática — Diagrama de Clases</h4>
+  <img src="capturas/clases_resultados.svg" class="captura-img" alt="Diagrama de Clases — Cargar Resultados">
+
+  <h4>6.3.5.6 Vista Dinámica — Diagrama de Secuencia</h4>
+  <img src="capturas/seq_resultados.svg" class="captura-img" alt="Diagrama de Secuencia — Cargar Resultados">
+</div>
+
+<!-- ══════════════════════════════════════
+     6.3.6 — TORNEOS (VISUALIZAR)
+══════════════════════════════════════ -->
+<div class="page">
+  <h3>6.3.6 — Módulo: Visualización de Torneos — Caso de Uso: Ver Torneos</h3>
+
+  <h4>6.3.6.1 Requerimientos Específicos</h4>
+  <table>
+    <tr><th>ID</th><th>Requerimiento</th></tr>
+    <tr><td>REQ-T01</td><td>Los espectadores pueden consultar torneos, fixtures y ranking sin necesidad de iniciar sesión.</td></tr>
+    <tr><td>REQ-T02</td><td>El sistema permite filtrar torneos por mes (selector de calendario horizontal) y por categoría (menú desplegable).</td></tr>
+    <tr><td>REQ-T03</td><td>La vista de torneo muestra tanto la fase de grupos (resultados y posiciones) como el bracket de playoff (llaves).</td></tr>
+    <tr><td>REQ-T04</td><td>El campeón del torneo debe resaltarse visualmente en el bracket de playoff.</td></tr>
+    <tr><td>REQ-T05</td><td>El sistema muestra el estado de cada torneo (activo, finalizado).</td></tr>
+    <tr><td>REQ-T06</td><td>Si un torneo aún no tiene partidos cargados, se muestra el mensaje "Fixture no disponible aún".</td></tr>
+    <tr><td>REQ-T07</td><td>El jugador puede cambiar entre la vista de "Fase de Grupos" y la vista de "Llaves" mediante botones de navegación.</td></tr>
+  </table>
+
+  <h4>6.3.6.2 Prototipo de Interfaz</h4>
+  <img src="capturas/torneosinvitados.png" class="captura-img" alt="Pantalla Torneos — Invitado">
+  <img src="capturas/torneosjugador.png" class="captura-img" alt="Pantalla Torneos — Jugador">
+
+  <h4>6.3.6.3 Diagrama de Asociaciones de Caso de Uso</h4>
+  <img src="capturas/ucu_torneos.svg" class="captura-img" alt="Diagrama de Caso de Uso — Torneos">
+
+  <h4>6.3.6.4 Ficha de Caso de Uso</h4>
+  <table class="ficha-table">
+    <tr><td colspan="2"><strong>Nombre del Caso de Uso:</strong> Torneos</td></tr>
+    <tr><td colspan="2"><strong>Actor principal:</strong> Jugador / Espectador</td></tr>
+    <tr><th style="width:50%">Curso Normal</th><th>Curso Alternativo</th></tr>
+    <tr><td>1. El actor accede a la sección "Torneos" desde el menú.</td><td></td></tr>
+    <tr><td>2. El sistema muestra todos los torneos disponibles.</td><td>2.1 Si no hay torneos, se muestra "No hay torneos disponibles".</td></tr>
+    <tr><td>3. El actor filtra por mes desde el selector de calendario.</td><td>3.1 Si no se selecciona mes, se muestran todos los torneos.</td></tr>
+    <tr><td>4. El actor selecciona una categoría desde el menú desplegable.</td><td>4.1 Si no se selecciona categoría, se muestran todas.</td></tr>
+    <tr><td>5. El sistema actualiza la lista de torneos filtrados.</td><td></td></tr>
+    <tr><td>6. El actor selecciona un torneo para ver sus detalles.</td><td>6.1 Si el torneo no tiene partidos, se muestra "Fixture no disponible".</td></tr>
+    <tr><td>7. El sistema muestra la vista por defecto (fase de grupos si existe).</td><td></td></tr>
+    <tr><td>8. El actor puede cambiar entre "Fase de Grupos" y "Llaves".</td><td>8.1 Si el torneo no tiene fase de grupos, se muestra directamente las llaves.</td></tr>
+    <tr><td>9. Fin del caso de uso.</td><td></td></tr>
+  </table>
+
+  <h4>6.3.6.5 Vista Estática — Diagrama de Clases</h4>
+  <img src="capturas/clases_torneos.svg" class="captura-img" alt="Diagrama de Clases — Torneos">
+
+  <h4>6.3.6.6 Vista Dinámica — Diagrama de Secuencia</h4>
+  <img src="capturas/seq_torneos.svg" class="captura-img" alt="Diagrama de Secuencia — Torneos">
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SECCIÓN 7 — IMPLEMENTACIÓN DEL SOFTWARE
+═══════════════════════════════════════════════════ -->
+<div class="page">
+  <h2>7. Implementación del Software — Código Funcional del Paquete Core</h2>
+
+  <p>
+    El <strong>paquete core</strong> del sistema comprende los módulos de
+    <em>Autenticación y Roles</em> y <em>Administración de Torneos / Fixture y Resultados</em>,
+    ya que encapsulan la lógica de negocio principal. El backend está desarrollado en
+    <strong>Node.js con Express</strong> y se conecta a <strong>PostgreSQL</strong> mediante el pool de conexiones de la librería <code>pg</code>.
+  </p>
+
+  <h3>7.1 Autenticación — Login con JWT</h3>
+  <p>
+    El controlador de login recibe las credenciales, las valida contra la base de datos comparando
+    el hash bcrypt, y emite un token JWT con expiración de 6 horas en caso de éxito.
+    Cada intento (exitoso o fallido) se registra en la tabla de auditoría con IP y agente de usuario.
+  </p>
+<pre>// src/controllers/authController.js
+export const login = async (req, res) => {
+  const loginInput = (req.body.email ?? req.body.login ?? '').trim().toLowerCase();
+  const { password } = req.body;
+  const ip        = req.headers['x-forwarded-for']?.split(',')[0].trim() ?? req.ip;
+  const userAgent = req.headers['user-agent'];
+
+  try {
+    if (!loginInput || !password)
+      return res.status(400).json({ error: 'Faltan credenciales' });
+
+    const { rows } = await pool.query(
+      `SELECT j.id_jugador, j.nombre_jugador, j.apellido_jugador,
+              j.email, j.rol, j.password AS password_norm, j.categoria_id,
+              c.valor_numerico
+       FROM public.jugador j
+       LEFT JOIN categoria c ON c.id_categoria = j.categoria_id
+       WHERE LOWER(TRIM(j.email)) = LOWER(TRIM($1))
+       LIMIT 1`,
+      [loginInput]
+    );
+
+    const user = rows[0];
+    if (!user) {
+      await registrarLogIngreso({ jugadorId: null, ip, userAgent,
+        exitoso: false, motivo: 'Jugador no encontrado' });
+      return res.status(404).json({ error: 'Jugador no encontrado' });
+    }
+
+    // Soporte para contraseñas con hash bcrypt y texto plano (migración)
+    const stored  = user.password_norm || '';
+    const isHash  = stored.startsWith('$2');
+    const isValid = isHash
+      ? await bcrypt.compare(password, stored)
+      : password === stored;
+
+    if (!isValid) {
+      await registrarLogIngreso({ jugadorId: user.id_jugador, ip, userAgent,
+        exitoso: false, motivo: 'Contraseña incorrecta' });
+      return res.status(401).json({ error: 'Contraseña incorrecta' });
+    }
+
+    const role  = (user.rol || 'jugador').toLowerCase();
+    const token = jwt.sign(
+      { id: user.id_jugador, role },
+      process.env.JWT_SECRET || 'dev_secret_change_me',
+      { expiresIn: '6h' }
+    );
+
+    await registrarLogIngreso({ jugadorId: user.id_jugador, ip, userAgent,
+      exitoso: true, motivo: 'Login exitoso' });
+
+    return res.json({
+      ok: true,
+      token,
+      jugador: {
+        id:            user.id_jugador,
+        nombre:        user.nombre_jugador,
+        apellido:      user.apellido_jugador,
+        email:         user.email,
+        role,
+        rol:           role,
+        categoria_id:  user.categoria_id,
+        valor_numerico: user.valor_numerico,
+      }
+    });
+
+  } catch (err) {
+    await registrarLogIngreso({ jugadorId: null, ip, userAgent,
+      exitoso: false, motivo: 'Error interno' });
+    return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};</pre>
+
+  <h3>7.2 Inscripción de Equipo</h3>
+  <p>
+    La ruta de inscripción valida que el equipo cumpla con los requisitos de categoría del torneo
+    (categoría fija o suma de categorías), verifica cupos disponibles y genera automáticamente
+    el nombre del equipo con los apellidos de los jugadores.
+  </p>
+<pre>// POST /inscripcion — Inscribir equipo a torneo
+router.post('/inscripcion', async (req, res) => {
+  const { jugador1_id, jugador2_id, id_torneo } = req.body;
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // Verificar cupos disponibles
+    const cupos = await client.query(
+      `SELECT max_equipos,
+        (SELECT COUNT(*) FROM inscripcion WHERE id_torneo=$1) AS inscriptos
+       FROM torneo WHERE id_torneo=$1`, [id_torneo]
+    );
+    const { max_equipos, inscriptos } = cupos.rows[0];
+    if (Number(inscriptos) >= Number(max_equipos))
+      return res.status(400).json({ error: 'El torneo ya está completo.' });
+
+    // Generar nombre automático del equipo
+    const j = await client.query(
+      `SELECT apellido_jugador FROM jugador WHERE id_jugador = ANY($1)`,
+      [[jugador1_id, jugador2_id]]
+    );
+    const nombre_equipo = j.rows.map(r => r.apellido_jugador).join('/');
+
+    // Crear equipo e inscripción
+    const eq = await client.query(
+      `INSERT INTO equipo (jugador1_id, jugador2_id, nombre_equipo)
+       VALUES ($1, $2, $3) RETURNING id_equipo, nombre_equipo`,
+      [jugador1_id, jugador2_id, nombre_equipo]
+    );
+    await client.query(
+      `INSERT INTO inscripcion (id_equipo, id_torneo) VALUES ($1, $2)`,
+      [eq.rows[0].id_equipo, id_torneo]
+    );
+    await client.query('COMMIT');
+    res.json({ nombre_equipo: eq.rows[0].nombre_equipo });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    res.status(500).json({ error: err.message });
+  } finally { client.release(); }
+});</pre>
+</div>
+
+<div class="page">
+  <h3>7.3 Generación Automática de Grupos</h3>
+  <p>
+    Al ejecutar "Generar Grupos", el sistema distribuye los equipos inscriptos en grupos de forma
+    equilibrada. Para torneos de modalidad "fin de semana", divide en grupos de 3 o 4 equipos
+    generando todos los cruces round-robin. Para modalidad "liga", crea un único grupo con todos
+    los equipos y un fixture de fechas progresivas.
+  </p>
+<pre>// POST /torneos/:id/generar-grupos — Generación de grupos
+router.post('/torneos/:id/generar-grupos', async (req, res) => {
+  const { id } = req.params;
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // Verificar si ya existen grupos
+    const check = await client.query(
+      'SELECT 1 FROM grupos WHERE id_torneo = $1 LIMIT 1', [id]
+    );
+    if (check.rowCount > 0)
+      return res.status(400).json({ error: 'Los grupos ya fueron generados.' });
+
+    // Obtener equipos inscriptos
+    const { rows: equipos } = await client.query(
+      `SELECT e.id_equipo, e.nombre_equipo
+       FROM inscripcion i JOIN equipo e ON i.id_equipo = e.id_equipo
+       WHERE i.id_torneo = $1`, [id]
+    );
+    if (equipos.length < 2)
+      return res.status(400).json({ error: 'Se necesitan al menos 2 equipos.' });
+
+    // Distribuir equipos en grupos de 3-4
+    const numGrupos = Math.ceil(equipos.length / 4);
+    const letras = ['A','B','C','D','E','F','G','H'];
+
+    for (let g = 0; g < numGrupos; g++) {
+      const grupoRes = await client.query(
+        `INSERT INTO grupos (id_torneo, nombre) VALUES ($1, $2) RETURNING id_grupo`,
+        [id, `Grupo ${letras[g]}`]
+      );
+      const grupoId = grupoRes.rows[0].id_grupo;
+      const equiposGrupo = equipos.filter((_, i) => i % numGrupos === g);
+
+      for (const eq of equiposGrupo) {
+        await client.query(
+          `INSERT INTO equipos_grupo (grupo_id, equipo_id) VALUES ($1, $2)`,
+          [grupoId, eq.id_equipo]
+        );
+      }
+      // Generar todos los cruces round-robin dentro del grupo
+      for (let i = 0; i < equiposGrupo.length; i++)
+        for (let j = i + 1; j < equiposGrupo.length; j++)
+          await client.query(
+            `INSERT INTO partidos_grupo (grupo_id, equipo1_id, equipo2_id)
+             VALUES ($1, $2, $3)`,
+            [grupoId, equiposGrupo[i].id_equipo, equiposGrupo[j].id_equipo]
+          );
+    }
+    await client.query('COMMIT');
+    res.json({ mensaje: 'Grupos generados correctamente' });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    res.status(500).json({ error: err.message });
+  } finally { client.release(); }
+});</pre>
+
+  <h3>7.4 Actualización del Ranking</h3>
+  <p>
+    Al finalizar la Final, el sistema calcula automáticamente los puntos de cada jugador
+    según la fase alcanzada y los acumula al registro de ranking existente.
+  </p>
+<pre>// Tabla de puntos por fase alcanzada
+const PUNTOS = {
+  FINAL:    { ganador: 2000, perdedor: 1200 },
+  SEMIS:    { ganador: 720,  perdedor: 720  },
+  CUARTOS:  { ganador: 360,  perdedor: 360  },
+  OCTAVOS:  { ganador: 180,  perdedor: 180  },
+  GRUPOS:   { ganador: 0,    perdedor: 0    }
+};
+
+// Upsert de ranking: acumula puntos del torneo al historial del jugador
+await client.query(
+  `INSERT INTO ranking_jugador
+     (jugador_id, nombre, apellido, ultima_pareja,
+      torneo_participado, fase_llegada, puntos, categoria)
+   VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
+  [jugadorId, nombre, apellido, parejaActual,
+   nombreTorneo, faseAlcanzada, puntosGanados, categoriaTorneo]
+);</pre>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SECCIÓN 8 — INTEGRACIÓN Y TESTING
+═══════════════════════════════════════════════════ -->
+<div class="page">
+  <h2>8. Integración y Testing</h2>
+
+  <h3>8.1 Estrategia de Testing</h3>
+  <p>
+    El sistema fue validado mediante <strong>pruebas de integración manuales</strong> que cubren
+    el flujo completo de extremo a extremo, desde el registro del jugador hasta la actualización
+    del ranking al finalizar un torneo. Se verificó la correcta comunicación entre el frontend
+    (React), el backend (Express) y la base de datos (PostgreSQL), todos corriendo en
+    contenedores Docker independientes.
+  </p>
+
+  <h3>8.2 Flujos Testeados</h3>
+  <table>
+    <tr><th>Flujo</th><th>Resultado Esperado</th><th>Estado</th></tr>
+    <tr><td>Registro de nuevo jugador</td><td>Usuario creado, contraseña hasheada, redirección a login</td><td>✓ OK</td></tr>
+    <tr><td>Login con credenciales correctas</td><td>JWT emitido, redirección según rol</td><td>✓ OK</td></tr>
+    <tr><td>Login con credenciales incorrectas</td><td>Mensaje de error, log de auditoría registrado</td><td>✓ OK</td></tr>
+    <tr><td>Creación de torneo con fechas inválidas</td><td>Error de validación, no se persiste</td><td>✓ OK</td></tr>
+    <tr><td>Inscripción de equipo en torneo lleno</td><td>Error "El torneo ya está completo"</td><td>✓ OK</td></tr>
+    <tr><td>Inscripción de jugador de categoría incompatible</td><td>Error de categoría, no se crea el equipo</td><td>✓ OK</td></tr>
+    <tr><td>Generación de grupos con equipos pares e impares</td><td>Distribución equilibrada, todos los cruces generados</td><td>✓ OK</td></tr>
+    <tr><td>Carga de resultados de grupos</td><td>Estadísticas actualizadas (puntos, sets, games)</td><td>✓ OK</td></tr>
+    <tr><td>Generación de playoff al terminar grupos</td><td>Bracket generado con seeding snake</td><td>✓ OK</td></tr>
+    <tr><td>Carga de resultados en playoff</td><td>Ganador avanza automáticamente al siguiente cruce</td><td>✓ OK</td></tr>
+    <tr><td>Finalización de la Final</td><td>Ranking actualizado automáticamente, notificación visible</td><td>✓ OK</td></tr>
+    <tr><td>Eliminación de equipo con partidos generados</td><td>Advertencia previa, eliminación en cascada</td><td>✓ OK</td></tr>
+    <tr><td>Regeneración de grupos tras inscripción tardía</td><td>Grupos eliminados y regenerados con nuevo equipo</td><td>✓ OK</td></tr>
+    <tr><td>Notificación por email al inscribirse</td><td>Email recibido en cuenta del organizador (sandbox Resend)</td><td>✓ OK</td></tr>
+    <tr><td>Ranking filtrado por categoría</td><td>Solo jugadores de la categoría seleccionada, ordenados por puntos</td><td>✓ OK</td></tr>
+  </table>
+
+  <h3>8.3 Errores Detectados y Corregidos</h3>
+  <table>
+    <tr><th>Error detectado</th><th>Causa raíz</th><th>Solución aplicada</th></tr>
+    <tr><td>El ranking mostraba primero todos los jugadores de una categoría y luego los de otra</td><td>Query con <code>ORDER BY categoria ASC, puntos DESC</code></td><td>Se eliminó el ordenamiento por categoría; solo se ordena por puntos descendente</td></tr>
+    <tr><td>"Eliminar equipo" no hacía nada</td><td>Restricciones de FK en <code>equipos_grupo</code>, <code>partidos_grupo</code> y <code>partidos_llave</code></td><td>Se implementó eliminación en cascada en el orden correcto de dependencias</td></tr>
+    <tr><td>Navbar cortaba "Cerrar Sesión" en pantallas medianas</td><td>CSS duplicado con <code>gap: 48px</code> en segunda regla <code>.navbar-links</code></td><td>Se eliminó el CSS duplicado y se aplicó <code>justify-content: space-evenly</code></td></tr>
+    <tr><td>Modal de inscripción exitosa no aparecía</td><td><code>setTorneoId('')</code> disparaba <code>useEffect</code> que ejecutaba <code>setModalExito(null)</code> inmediatamente</td><td>Se removió <code>setModalExito(null)</code> del <code>useEffect</code></td></tr>
+    <tr><td>El organizador no aparecía en el listado de jugadores para inscribir</td><td>Query con <code>WHERE rol = 'jugador'</code> excluía al organizador</td><td>Se agregó condición <code>OR (rol = 'organizador' AND categoria_id IS NOT NULL)</code></td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SECCIÓN 9 — ESTRUCTURA DE DATOS
+═══════════════════════════════════════════════════ -->
+<div class="page page-wide">
+  <h2>9. Estructura de Datos</h2>
+
+  <h3>9.1 Diagrama Entidad-Relación</h3>
+  <p>El sistema cuenta con <strong>11 entidades</strong> que modelan la totalidad del dominio: categorías, autenticación, torneos, inscripciones, equipos, grupos, fixture de grupos, fixture de playoff (llave), ranking de jugadores y auditoría de accesos.</p>
+  <img src="capturas/der_completo.svg" class="captura-img" alt="Diagrama Entidad-Relación completo">
+
+  <h3>9.2 Diccionario de Datos</h3>
+
+  <h4>Tabla: <code>categoria</code></h4>
+  <table>
+    <tr><th>Columna</th><th>Tipo</th><th>Restricción</th><th>Descripción</th></tr>
+    <tr><td>id_categoria</td><td>SERIAL</td><td>PK</td><td>Identificador único de la categoría</td></tr>
+    <tr><td>nombre</td><td>VARCHAR(50)</td><td>NOT NULL</td><td>Nombre de la categoría (Ej: "6ta", "4ta")</td></tr>
+    <tr><td>valor_numerico</td><td>INT</td><td>NOT NULL, CHECK (2–8)</td><td>Valor numérico de la categoría para cálculos de suma</td></tr>
+  </table>
+
+  <h4>Tabla: <code>torneo</code></h4>
+  <table>
+    <tr><th>Columna</th><th>Tipo</th><th>Restricción</th><th>Descripción</th></tr>
+    <tr><td>id_torneo</td><td>SERIAL</td><td>PK</td><td>Identificador único del torneo</td></tr>
+    <tr><td>nombre_torneo</td><td>VARCHAR(100)</td><td>NOT NULL</td><td>Nombre descriptivo del torneo</td></tr>
+    <tr><td>fecha_inicio</td><td>DATE</td><td>NOT NULL</td><td>Fecha de comienzo del torneo</td></tr>
+    <tr><td>fecha_fin</td><td>DATE</td><td>NOT NULL</td><td>Fecha de finalización del torneo</td></tr>
+    <tr><td>fecha_cierre_inscripcion</td><td>DATE</td><td>NOT NULL</td><td>Fecha límite para inscribir equipos</td></tr>
+    <tr><td>max_equipos</td><td>INT</td><td>NOT NULL</td><td>Cantidad máxima de equipos permitidos</td></tr>
+    <tr><td>categoria_id</td><td>INT</td><td>FK categoria</td><td>Categoría del torneo (NULL si es formato suma)</td></tr>
+    <tr><td>formato_categoria</td><td>VARCHAR(20)</td><td>CHECK</td><td>'categoria_fija' o 'suma'</td></tr>
+    <tr><td>suma_categoria</td><td>INT</td><td>NULL si fija</td><td>Valor objetivo de la suma de categorías (Ej: 11 para 5ta+6ta)</td></tr>
+    <tr><td>modalidad</td><td>VARCHAR(50)</td><td>DEFAULT 'fin_de_semana'</td><td>'fin_de_semana' (grupos + playoff) o 'liga' (round-robin)</td></tr>
+    <tr><td>dias_juego</td><td>VARCHAR(100)</td><td>NULL</td><td>Días habilitados para partidos en torneos de liga</td></tr>
+  </table>
+
+  <h4>Tabla: <code>jugador</code></h4>
+  <table>
+    <tr><th>Columna</th><th>Tipo</th><th>Restricción</th><th>Descripción</th></tr>
+    <tr><td>id_jugador</td><td>SERIAL</td><td>PK</td><td>Identificador único del jugador</td></tr>
+    <tr><td>nombre_jugador</td><td>VARCHAR(100)</td><td>NOT NULL</td><td>Nombre del jugador</td></tr>
+    <tr><td>apellido_jugador</td><td>VARCHAR(100)</td><td>NOT NULL</td><td>Apellido del jugador</td></tr>
+    <tr><td>apodo</td><td>VARCHAR(50)</td><td>NULL</td><td>Apodo opcional del jugador</td></tr>
+    <tr><td>email</td><td>VARCHAR(100)</td><td>UNIQUE, NOT NULL</td><td>Correo electrónico (utilizado para login)</td></tr>
+    <tr><td>telefono</td><td>VARCHAR(20)</td><td>NULL</td><td>Teléfono de contacto</td></tr>
+    <tr><td>password</td><td>VARCHAR(255)</td><td>NOT NULL</td><td>Hash bcrypt de la contraseña (10 rounds)</td></tr>
+    <tr><td>rol</td><td>VARCHAR(20)</td><td>CHECK, DEFAULT 'jugador'</td><td>'jugador' o 'organizador'</td></tr>
+    <tr><td>fecha_registro</td><td>TIMESTAMP</td><td>DEFAULT NOW()</td><td>Fecha y hora de registro del usuario</td></tr>
+    <tr><td>categoria_id</td><td>INT</td><td>FK categoria</td><td>Categoría asignada al jugador</td></tr>
+    <tr><td>foto_perfil</td><td>TEXT</td><td>NULL</td><td>URL de la imagen de perfil del jugador</td></tr>
+  </table>
+</div>
+
+<div class="page">
+  <h4>Tabla: <code>equipo</code></h4>
+  <table>
+    <tr><th>Columna</th><th>Tipo</th><th>Restricción</th><th>Descripción</th></tr>
+    <tr><td>id_equipo</td><td>SERIAL</td><td>PK</td><td>Identificador único del equipo</td></tr>
+    <tr><td>jugador1_id</td><td>INT</td><td>FK jugador</td><td>Primer jugador del equipo</td></tr>
+    <tr><td>jugador2_id</td><td>INT</td><td>FK jugador</td><td>Segundo jugador del equipo</td></tr>
+    <tr><td>nombre_equipo</td><td>VARCHAR(100)</td><td>NOT NULL</td><td>Nombre del equipo (generado automáticamente: "Apellido1/Apellido2")</td></tr>
+  </table>
+
+  <h4>Tabla: <code>inscripcion</code></h4>
+  <table>
+    <tr><th>Columna</th><th>Tipo</th><th>Restricción</th><th>Descripción</th></tr>
+    <tr><td>id_inscripcion</td><td>SERIAL</td><td>PK</td><td>Identificador único de la inscripción</td></tr>
+    <tr><td>id_equipo</td><td>INT</td><td>FK equipo ON DELETE CASCADE</td><td>Equipo inscripto</td></tr>
+    <tr><td>id_torneo</td><td>INT</td><td>FK torneo ON DELETE CASCADE</td><td>Torneo en el que se inscribe el equipo</td></tr>
+    <tr><td>created_at</td><td>TIMESTAMP</td><td>DEFAULT NOW()</td><td>Fecha y hora de inscripción</td></tr>
+  </table>
+
+  <h4>Tabla: <code>grupos</code></h4>
+  <table>
+    <tr><th>Columna</th><th>Tipo</th><th>Restricción</th><th>Descripción</th></tr>
+    <tr><td>id_grupo</td><td>SERIAL</td><td>PK</td><td>Identificador único del grupo</td></tr>
+    <tr><td>id_torneo</td><td>INT</td><td>FK torneo ON DELETE CASCADE</td><td>Torneo al que pertenece el grupo</td></tr>
+    <tr><td>nombre</td><td>VARCHAR(50)</td><td>NOT NULL</td><td>Nombre del grupo (Ej: "Grupo A")</td></tr>
+  </table>
+
+  <h4>Tabla: <code>equipos_grupo</code></h4>
+  <table>
+    <tr><th>Columna</th><th>Tipo</th><th>Restricción</th><th>Descripción</th></tr>
+    <tr><td>id</td><td>SERIAL</td><td>PK</td><td>Identificador único del registro</td></tr>
+    <tr><td>grupo_id</td><td>INT</td><td>FK grupos ON DELETE CASCADE</td><td>Grupo al que pertenece el equipo</td></tr>
+    <tr><td>equipo_id</td><td>INT</td><td>FK equipo ON DELETE CASCADE</td><td>Equipo dentro del grupo</td></tr>
+    <tr><td>puntos</td><td>INT</td><td>DEFAULT 0</td><td>Puntos acumulados en la fase de grupos</td></tr>
+    <tr><td>partidos_jugados</td><td>INT</td><td>DEFAULT 0</td><td>Cantidad de partidos jugados</td></tr>
+    <tr><td>sets_favor</td><td>INT</td><td>DEFAULT 0</td><td>Sets ganados en la fase de grupos</td></tr>
+    <tr><td>sets_contra</td><td>INT</td><td>DEFAULT 0</td><td>Sets perdidos en la fase de grupos</td></tr>
+    <tr><td>games_favor</td><td>INT</td><td>DEFAULT 0</td><td>Games ganados en la fase de grupos</td></tr>
+    <tr><td>games_contra</td><td>INT</td><td>DEFAULT 0</td><td>Games perdidos en la fase de grupos</td></tr>
+  </table>
+
+  <h4>Tabla: <code>partidos_grupo</code></h4>
+  <table>
+    <tr><th>Columna</th><th>Tipo</th><th>Restricción</th><th>Descripción</th></tr>
+    <tr><td>id</td><td>SERIAL</td><td>PK</td><td>Identificador único del partido</td></tr>
+    <tr><td>grupo_id</td><td>INT</td><td>FK grupos ON DELETE CASCADE</td><td>Grupo al que pertenece el partido</td></tr>
+    <tr><td>equipo1_id</td><td>INT</td><td>FK equipo</td><td>Primer equipo del partido</td></tr>
+    <tr><td>equipo2_id</td><td>INT</td><td>FK equipo</td><td>Segundo equipo del partido</td></tr>
+    <tr><td>set1_equipo1 / set1_equipo2</td><td>INT</td><td>NULL</td><td>Games del primer set para cada equipo</td></tr>
+    <tr><td>set2_equipo1 / set2_equipo2</td><td>INT</td><td>NULL</td><td>Games del segundo set para cada equipo</td></tr>
+    <tr><td>set3_equipo1 / set3_equipo2</td><td>INT</td><td>NULL</td><td>Games del tercer set (desempate), puede ser NULL</td></tr>
+    <tr><td>fecha</td><td>TIMESTAMP</td><td>NULL</td><td>Fecha y hora programada del partido (torneos liga)</td></tr>
+    <tr><td>estado</td><td>VARCHAR(20)</td><td>CHECK</td><td>'no_iniciado', 'iniciado' o 'finalizado'</td></tr>
+  </table>
+
+  <h4>Tabla: <code>partidos_llave</code></h4>
+  <table>
+    <tr><th>Columna</th><th>Tipo</th><th>Restricción</th><th>Descripción</th></tr>
+    <tr><td>id</td><td>SERIAL</td><td>PK</td><td>Identificador único del partido de playoff</td></tr>
+    <tr><td>id_torneo</td><td>INT</td><td>FK torneo ON DELETE CASCADE</td><td>Torneo al que pertenece</td></tr>
+    <tr><td>ronda</td><td>VARCHAR(20)</td><td>NOT NULL</td><td>'OCTAVOS', 'CUARTOS', 'SEMIS' o 'FINAL'</td></tr>
+    <tr><td>orden</td><td>INT</td><td>NOT NULL</td><td>Posición del cruce en el bracket (para renderizado visual)</td></tr>
+    <tr><td>equipo1_id / equipo2_id</td><td>INT</td><td>FK equipo</td><td>Equipos enfrentados (pueden ser NULL si aún no avanzó el ganador)</td></tr>
+    <tr><td>set1..set3 por equipo</td><td>INT</td><td>NULL</td><td>Resultados de cada set</td></tr>
+    <tr><td>estado</td><td>VARCHAR(20)</td><td>CHECK</td><td>'no_iniciado', 'iniciado' o 'finalizado'</td></tr>
+    <tr><td>ganador_id</td><td>INT</td><td>FK equipo</td><td>Equipo ganador del cruce</td></tr>
+    <tr><td>next_match_id</td><td>INT</td><td>Self-referencial</td><td>ID del partido al que avanza el ganador</td></tr>
+    <tr><td>next_slot</td><td>INT</td><td>1 o 2</td><td>Posición (equipo1 o equipo2) en el siguiente partido</td></tr>
+  </table>
+
+  <h4>Tabla: <code>ranking_jugador</code></h4>
+  <table>
+    <tr><th>Columna</th><th>Tipo</th><th>Restricción</th><th>Descripción</th></tr>
+    <tr><td>id</td><td>SERIAL</td><td>PK</td><td>Identificador único del registro de ranking</td></tr>
+    <tr><td>jugador_id</td><td>INT</td><td>FK jugador ON DELETE CASCADE</td><td>Jugador al que corresponde el puntaje</td></tr>
+    <tr><td>nombre / apellido</td><td>VARCHAR(100)</td><td>NOT NULL</td><td>Nombre y apellido del jugador (desnormalizado para lectura rápida)</td></tr>
+    <tr><td>ultima_pareja</td><td>VARCHAR(150)</td><td>NULL</td><td>Nombre del último compañero de equipo</td></tr>
+    <tr><td>torneo_participado</td><td>VARCHAR(150)</td><td>NULL</td><td>Nombre del torneo en el que se obtuvieron los puntos</td></tr>
+    <tr><td>fase_llegada</td><td>VARCHAR(50)</td><td>NULL</td><td>Fase alcanzada en ese torneo (Ej: "FINAL", "SEMIS")</td></tr>
+    <tr><td>puntos</td><td>INT</td><td>NOT NULL, DEFAULT 0</td><td>Puntos obtenidos en ese torneo</td></tr>
+    <tr><td>categoria</td><td>VARCHAR(50)</td><td>NOT NULL</td><td>Valor numérico de la categoría del torneo (INT, no el id_categoria)</td></tr>
+  </table>
+
+  <h4>Tabla: <code>audit_log_ingresos</code></h4>
+  <table>
+    <tr><th>Columna</th><th>Tipo</th><th>Restricción</th><th>Descripción</th></tr>
+    <tr><td>id</td><td>SERIAL</td><td>PK</td><td>Identificador único del log</td></tr>
+    <tr><td>jugador_id</td><td>INT</td><td>NULL</td><td>ID del jugador (NULL si el usuario no existe)</td></tr>
+    <tr><td>nombre / apellido</td><td>VARCHAR(100)</td><td>NULL</td><td>Nombre del jugador que intentó ingresar</td></tr>
+    <tr><td>ip</td><td>VARCHAR(50)</td><td>NULL</td><td>Dirección IP del cliente</td></tr>
+    <tr><td>user_agent</td><td>TEXT</td><td>NULL</td><td>Agente de usuario del navegador</td></tr>
+    <tr><td>exitoso</td><td>BOOLEAN</td><td>DEFAULT FALSE</td><td>Indica si el intento de ingreso fue exitoso</td></tr>
+    <tr><td>motivo</td><td>TEXT</td><td>NULL</td><td>Descripción del resultado (Ej: "Contraseña incorrecta")</td></tr>
+    <tr><td>timestamp</td><td>TIMESTAMP</td><td>DEFAULT NOW()</td><td>Fecha y hora del intento de ingreso</td></tr>
+  </table>
+
+  <h4>Tabla de Puntos de Ranking por Fase</h4>
+  <table class="table-center">
+    <tr><th>Fase Alcanzada</th><th>Puntos Obtenidos</th></tr>
+    <tr><td>Campeón (Final ganada)</td><td>2000</td></tr>
+    <tr><td>Subcampeón (Final perdida)</td><td>1200</td></tr>
+    <tr><td>Semifinal</td><td>720</td></tr>
+    <tr><td>Cuartos de Final</td><td>360</td></tr>
+    <tr><td>Octavos de Final</td><td>180</td></tr>
+    <tr><td>Fase de Grupos (eliminado)</td><td>0</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     SECCIÓN 10 — ESPECIFICACIONES DEL SISTEMA
+═══════════════════════════════════════════════════ -->
+<div class="page">
+  <h2>10. Especificaciones del Sistema</h2>
+
+  <h3>10.1 Despliegue</h3>
+  <p>
+    El sistema se despliega mediante <strong>Docker Compose</strong>, orquestando tres contenedores
+    independientes que se comunican a través de una red interna de Docker:
+  </p>
+  <table>
+    <tr><th>Contenedor</th><th>Imagen Base</th><th>Puerto Expuesto</th><th>Descripción</th></tr>
+    <tr><td><strong>frontend</strong></td><td>node:18-alpine</td><td>5173</td><td>Servidor de desarrollo React (Vite). Sirve la interfaz de usuario.</td></tr>
+    <tr><td><strong>node-backend</strong></td><td>node:18-alpine</td><td>3000</td><td>API REST Express. Procesa todas las solicitudes del frontend y se conecta a la BD.</td></tr>
+    <tr><td><strong>postgres</strong></td><td>postgres:14</td><td>5432 (interno)</td><td>Base de datos PostgreSQL. Solo accesible internamente por el backend.</td></tr>
+  </table>
+
+  <p>El archivo <code>docker-compose.yml</code> define los servicios, volúmenes persistentes para la base de datos y las variables de entorno necesarias:</p>
+<pre>version: '3.8'
+services:
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: procup3
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  node-backend:
+    build: ./backend
+    ports: ["3000:3000"]
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/procup3
+      JWT_SECRET: &lt;secreto_seguro&gt;
+    depends_on: [postgres]
+
+  frontend:
+    build: ./frontend
+    ports: ["5173:5173"]
+    environment:
+      REACT_APP_API_URL: http://localhost:3000/api
+    depends_on: [node-backend]
+
+volumes:
+  pgdata:</pre>
+
+  <p>
+    Para levantar el sistema en un entorno nuevo, basta con ejecutar:
+    <code>docker compose up --build</code>. La base de datos se inicializa automáticamente
+    con el script <code>procup3.sql</code> incluido en el repositorio.
+  </p>
+
+  <h3>10.2 Hardware Mínimo y Óptimo</h3>
+  <table>
+    <tr><th>Componente</th><th>Mínimo</th><th>Óptimo</th></tr>
+    <tr><td>Procesador</td><td>2 núcleos, 1.5 GHz</td><td>4 núcleos, 2.5 GHz o superior</td></tr>
+    <tr><td>Memoria RAM</td><td>2 GB</td><td>4 GB o más</td></tr>
+    <tr><td>Almacenamiento</td><td>10 GB libres</td><td>20 GB o más (para imágenes Docker y datos)</td></tr>
+    <tr><td>Red</td><td>Conexión a internet estable</td><td>Conexión a internet de banda ancha</td></tr>
+    <tr><td>Sistema Operativo</td><td>Windows 10, macOS 11, Ubuntu 20.04</td><td>Windows 11, macOS 13, Ubuntu 22.04</td></tr>
+  </table>
+
+  <p>Para el servidor de producción (despliegue en la nube):</p>
+  <table>
+    <tr><th>Componente</th><th>Mínimo</th><th>Óptimo</th></tr>
+    <tr><td>CPU (VPS/Cloud)</td><td>1 vCPU</td><td>2 vCPU</td></tr>
+    <tr><td>RAM</td><td>1 GB</td><td>2 GB</td></tr>
+    <tr><td>Almacenamiento</td><td>20 GB SSD</td><td>40 GB SSD</td></tr>
+    <tr><td>Ancho de banda</td><td>1 TB/mes</td><td>Sin límite</td></tr>
+  </table>
+</div>
+
+<div class="page">
+  <h3>10.3 Software de Base y Aplicación</h3>
+
+  <h4>Software de Base (Entorno de Ejecución)</h4>
+  <table>
+    <tr><th>Software</th><th>Versión</th><th>Rol en el Sistema</th></tr>
+    <tr><td>Docker Desktop</td><td>24.x o superior</td><td>Orquestación de contenedores</td></tr>
+    <tr><td>Docker Compose</td><td>2.x</td><td>Definición y gestión de servicios multi-contenedor</td></tr>
+    <tr><td>Node.js</td><td>18 LTS</td><td>Entorno de ejecución del servidor backend</td></tr>
+    <tr><td>PostgreSQL</td><td>14</td><td>Sistema de gestión de base de datos relacional</td></tr>
+    <tr><td>npm</td><td>9.x</td><td>Gestor de paquetes para frontend y backend</td></tr>
+  </table>
+
+  <h4>Librerías y Frameworks del Backend</h4>
+  <table>
+    <tr><th>Paquete</th><th>Versión</th><th>Función</th></tr>
+    <tr><td>Express</td><td>5.x</td><td>Framework HTTP para la API REST</td></tr>
+    <tr><td>pg (node-postgres)</td><td>8.x</td><td>Conexión y consultas a PostgreSQL</td></tr>
+    <tr><td>jsonwebtoken</td><td>9.x</td><td>Generación y validación de tokens JWT</td></tr>
+    <tr><td>bcrypt</td><td>6.x</td><td>Hash de contraseñas</td></tr>
+    <tr><td>resend</td><td>6.x</td><td>Envío de emails transaccionales (notificaciones)</td></tr>
+    <tr><td>multer</td><td>2.x</td><td>Manejo de carga de archivos (fotos de perfil)</td></tr>
+    <tr><td>cors</td><td>2.x</td><td>Habilitación de CORS para comunicación frontend-backend</td></tr>
+    <tr><td>dotenv</td><td>16.x</td><td>Carga de variables de entorno desde archivo .env</td></tr>
+    <tr><td>node-cron</td><td>4.x</td><td>Tarea programada para envío de recordatorios 24h antes del torneo</td></tr>
+  </table>
+
+  <h4>Librerías y Frameworks del Frontend</h4>
+  <table>
+    <tr><th>Paquete</th><th>Versión</th><th>Función</th></tr>
+    <tr><td>React</td><td>19.x</td><td>Librería principal de interfaz de usuario</td></tr>
+    <tr><td>React Router DOM</td><td>7.x</td><td>Enrutamiento del lado del cliente (SPA)</td></tr>
+    <tr><td>Axios</td><td>1.x</td><td>Cliente HTTP para llamadas a la API REST</td></tr>
+    <tr><td>recharts</td><td>3.x</td><td>Gráficos y visualizaciones de datos</td></tr>
+    <tr><td>lucide-react</td><td>0.x</td><td>Íconos SVG para la interfaz de usuario</td></tr>
+    <tr><td>react-scripts (CRA)</td><td>5.x</td><td>Bundler y servidor de desarrollo (Create React App)</td></tr>
+  </table>
+
+  <h3>10.4 Seguridad y Auditoría</h3>
+
+  <h4>Autenticación y Autorización</h4>
+  <table>
+    <tr><th>Mecanismo</th><th>Descripción</th></tr>
+    <tr><td>Hash de contraseñas (bcrypt)</td><td>Las contraseñas nunca se almacenan en texto plano. Se utiliza bcrypt con 10 rounds de salt para garantizar que incluso accesos directos a la base de datos no expongan credenciales.</td></tr>
+    <tr><td>Tokens JWT</td><td>Al autenticarse, el servidor emite un JSON Web Token firmado con clave secreta (HS256). El token tiene expiración de 6 horas y contiene el rol del usuario para control de acceso.</td></tr>
+    <tr><td>Middleware de autorización</td><td>Todas las rutas del panel administrativo verifican la validez del JWT y el rol del usuario antes de procesar cualquier solicitud. Las rutas de solo lectura son accesibles sin autenticación.</td></tr>
+    <tr><td>Control de roles</td><td>El sistema implementa dos roles: <strong>organizador</strong> (acceso completo al panel de administración) y <strong>jugador</strong> (acceso a inscripciones y consulta de sus datos). Los espectadores no requieren autenticación.</td></tr>
+  </table>
+
+  <h4>Auditoría del Sistema</h4>
+  <p>
+    El sistema registra automáticamente todos los intentos de inicio de sesión en la tabla
+    <code>audit_log_ingresos</code>, tanto exitosos como fallidos. Cada registro incluye:
+  </p>
+  <ul>
+    <li>Identidad del usuario que intentó ingresar (si existe en la base de datos)</li>
+    <li>Dirección IP del cliente (soporta proxies mediante cabecera <code>X-Forwarded-For</code>)</li>
+    <li>Agente de usuario del navegador</li>
+    <li>Resultado del intento (exitoso/fallido) y motivo del fallo</li>
+    <li>Marca temporal con zona horaria del servidor</li>
+  </ul>
+  <p>
+    Adicionalmente, los logs se exportan en formatos <code>CSV</code> y <code>JSONL</code>
+    en la carpeta <code>/logs</code> del proyecto para análisis externo.
+  </p>
+
+  <h4>Consideraciones de Seguridad Adicionales</h4>
+  <table>
+    <tr><th>Aspecto</th><th>Implementación</th></tr>
+    <tr><td>Variables de entorno</td><td>Las claves secretas (JWT_SECRET, credenciales de base de datos, API key de Resend) se gestionan mediante archivo <code>.env</code>, excluido del repositorio git mediante <code>.gitignore</code>.</td></tr>
+    <tr><td>CORS</td><td>El backend configura CORS para aceptar solicitudes únicamente del origen del frontend configurado, evitando peticiones desde dominios no autorizados.</td></tr>
+    <tr><td>Integridad de datos</td><td>La base de datos implementa restricciones de clave foránea con eliminación en cascada donde corresponde, garantizando consistencia de los datos ante operaciones de borrado.</td></tr>
+    <tr><td>Validaciones</td><td>Los datos de entrada se validan tanto en el frontend (campos obligatorios, formatos) como en el backend (tipos, restricciones de negocio) antes de persistirse.</td></tr>
+    <tr><td>Acceso a base de datos</td><td>El puerto de PostgreSQL (5432) no se expone externamente en el docker-compose; solo el backend puede acceder a él a través de la red interna de Docker.</td></tr>
+  </table>
+</div>
+
+</body>
+</html>
