@@ -77,7 +77,7 @@ export default function CargarResultado() {
   // =======================
   useEffect(() => {
     axios
-      .get(`${API}/torneos`)
+      .get(`/api/torneos`)
       .then((res) => setTorneos(res.data || []))
       .catch(() => setTorneos([]));
   }, [API]);
@@ -97,7 +97,7 @@ export default function CargarResultado() {
 
     // --- GRUPOS ---
     axios
-      .get(`${API}/torneos/${torneoId}/grupos`)
+      .get(`/api/torneos/${torneoId}/grupos`)
       .then((res) => {
         const data = res.data?.grupos || [];
         setGrupos(data);
@@ -129,7 +129,7 @@ export default function CargarResultado() {
 
         // ⭐ GENERAR PLAYOFF AUTOMÁTICO CUANDO SE COMPLETAN
         if (completos) {
-          axios.post(`${API}/torneos/${torneoId}/playoff`).catch(() => { });
+          axios.post(`/api/torneos/${torneoId}/playoff`).catch(() => { });
         }
       })
       .catch(() => {
@@ -142,7 +142,7 @@ export default function CargarResultado() {
     setLoadingPO(true);
     setErrorPO("");
     axios
-      .get(`${API}/torneos/${torneoId}/playoff`)
+      .get(`/api/torneos/${torneoId}/playoff`)
       .then((res) => {
         const r = res.data?.rondas || {};
         setRondasPO(r);
@@ -205,7 +205,7 @@ export default function CargarResultado() {
       await Promise.all(
         partidos.map((p) => {
           const data = resultadosGrupos[p.id] || {};
-          return axios.put(`${API}/partidos-grupo/${p.id}`, {
+          return axios.put(`/api/partidos-grupo/${p.id}`, {
             set1_equipo1: n(data.set1_equipo1),
             set1_equipo2: n(data.set1_equipo2),
             set2_equipo1: n(data.set2_equipo1),
@@ -216,7 +216,7 @@ export default function CargarResultado() {
         })
       );
 
-      const res = await axios.get(`${API}/torneos/${torneoId}/grupos`);
+      const res = await axios.get(`/api/torneos/${torneoId}/grupos`);
       const dataG = res.data?.grupos || [];
       setGrupos(dataG);
 
@@ -245,7 +245,7 @@ export default function CargarResultado() {
 
       if (completos) {
         try {
-          await axios.post(`${API}/torneos/${torneoId}/playoff`);
+          await axios.post(`/api/torneos/${torneoId}/playoff`);
         } catch (playoffErr) {
           if (playoffErr?.response?.status !== 409) throw playoffErr;
         }
@@ -296,7 +296,7 @@ export default function CargarResultado() {
       const responses = await Promise.all(
         matches.map((m) => {
           const data = resultadosPO[m.id] || {};
-          return axios.patch(`${API}/partidos-llave/${m.id}/resultado`, {
+          return axios.patch(`/api/partidos-llave/${m.id}/resultado`, {
             set1_equipo1: n(data.set1_equipo1),
             set1_equipo2: n(data.set1_equipo2),
             set2_equipo1: n(data.set2_equipo1),
@@ -315,7 +315,7 @@ export default function CargarResultado() {
         setTimeout(() => setRankingAutoMsg(""), 8000);
       }
 
-      const res = await axios.get(`${API}/torneos/${torneoId}/playoff`);
+      const res = await axios.get(`/api/torneos/${torneoId}/playoff`);
       const r = res.data?.rondas || {};
       setRondasPO(r);
 
@@ -456,7 +456,7 @@ export default function CargarResultado() {
             title="Usá este botón solo si el ranking no se actualizó automáticamente al finalizar la Final"
             onClick={async () => {
               try {
-                const res = await axios.post(`${API}/torneos/${torneoId}/generar-ranking`);
+                const res = await axios.post(`/api/torneos/${torneoId}/generar-ranking`);
                 alert(`Ranking forzado: ${res.data.jugadores_procesados} jugadores procesados.`);
               } catch (err) {
                 console.error(err);

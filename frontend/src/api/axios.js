@@ -3,7 +3,7 @@ import axios from "axios";
 
 // ✅ crea una instancia con baseURL y timeout
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "http://localhost:3000/api",
+  baseURL: (process.env.REACT_APP_API_URL || "http://localhost:3000") + "/api",
   timeout: 10000,
 });
 
