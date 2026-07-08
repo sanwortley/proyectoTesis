@@ -24,7 +24,7 @@ function Registro() {
 
   // 🔥 Cargar categorías reales
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/categorias`)
+    axios.get(`/api/categorias`)
       .then(res => setCategorias(res.data))
       .catch(() => setError('No se pudieron cargar las categorías'));
   }, []);
@@ -62,7 +62,7 @@ function Registro() {
     }
 
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/registro`, form);
+      await axios.post(`/api/registro`, form);
       setMensaje('Registro exitoso. Redirigiendo al login...');
 
       setTimeout(() => navigate('/'), 2000);

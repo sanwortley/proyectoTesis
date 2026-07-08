@@ -36,7 +36,7 @@ function CrearTorneo() {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/categorias`)
+      .get(`/api/categorias`)
       .then((res) => setCategorias(res.data))
       .catch(() => setError('Error al cargar categorías'));
 
@@ -76,7 +76,7 @@ function CrearTorneo() {
 
     try {
       // 👇 YA NO PEDIMOS /torneos/nuevo-id, lo genera la DB
-      await axios.post(`${process.env.REACT_APP_API_URL}/torneos`, {
+      await axios.post(`/api/torneos`, {
         nombre_torneo,
         fecha_inicio: fechaInicio,
         fecha_fin: modalidad === 'liga' ? null : fechaFin,
@@ -126,7 +126,7 @@ function CrearTorneo() {
 
   const obtenerTorneos = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/torneos`);
+      const res = await axios.get(`/api/torneos`);
       const todos = res.data;
       const hoy = new Date();
 
@@ -171,7 +171,7 @@ function CrearTorneo() {
   const obtenerEquipos = async (id_torneo) => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/torneos/${id_torneo}/equipos`
+        `/api/torneos/${id_torneo}/equipos`
       );
       setEquiposPorTorneo((prev) => ({
         ...prev,
@@ -184,7 +184,7 @@ function CrearTorneo() {
 
   const eliminarEquipo = async (id_equipo, id_torneo) => {
     try {
-      const check = await axios.get(`${process.env.REACT_APP_API_URL}/equipos/${id_equipo}/tiene-partidos`);
+      const check = await axios.get(`/api/equipos/${id_equipo}/tiene-partidos`);
       const tienePartidos = check.data?.tienePartidos;
 
       const mensaje = tienePartidos
@@ -193,7 +193,7 @@ function CrearTorneo() {
 
       if (!window.confirm(mensaje)) return;
 
-      await axios.delete(`${process.env.REACT_APP_API_URL}/equipos/${id_equipo}`);
+      await axios.delete(`/api/equipos/${id_equipo}`);
       await obtenerTorneos();
       if (id_torneo) await obtenerEquipos(id_torneo);
     } catch (err) {
@@ -205,7 +205,7 @@ function CrearTorneo() {
   const eliminarTorneo = async (id_torneo) => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_API_URL}/torneos/${id_torneo}`
+        `/api/torneos/${id_torneo}`
       );
       alert('Torneo eliminado');
       obtenerTorneos();
@@ -249,7 +249,7 @@ function CrearTorneo() {
       };
 
       await axios.put(
-        `${process.env.REACT_APP_API_URL}/torneos/${editando.id_torneo}`,
+        `/api/torneos/${editando.id_torneo}`,
         payload
       );
       setEditando(null);
@@ -273,7 +273,7 @@ function CrearTorneo() {
   const generarGrupos = async (idTorneo) => {
     try {
       const res = await fetch(
-        `${process.env.REACT_APP_API_URL}/torneos/${idTorneo}/generar-grupos`,
+        `/api/torneos/${idTorneo}/generar-grupos`,
         { method: 'POST' }
       );
 
@@ -295,7 +295,7 @@ function CrearTorneo() {
 
         // Borrar grupos existentes
         const delRes = await fetch(
-          `${process.env.REACT_APP_API_URL}/torneos/${idTorneo}/grupos`,
+          `/api/torneos/${idTorneo}/grupos`,
           { method: 'DELETE' }
         );
         if (!delRes.ok) {
@@ -305,7 +305,7 @@ function CrearTorneo() {
 
         // Regenerar
         const regenRes = await fetch(
-          `${process.env.REACT_APP_API_URL}/torneos/${idTorneo}/generar-grupos`,
+          `/api/torneos/${idTorneo}/generar-grupos`,
           { method: 'POST' }
         );
         if (regenRes.ok) {
