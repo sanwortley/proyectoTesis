@@ -7,7 +7,7 @@ RUN npm install
 
 COPY . .
 
-ARG REACT_APP_API_URL
+ARG REACT_APP_API_URL=https://proyectotesis-production-b7ce.up.railway.app
 ENV REACT_APP_API_URL=$REACT_APP_API_URL
 
 RUN npm run build
