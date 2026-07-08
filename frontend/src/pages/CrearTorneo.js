@@ -145,8 +145,8 @@ function CrearTorneo() {
       });
 
       const torneosValidos = todos.filter((t) => {
-        const fin = new Date(t.fecha_fin);
-        if (fin < hoy) return false; // finalizados van aparte
+        const fin = t.fecha_fin ? new Date(t.fecha_fin) : null;
+        if (fin && fin < hoy) return false; // finalizados van aparte
         const inicio = new Date(t.fecha_inicio);
         const diffDias = (hoy - inicio) / (1000 * 60 * 60 * 24);
         const esReciente = diffDias <= 7;
