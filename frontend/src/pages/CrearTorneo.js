@@ -271,57 +271,45 @@ function CrearTorneo() {
   };
 
   const generarGrupos = async (idTorneo) => {
+    const token = localStorage.getItem('token');
+    const headers = { Authorization: `Bearer ${token}` };
+
     try {
-      const res = await fetch(
-        `/api/torneos/${idTorneo}/generar-grupos`,
-        { method: 'POST' }
-      );
-
-      if (res.ok) {
-        setTorneoConGrupos(idTorneo);
-        setMensajeGrupos('Grupos generados correctamente');
-        obtenerTorneos();
-        return;
-      }
-
-      const data = await res.json().catch(() => ({}));
+      await axios.post(`/api/torneos/${idTorneo}/generar-grupos`, {}, { headers });
+      setTorneoConGrupos(idTorneo);
+      setMensajeGrupos('Grupos generados correctamente');
+      obtenerTorneos();
+    } catch (err) {
+      const status = err.response?.status;
+      const data = err.response?.data;
 
       // Grupos ya existen → ofrecer regenerar
-      if (res.status === 400 && data.error?.includes('ya fueron generados')) {
+      if (status === 400 && data?.error?.includes('ya fueron generados')) {
         const confirmar = window.confirm(
           '⚠️ Ya existen grupos para este torneo.\n\nSi regenerás, se borrarán todos los resultados de partidos de grupos y playoff.\n\n¿Confirmás la regeneración?'
         );
         if (!confirmar) return;
 
-        // Borrar grupos existentes
-        const delRes = await fetch(
-          `/api/torneos/${idTorneo}/grupos`,
-          { method: 'DELETE' }
-        );
-        if (!delRes.ok) {
+        try {
+          await axios.delete(`/api/torneos/${idTorneo}/grupos`, { headers });
+        } catch {
           setMensajeGrupos('Error al eliminar los grupos existentes');
           return;
         }
 
-        // Regenerar
-        const regenRes = await fetch(
-          `/api/torneos/${idTorneo}/generar-grupos`,
-          { method: 'POST' }
-        );
-        if (regenRes.ok) {
+        try {
+          await axios.post(`/api/torneos/${idTorneo}/generar-grupos`, {}, { headers });
           setTorneoConGrupos(idTorneo);
           setMensajeGrupos('Grupos regenerados correctamente');
           obtenerTorneos();
-        } else {
+        } catch {
           setMensajeGrupos('Error al regenerar grupos');
         }
         return;
       }
 
-      setMensajeGrupos(data.error || 'Error al generar grupos');
-    } catch (err) {
       console.error('Error generando grupos:', err);
-      setMensajeGrupos('Ocurrió un error inesperado');
+      setMensajeGrupos(data?.error || 'Error al generar grupos');
     }
   };
 
@@ -548,7 +536,7 @@ function CrearTorneo() {
                       }}>Finalizado</span>
                       <h3 style={{ color: '#bdc3c7', fontSize: '1.2rem' }}>{t.nombre_torneo}</h3>
                       <p style={{ fontSize: '0.9rem' }}><strong>Inicio:</strong> {new Date(t.fecha_inicio).toLocaleDateString()}</p>
-                      <p style={{ fontSize: '0.9rem' }}><strong>Fin:</strong> {new Date(t.fecha_fin).toLocaleDateString()}</p>
+                      <p style={{ fontSize: '0.9rem' }}><strong>Fin:</strong> {t.fecha_fin ? new Date(t.fecha_fin).toLocaleDateString('es-ES', { timeZone: 'UTC' }) : 'En curso'}</p>
                       <p style={{ fontSize: '0.9rem' }}>
                         <strong>Formato:</strong>{' '}
                         {t.formato_categoria === 'suma'
@@ -613,7 +601,7 @@ function CrearTorneo() {
                 </p>
                 <p>
                   <strong>Fin:</strong>{' '}
-                  {new Date(t.fecha_fin).toLocaleDateString()}
+                  {t.fecha_fin ? new Date(t.fecha_fin).toLocaleDateString('es-ES', { timeZone: 'UTC' }) : 'En curso'}
                 </p>
                 <p>
                   <strong>Cierre inscripción:</strong>{' '}

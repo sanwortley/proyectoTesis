@@ -206,7 +206,7 @@ export default function Torneos() {
   const hayTorneo = Boolean(torneoActual);
 
 
-  const torneoFinalizado = torneoActual
+  const torneoFinalizado = torneoActual && torneoActual.fecha_fin
     ? new Date(torneoActual.fecha_fin) < new Date()
     : false;
 
