@@ -1037,18 +1037,15 @@ router.post('/inscripcion', async (req, res) => {
     const j1Data = resJ1.rows[0];
     const j2Data = resJ2.rows[0];
 
-    // Formato: ApodoApellido o solo Apellido
-    const getNombreDisplay = (j) => {
-      if (j.apodo) return `${j.apodo}${j.apellido_jugador}`;
-      return j.apellido_jugador;
-    };
+    // Formato: apodo si tiene, sino apellido (más único que nombre)
+    const getNombreDisplay = (j) => j.apodo || j.apellido_jugador;
 
     const n1 = getNombreDisplay(j1Data);
     const n2 = getNombreDisplay(j2Data);
 
     // Ordenar alfabéticamente para evitar duplicados A/B vs B/A
     const [name1, name2] = [n1, n2].sort();
-    const nombre_equipo = `${name1}/${name2}`;
+    const nombre_equipo = `${name1} / ${name2}`;
 
     const nuevoEquipo = await client.query(
       `INSERT INTO equipo (jugador1_id, jugador2_id, nombre_equipo)
