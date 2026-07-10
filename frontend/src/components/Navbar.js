@@ -20,15 +20,16 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    const updateHeight = () => {
-      if (navRef.current) {
-        const h = navRef.current.getBoundingClientRect().height;
-        document.documentElement.style.setProperty('--navbar-height', `${h}px`);
-      }
-    };
-    updateHeight();
-    window.addEventListener('resize', updateHeight, { passive: true });
-    return () => window.removeEventListener('resize', updateHeight);
+    const el = navRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(() => {
+      document.documentElement.style.setProperty(
+        '--navbar-height',
+        `${el.getBoundingClientRect().height}px`
+      );
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   const auth = useAuth();
