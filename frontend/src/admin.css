@@ -310,7 +310,9 @@
 .modal-scroll-area {
     padding: 30px 40px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     flex: 1;
+    overscroll-behavior: contain;
 }
 
 /* Custom Scrollbar for Modal (Gold Theme) */
