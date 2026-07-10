@@ -31,6 +31,7 @@ function CrearTorneo() {
   const [formEdit, setFormEdit] = useState({});
   const [mensajeGrupos, setMensajeGrupos] = useState('');
   const [torneoConGrupos, setTorneoConGrupos] = useState(null);
+  const [confirmRegenerar, setConfirmRegenerar] = useState(null); // id del torneo pendiente de regenerar
 
   /* const location = useLocation(); // Eliminado por no uso */
 
@@ -283,33 +284,35 @@ function CrearTorneo() {
       const status = err.response?.status;
       const data = err.response?.data;
 
-      // Grupos ya existen → ofrecer regenerar
       if (status === 400 && data?.error?.includes('ya fueron generados')) {
-        const confirmar = window.confirm(
-          '⚠️ Ya existen grupos para este torneo.\n\nSi regenerás, se borrarán todos los resultados de partidos de grupos y playoff.\n\n¿Confirmás la regeneración?'
-        );
-        if (!confirmar) return;
-
-        try {
-          await axios.delete(`/api/torneos/${idTorneo}/grupos`, { headers });
-        } catch {
-          setMensajeGrupos('Error al eliminar los grupos existentes');
-          return;
-        }
-
-        try {
-          await axios.post(`/api/torneos/${idTorneo}/generar-grupos`, {}, { headers });
-          setTorneoConGrupos(idTorneo);
-          setMensajeGrupos('Grupos regenerados correctamente');
-          obtenerTorneos();
-        } catch {
-          setMensajeGrupos('Error al regenerar grupos');
-        }
+        setConfirmRegenerar(idTorneo); // abre el confirm propio
         return;
       }
 
       console.error('Error generando grupos:', err);
       setMensajeGrupos(data?.error || 'Error al generar grupos');
+    }
+  };
+
+  const confirmarRegenerarGrupos = async () => {
+    const idTorneo = confirmRegenerar;
+    setConfirmRegenerar(null);
+    const token = localStorage.getItem('token');
+    const headers = { Authorization: `Bearer ${token}` };
+
+    try {
+      await axios.delete(`/api/torneos/${idTorneo}/grupos`, { headers });
+    } catch {
+      setMensajeGrupos('Error al eliminar los grupos existentes');
+      return;
+    }
+    try {
+      await axios.post(`/api/torneos/${idTorneo}/generar-grupos`, {}, { headers });
+      setTorneoConGrupos(idTorneo);
+      setMensajeGrupos('Grupos regenerados correctamente');
+      obtenerTorneos();
+    } catch {
+      setMensajeGrupos('Error al regenerar grupos');
     }
   };
 
@@ -859,6 +862,26 @@ function CrearTorneo() {
             <div className="modal-actions">
               <button className="btn-save" onClick={editarTorneo}>Guardar Cambios</button>
               <button className="btn-cancel" onClick={() => setEditando(null)}>Cancelar</button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Confirm regenerar grupos — reemplaza window.confirm() que iOS bloquea */}
+      {confirmRegenerar && ReactDOM.createPortal(
+        <div className="modal-overlay" onClick={() => setConfirmRegenerar(null)}>
+          <div className="modal-content premium-modal" onClick={e => e.stopPropagation()}
+            style={{ maxWidth: 360, padding: 0 }}>
+            <h3 style={{ fontSize: '1.1rem', padding: '20px 20px 12px' }}>⚠️ Regenerar grupos</h3>
+            <div style={{ padding: '0 24px 20px', color: '#ccc', fontSize: '0.9rem', lineHeight: 1.6 }}>
+              Ya existen grupos para este torneo.<br />
+              Si regenerás, se borrarán todos los resultados de partidos de grupos y playoff.<br /><br />
+              <strong style={{ color: '#ffd700' }}>¿Confirmás la regeneración?</strong>
+            </div>
+            <div className="modal-actions" style={{ padding: '0 24px 20px', gap: 12 }}>
+              <button className="btn-save" onClick={confirmarRegenerarGrupos}>Sí, regenerar</button>
+              <button className="btn-cancel" onClick={() => setConfirmRegenerar(null)}>Cancelar</button>
             </div>
           </div>
         </div>,
