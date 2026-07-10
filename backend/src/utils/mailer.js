@@ -4,7 +4,7 @@ const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KE
 
 // Dirección from — si tenés dominio propio: 'noreply@tudominio.com'
 // Sin dominio verificado usá: 'onboarding@resend.dev' (solo para testing a tu propio mail)
-const FROM = process.env.MAIL_FROM || 'Pro Cup Padel <onboarding@resend.dev>';
+const FROM = process.env.MAIL_FROM || 'Pro Cup Padel <noreply@procupadel.com.ar>';
 
 function formatFecha(fechaStr) {
   if (!fechaStr) return '—';
