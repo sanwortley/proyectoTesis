@@ -85,6 +85,9 @@ router.post('/registro-organizadores', async (req, res) => {
     const { rows } = await pool.query(q, [nombre_jugador, apellido_jugador, apodo, email, telefono, hashedPassword]);
     res.status(201).json({ jugador: rows[0] });
   } catch (error) {
+    if (error.code === '23505') {
+      return res.status(400).json({ error: 'El email ya está registrado' });
+    }
     console.error('Error al registrar organizador:', error);
     res.status(500).json({ error: 'No se pudo registrar el organizador' });
   }
@@ -133,6 +136,9 @@ router.post('/registro', async (req, res) => {
 
     return res.status(201).json({ jugador: rows[0] });
   } catch (error) {
+    if (error.code === '23505') {
+      return res.status(400).json({ error: 'El email ya está registrado' });
+    }
     console.error('Error al registrar jugador:', error);
     return res.status(500).json({ error: 'No se pudo registrar el jugador' });
   }
