@@ -185,6 +185,7 @@
     gap: 1rem;
     max-height: 400px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .alert-item {
