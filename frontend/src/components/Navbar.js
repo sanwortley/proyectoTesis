@@ -1,5 +1,5 @@
 // src/components/Navbar.js
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import '../style.css';
@@ -11,11 +11,24 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const navRef = useRef(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    const updateHeight = () => {
+      if (navRef.current) {
+        const h = navRef.current.getBoundingClientRect().height;
+        document.documentElement.style.setProperty('--navbar-height', `${h}px`);
+      }
+    };
+    updateHeight();
+    window.addEventListener('resize', updateHeight, { passive: true });
+    return () => window.removeEventListener('resize', updateHeight);
   }, []);
 
   const auth = useAuth();
@@ -49,7 +62,7 @@ export default function Navbar() {
   const closeMenu = () => setMenuOpen(false);
 
   return (
-    <nav className={`navbar${scrolled ? ' navbar-scrolled' : ''}`}>
+    <nav ref={navRef} className={`navbar${scrolled ? ' navbar-scrolled' : ''}`}>
       <div className="navbar-container">
         <div className="navbar-logo-container">
           <Link to={homeByRole} onClick={closeMenu}>
