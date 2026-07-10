@@ -33,8 +33,10 @@ header {
 .navbar {
   background-color: #050505;
   width: 100%;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
   border-bottom: 1px solid rgba(255, 215, 0, 0.2);
   backdrop-filter: blur(10px);
@@ -2696,7 +2698,7 @@ select:focus {
   align-items: center;
   justify-content: flex-start;
   min-height: 100vh;
-  padding-top: 30px;
+  padding-top: 100px;
   width: 100%;
   overflow-x: hidden;
   box-sizing: border-box;
@@ -2856,7 +2858,7 @@ select:focus {
 
 @media (max-width: 768px) {
   .layout-content {
-    padding-top: 8px;
+    padding-top: 80px;
   }
 
   .grupo-tarjeta {
