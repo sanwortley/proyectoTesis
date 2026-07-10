@@ -548,27 +548,47 @@
         margin-right: 3px;
     }
 
-    /* Modal ocupa toda la pantalla */
+    /* Modal en mobile: alineado arriba, compacto */
+    .modal-overlay {
+        align-items: flex-start !important;
+        padding: 12px !important;
+    }
+
     .modal-content.premium-modal {
         width: 100%;
-        max-width: calc(100vw - 40px);
-        max-height: 95vh;
+        max-width: calc(100vw - 24px);
+        max-height: calc(100vh - 24px);
         border-radius: 14px;
         box-sizing: border-box;
     }
 
     .modal-content h3 {
-        font-size: 1.3rem;
-        padding: 20px 16px 14px;
+        font-size: 1.1rem;
+        padding: 14px 16px 10px;
+        letter-spacing: 1px;
     }
 
     .modal-scroll-area {
-        padding: 16px 20px;
+        padding: 12px 16px;
     }
 
     .modal-actions {
-        padding: 16px 20px 20px;
-        gap: 12px;
+        padding: 12px 16px 16px;
+        gap: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 14px;
+    }
+
+    .form-label {
+        margin-bottom: 6px;
+        font-size: 0.78rem;
+    }
+
+    .modal-input {
+        padding: 9px 12px;
+        font-size: 0.95rem;
     }
 
     /* Buscador al 100% */
