@@ -906,9 +906,13 @@ router.post('/inscripcion', async (req, res) => {
       return res.status(400).json({ error: 'La inscripción a este torneo ya está cerrada' });
     }
 
-    // ✅ B) Bloquear si alguno ya está inscripto en OTRO torneo que se pisa por fecha (comparten al menos 1 día)
+    // ✅ B) Chequeo de conflicto de fechas según modalidad:
+    //   - Liga: bloquear si hay solapamiento de rango completo (ya que los partidos son semanales)
+    //   - Fin de semana: solo bloquear si coincide el mismo día de inicio
+    const esLiga = torneo.modalidad === 'liga';
+
     const solapado = await client.query(`
-      SELECT t2.id_torneo, t2.nombre_torneo, t2.fecha_inicio, t2.fecha_fin
+      SELECT t2.id_torneo, t2.nombre_torneo, t2.fecha_inicio, t2.fecha_fin, t2.modalidad
       FROM inscripcion i
       JOIN equipo e ON i.id_equipo = e.id_equipo
       JOIN torneo t2 ON t2.id_torneo = i.id_torneo
@@ -918,15 +922,26 @@ router.post('/inscripcion', async (req, res) => {
         $2 IN (e.jugador1_id, e.jugador2_id)
       )
       AND i.id_torneo <> $3
-      AND NOT (t2.fecha_fin < $4 OR t2.fecha_inicio > $5)
+      AND (
+        -- Si alguno de los dos torneos es liga: bloquear solapamiento completo
+        ($6 = true OR t2.modalidad = 'liga')
+        AND NOT (t2.fecha_fin < $4 OR t2.fecha_inicio > $5)
+        OR
+        -- Si ambos son fin de semana: solo bloquear si es el mismo día
+        ($6 = false AND t2.modalidad <> 'liga')
+        AND t2.fecha_inicio = $4
+      )
       LIMIT 1
-    `, [jugador1_id, jugador2_id, id_torneo, torneo.fecha_inicio, torneo.fecha_fin]);
+    `, [jugador1_id, jugador2_id, id_torneo, torneo.fecha_inicio, torneo.fecha_fin, esLiga]);
 
     if (solapado.rowCount > 0) {
       await client.query('ROLLBACK');
       const t = solapado.rows[0];
+      const esConflictoLiga = esLiga || t.modalidad === 'liga';
       return res.status(400).json({
-        error: `Alguno de los jugadores ya está inscripto en otro torneo que se pisa por fecha: ${t.nombre_torneo}`
+        error: esConflictoLiga
+          ? `Alguno de los jugadores ya está inscripto en una liga que se superpone en fechas: ${t.nombre_torneo}`
+          : `Alguno de los jugadores ya está inscripto en otro torneo el mismo día: ${t.nombre_torneo}`
       });
     }
 
