@@ -1,3 +1,13 @@
+:root {
+  --navbar-height: 100px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --navbar-height: 80px;
+  }
+}
+
 * {
   box-sizing: border-box;
 }

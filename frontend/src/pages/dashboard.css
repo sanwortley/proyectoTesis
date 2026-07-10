@@ -371,7 +371,7 @@
 /* ===== RESPONSIVE MÓVIL ===== */
 @media (max-width: 768px) {
     .dashboard-container {
-        padding: 12px;
+        padding: 20px 12px;
     }
 
     .dashboard-title {

@@ -2698,7 +2698,7 @@ select:focus {
   align-items: center;
   justify-content: flex-start;
   min-height: 100vh;
-  padding-top: 100px;
+  padding-top: var(--navbar-height);
   width: 100%;
   overflow-x: hidden;
   box-sizing: border-box;
@@ -2858,7 +2858,7 @@ select:focus {
 
 @media (max-width: 768px) {
   .layout-content {
-    padding-top: 80px;
+    padding-top: var(--navbar-height);
   }
 
   .grupo-tarjeta {

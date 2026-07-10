@@ -91,6 +91,7 @@
     min-height: 100vh;
     color: #e0e0e0;
     font-family: 'Poppins', sans-serif;
+    width: 100%;
 }
 
 /* Contenedor de página con padding controlable */
@@ -490,7 +491,7 @@
 @media (max-width: 768px) {
     /* Contenedor principal: padding reducido */
     .admin-page-container {
-        padding: 14px 12px;
+        padding: 20px 12px;
     }
 
     /* Header: título arriba, botón abajo si no entran */
