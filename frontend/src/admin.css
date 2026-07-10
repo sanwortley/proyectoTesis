@@ -290,9 +290,10 @@
     flex-direction: column;
     box-shadow: 0 0 50px rgba(255, 215, 0, 0.2);
     overflow: hidden;
+    overflow-x: hidden;
     position: relative;
     padding: 0;
-    /* Let scroll area handle padding */
+    box-sizing: border-box;
 }
 
 .modal-content h3 {
@@ -546,9 +547,11 @@
 
     /* Modal ocupa toda la pantalla */
     .modal-content.premium-modal {
-        max-width: 95vw;
+        width: 100%;
+        max-width: calc(100vw - 40px);
         max-height: 95vh;
         border-radius: 14px;
+        box-sizing: border-box;
     }
 
     .modal-content h3 {
@@ -587,6 +590,10 @@
 
     .modal-overlay {
         padding: 10px !important;
+    }
+
+    .modal-overlay .modal-content.premium-modal {
+        max-width: calc(100vw - 20px);
     }
 }
 
