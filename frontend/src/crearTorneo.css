@@ -34,6 +34,7 @@
     padding: 30px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .crear-torneo-form h2 {
@@ -59,6 +60,7 @@
 .crear-torneo-form input,
 .crear-torneo-form select {
     width: 100%;
+    max-width: 100%;
     padding: 12px;
     background-color: #1a1a1a;
     border: 1px solid #444;
@@ -68,6 +70,15 @@
     box-sizing: border-box;
     outline: none;
     transition: border-color 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+/* iOS Safari: evita que date inputs desborden */
+.crear-torneo-form input[type="date"] {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
 }
 
 .crear-torneo-form input:focus,
