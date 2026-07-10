@@ -1,5 +1,5 @@
 // src/components/Navbar.js
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import '../style.css';
@@ -10,6 +10,13 @@ export default function Navbar() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const auth = useAuth();
   const ctxUser = auth?.user ?? auth?.jugador ?? null;
@@ -42,7 +49,7 @@ export default function Navbar() {
   const closeMenu = () => setMenuOpen(false);
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar${scrolled ? ' navbar-scrolled' : ''}`}>
       <div className="navbar-container">
         <div className="navbar-logo-container">
           <Link to={homeByRole} onClick={closeMenu}>

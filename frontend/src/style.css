@@ -32,34 +32,43 @@ header {
 /* NAVBAR PREMIUM DESIGN */
 .navbar {
   background-color: #050505;
-  /* Casi negro para profundidad */
   width: 100%;
   position: sticky;
   top: 0;
   z-index: 1000;
   border-bottom: 1px solid rgba(255, 215, 0, 0.2);
-  /* Sutil borde dorado */
   backdrop-filter: blur(10px);
-  /* Efecto cristal moderno */
+  transition: box-shadow 0.3s ease;
+}
+
+.navbar-scrolled {
+  box-shadow: 0 2px 16px rgba(255, 215, 0, 0.1);
 }
 
 .navbar-container {
   max-width: 1400px;
-  /* Un poco más ancho para pantallas grandes */
   width: 92%;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 0;
+  transition: padding 0.3s ease;
+}
+
+.navbar-scrolled .navbar-container {
+  padding: 5px 0;
 }
 
 .navbar-logo-container img {
   width: 100px;
-  /* Tamaño ajustado y elegante */
   height: auto;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, width 0.3s ease, filter 0.3s ease;
   filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.3));
+}
+
+.navbar-scrolled .navbar-logo-container img {
+  width: 60px;
 }
 
 .navbar-logo-container img:hover {
