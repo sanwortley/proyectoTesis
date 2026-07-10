@@ -17,6 +17,13 @@ html, body {
   max-width: 100vw;
 }
 
+/* iOS Safari: evita zoom automático al enfocar inputs (requiere font-size >= 16px) */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
