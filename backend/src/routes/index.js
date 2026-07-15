@@ -1514,7 +1514,7 @@ router.get('/torneos/:id/grupos', async (req, res) => {
 
       const equiposRes = await client.query(
         `
-        SELECT 
+        SELECT
           eg.equipo_id,
           e.nombre_equipo,
           eg.puntos,
@@ -1530,7 +1530,12 @@ router.get('/torneos/:id/grupos', async (req, res) => {
         LEFT JOIN jugador j1 ON e.jugador1_id = j1.id_jugador
         LEFT JOIN jugador j2 ON e.jugador2_id = j2.id_jugador
         WHERE eg.grupo_id = $1
-        `,
+        ORDER BY
+          eg.puntos DESC,
+          (eg.sets_favor - eg.sets_contra) DESC,
+          (eg.games_favor - eg.games_contra) DESC,
+          eg.games_favor DESC
+`,
         [grupoId]
       );
 
