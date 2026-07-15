@@ -124,6 +124,39 @@ export default function AdminJugadores() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    // Registro organizador
+    const [isCreatingOrg, setIsCreatingOrg] = useState(false);
+    const [orgForm, setOrgForm] = useState({
+        nombre_jugador: '', apellido_jugador: '', apodo: '',
+        email: '', telefono: '', password: '', confirmar_password: '', admin_token: ''
+    });
+    const [orgError, setOrgError] = useState('');
+    const [orgSuccess, setOrgSuccess] = useState('');
+
+    const handleOrgChange = (e) => setOrgForm({ ...orgForm, [e.target.name]: e.target.value });
+
+    const handleOrgSave = async (e) => {
+        e.preventDefault();
+        setOrgError('');
+        setOrgSuccess('');
+        if (orgForm.password !== orgForm.confirmar_password) {
+            setOrgError('Las contraseñas no coinciden');
+            return;
+        }
+        try {
+            await axios.post('/api/registro-organizadores', orgForm);
+            setOrgSuccess('¡Organizador creado con éxito!');
+            setTimeout(() => {
+                setIsCreatingOrg(false);
+                setOrgForm({ nombre_jugador: '', apellido_jugador: '', apodo: '', email: '', telefono: '', password: '', confirmar_password: '', admin_token: '' });
+                setOrgSuccess('');
+                fetchData();
+            }, 1500);
+        } catch (err) {
+            setOrgError(err.response?.data?.error || 'Error al registrar organizador');
+        }
+    };
+
     const [searchTerm, setSearchTerm] = useState('');
 
     // Filtrar jugadores
@@ -143,9 +176,18 @@ export default function AdminJugadores() {
         <div className="admin-container admin-page-container">
             <div className="admin-page-header">
                 <h2 className="admin-page-title">Gestión de Jugadores</h2>
-                <button className="btn-save admin-btn-nuevo" onClick={handleCreateClick}>
-                    + NUEVO JUGADOR
-                </button>
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                    <button className="btn-save admin-btn-nuevo" onClick={handleCreateClick}>
+                        + NUEVO JUGADOR
+                    </button>
+                    <button
+                        className="btn-save admin-btn-nuevo"
+                        style={{ backgroundColor: '#1a1a2e', borderColor: '#FFD700', color: '#FFD700' }}
+                        onClick={() => { setIsCreatingOrg(true); setOrgError(''); setOrgSuccess(''); }}
+                    >
+                        + NUEVO ORGANIZADOR
+                    </button>
+                </div>
             </div>
 
             {error && <p className="error-msg">{error}</p>}
@@ -214,6 +256,67 @@ export default function AdminJugadores() {
                                 <div className="modal-actions">
                                     <button type="submit" className="btn-save">GUARDAR</button>
                                     <button type="button" onClick={handleCancel} className="btn-cancel">CANCELAR</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            )}
+
+            {/* Modal Nuevo Organizador */}
+            {isCreatingOrg && ReactDOM.createPortal(
+                <div className="modal-overlay">
+                    <div className="modal-content premium-modal">
+                        <h3>Nuevo Organizador</h3>
+                        <div className="modal-scroll-area">
+                            {orgError && <p className="error-msg" style={{ marginBottom: '1rem' }}>{orgError}</p>}
+                            {orgSuccess && <p className="success-msg" style={{ marginBottom: '1rem' }}>{orgSuccess}</p>}
+                            <form onSubmit={handleOrgSave}>
+                                <div className="form-group">
+                                    <label className="form-label">Código de seguridad</label>
+                                    <input
+                                        name="admin_token"
+                                        type="password"
+                                        value={orgForm.admin_token}
+                                        onChange={handleOrgChange}
+                                        required
+                                        className="modal-input"
+                                        placeholder="Clave secreta de administrador"
+                                        style={{ border: '2px solid #e74c3c' }}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Nombre</label>
+                                    <input name="nombre_jugador" value={orgForm.nombre_jugador} onChange={handleOrgChange} required className="modal-input" />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Apellido</label>
+                                    <input name="apellido_jugador" value={orgForm.apellido_jugador} onChange={handleOrgChange} required className="modal-input" />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Apodo (opcional)</label>
+                                    <input name="apodo" value={orgForm.apodo} onChange={handleOrgChange} className="modal-input" />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Email</label>
+                                    <input name="email" type="email" value={orgForm.email} onChange={handleOrgChange} required className="modal-input" />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Teléfono (opcional)</label>
+                                    <input name="telefono" value={orgForm.telefono} onChange={handleOrgChange} className="modal-input" />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Contraseña</label>
+                                    <input name="password" type="password" value={orgForm.password} onChange={handleOrgChange} required className="modal-input" />
+                                </div>
+                                <div className="form-group">
+                                    <label className="form-label">Confirmar contraseña</label>
+                                    <input name="confirmar_password" type="password" value={orgForm.confirmar_password} onChange={handleOrgChange} required className="modal-input" />
+                                </div>
+                                <div className="modal-actions">
+                                    <button type="submit" className="btn-save">CREAR</button>
+                                    <button type="button" onClick={() => setIsCreatingOrg(false)} className="btn-cancel">CANCELAR</button>
                                 </div>
                             </form>
                         </div>
