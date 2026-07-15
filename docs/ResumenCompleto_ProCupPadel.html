@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Resumen Técnico Completo — Pro Cup Padel</title>
+<style>
+  @page { size: A4; margin: 18mm 20mm 18mm 20mm; }
+  @media print {
+    body { background: white; }
+    h1, h2 { page-break-after: avoid; }
+    .module-card, table, pre { page-break-inside: avoid; }
+    .portada { page-break-after: always; }
+    .no-break { page-break-inside: avoid; }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 10.5px;
+    line-height: 1.55;
+    color: #1a1a2e;
+    background: white;
+  }
+
+  /* PORTADA */
+  .portada {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 257mm;
+  }
+  .portada .titulo { font-size: 44px; font-weight: 900; color: #0a0a2e; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 4px; }
+  .portada .titulo span { color: #c8a600; }
+  .portada .sub { font-size: 15px; color: #555; font-style: italic; margin-bottom: 36px; }
+  .portada .linea { width: 100px; height: 4px; background: #c8a600; margin: 0 auto 36px; }
+  .portada .doc-title { font-size: 20px; font-weight: 700; color: #0a0a2e; margin-bottom: 10px; }
+  .portada .autores { font-size: 13px; color: #555; margin-bottom: 4px; }
+  .portada .fecha { font-size: 11px; color: #888; margin-top: 56px; }
+
+  /* HEADINGS */
+  h1 { font-size: 18px; color: #0a0a2e; border-bottom: 3px solid #c8a600; padding-bottom: 5px; margin: 24px 0 12px; }
+  h2 { font-size: 13px; color: #0a0a2e; border-left: 4px solid #c8a600; padding-left: 9px; margin: 18px 0 8px; }
+  h3 { font-size: 11px; color: #1a4a8a; margin: 13px 0 5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
+  h4 { font-size: 10.5px; color: #222; margin: 10px 0 3px; font-weight: 700; }
+
+  p { margin-bottom: 7px; }
+  ul, ol { padding-left: 18px; margin-bottom: 7px; }
+  li { margin-bottom: 2px; }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; font-size: 10px; }
+  th { background: #0a0a2e; color: white; padding: 5px 7px; text-align: left; font-weight: 600; }
+  td { padding: 4px 7px; border-bottom: 1px solid #e8e8e8; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f8f8; }
+
+  /* CODE */
+  code { font-family: 'Consolas','Courier New',monospace; background: #f0f0f0; border: 1px solid #ddd; border-radius: 3px; padding: 1px 3px; font-size: 9.5px; color: #c0392b; }
+  pre { font-family: 'Consolas','Courier New',monospace; background: #1e1e2e; color: #cdd6f4; padding: 10px 12px; border-radius: 5px; font-size: 9px; line-height: 1.5; margin: 8px 0 10px; border-left: 3px solid #c8a600; }
+
+  /* MODULE CARDS */
+  .module-card { border: 1px solid #e0e0e0; border-radius: 7px; margin: 9px 0; overflow: hidden; }
+  .module-header { background: #0a0a2e; color: white; padding: 7px 12px; display: flex; align-items: center; gap: 8px; }
+  .badge { background: #c8a600; color: #0a0a2e; font-size: 8.5px; font-weight: 800; padding: 2px 6px; border-radius: 8px; text-transform: uppercase; white-space: nowrap; }
+  .filename { font-family: 'Consolas',monospace; font-size: 11.5px; font-weight: 600; }
+  .module-body { padding: 9px 12px; font-size: 10.5px; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 7px; }
+  .tag { background: #eef2ff; color: #3949ab; border: 1px solid #c5cae9; border-radius: 3px; padding: 1px 6px; font-size: 9px; }
+
+  /* ALERTS */
+  .alert { background: #fff8e1; border-left: 4px solid #f9a825; padding: 7px 10px; border-radius: 0 4px 4px 0; margin: 8px 0; font-size: 10.5px; }
+  .info  { background: #e3f2fd; border-left: 4px solid #1565c0; padding: 7px 10px; border-radius: 0 4px 4px 0; margin: 8px 0; font-size: 10.5px; }
+
+  /* ARCH DIAGRAM */
+  .arch-diagram { background: #0a0a2e; color: #cdd6f4; border-radius: 7px; padding: 14px; font-family: 'Consolas',monospace; font-size: 9.5px; line-height: 2; text-align: center; margin: 10px 0; }
+  .arch-box { display: inline-block; border: 1px solid #c8a600; border-radius: 4px; padding: 4px 14px; margin: 0 6px; color: #f9e2af; }
+  .arch-arrow { color: #89b4fa; font-size: 13px; }
+
+  /* SECTION TITLE */
+  .seccion { background: linear-gradient(135deg,#0a0a2e,#1a1a6e); color: white; padding: 8px 16px; border-radius: 5px; margin: 20px 0 14px; font-size: 13px; font-weight: 700; letter-spacing: 0.8px; }
+  .seccion span { color: #c8a600; }
+
+  /* FLOW */
+  .flujo-paso { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 9px; }
+  .flujo-num { background: #c8a600; color: #0a0a2e; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 10px; flex-shrink: 0; margin-top: 1px; }
+  .flujo-texto { flex: 1; }
+</style>
+</head>
+<body>
+
+<!-- ══════════ PORTADA ══════════ -->
+<div class="portada">
+  <div class="titulo">Pro <span>Cup</span> Padel</div>
+  <div class="sub">Sistema de Gestión de Torneos de Pádel</div>
+  <div class="linea"></div>
+  <div class="doc-title">Resumen Técnico Completo del Sistema</div>
+  <p style="font-size:12px;color:#555;margin-top:8px">Arquitectura · Módulos · Algoritmos · Base de Datos · Deploy</p>
+  <div style="margin-top:46px;font-size:12px;color:#444">
+    <div class="autores"><strong>Autores:</strong> Cepeda &amp; Wortley</div>
+    <div class="autores"><strong>Proyecto de Tesis Universitaria</strong></div>
+  </div>
+  <div class="fecha">Julio 2026</div>
+</div>
+
+<!-- ══════════ 1. VISIÓN GENERAL ══════════ -->
+<h1>1. Visión General del Sistema</h1>
+
+<h2>1.1 ¿Qué es Pro Cup Padel?</h2>
+<p><strong>Pro Cup Padel</strong> es una aplicación web full-stack para la gestión integral de torneos de pádel en modalidad dobles/parejas. Cubre el ciclo completo: inscripción de jugadores y equipos, generación de grupos y fixture, registro de resultados por sets, bracket de playoff automático, ranking acumulado histórico y notificaciones por email.</p>
+<div class="info"><strong>Problema que resuelve:</strong> Los torneos de pádel se gestionan manualmente con planillas y WhatsApp. Pro Cup Padel automatiza todos estos procesos en una sola plataforma web accesible desde cualquier dispositivo.</div>
+
+<h2>1.2 Arquitectura General</h2>
+<div class="arch-diagram">
+  <span class="arch-box">FRONTEND<br><small>React 19 · SPA</small></span>
+  <span class="arch-arrow"> ←→ </span>
+  <span class="arch-box">BACKEND<br><small>Node.js · Express 5</small></span>
+  <span class="arch-arrow"> ←→ </span>
+  <span class="arch-box">BASE DE DATOS<br><small>PostgreSQL 13</small></span>
+  <div style="color:#89b4fa;font-size:8.5px;margin-top:6px">HTTP/REST JSON · Puerto 3000 API &nbsp;|&nbsp; TCP 5432 DB</div>
+</div>
+
+<h2>1.3 Stack Tecnológico</h2>
+<table>
+  <tr><th>Capa</th><th>Tecnología</th><th>Versión</th><th>Propósito</th></tr>
+  <tr><td>Frontend</td><td>React</td><td>19</td><td>Interfaz SPA (Single Page Application)</td></tr>
+  <tr><td>Frontend Routing</td><td>React Router</td><td>7</td><td>Navegación entre páginas sin recarga</td></tr>
+  <tr><td>HTTP Cliente</td><td>Axios</td><td>latest</td><td>Llamadas a la API REST del backend</td></tr>
+  <tr><td>Gráficos</td><td>Recharts</td><td>latest</td><td>Dashboard con estadísticas visuales</td></tr>
+  <tr><td>Backend</td><td>Node.js + Express</td><td>18 + 5.1</td><td>API REST, lógica de negocio</td></tr>
+  <tr><td>Módulos JS</td><td>ESM (<code>type:module</code>)</td><td>—</td><td>Sintaxis moderna <code>import/export</code></td></tr>
+  <tr><td>Base de datos</td><td>PostgreSQL</td><td>13</td><td>Persistencia relacional con transacciones</td></tr>
+  <tr><td>Driver DB</td><td>node-postgres (<code>pg</code>)</td><td>8.16</td><td>Pool de conexiones a la DB</td></tr>
+  <tr><td>Autenticación</td><td>JWT + bcrypt</td><td>—</td><td>Tokens de sesión + hash de contraseñas</td></tr>
+  <tr><td>Email</td><td>Resend SDK</td><td>6.16</td><td>Notificaciones automáticas por email</td></tr>
+  <tr><td>Tareas programadas</td><td>node-cron</td><td>4.5</td><td>Recordatorios 24h antes del torneo</td></tr>
+  <tr><td>Archivos</td><td>Multer</td><td>2.0</td><td>Subida de fotos de perfil</td></tr>
+  <tr><td>Contenedores</td><td>Docker + Compose</td><td>—</td><td>Entorno reproducible local</td></tr>
+  <tr><td>Deploy</td><td>Railway</td><td>—</td><td>Hosting en la nube (producción)</td></tr>
+</table>
+
+<h2>1.4 Roles de usuario</h2>
+<table>
+  <tr><th>Rol</th><th>Cómo se obtiene</th><th>Permisos</th></tr>
+  <tr><td><strong>invitado</strong></td><td>Entrar sin cuenta</td><td>Ver home, ranking y torneos (solo lectura)</td></tr>
+  <tr><td><strong>jugador</strong></td><td>Registrarse en <code>/registro</code></td><td>+ Inscribirse en torneos, editar perfil</td></tr>
+  <tr><td><strong>organizador</strong></td><td>Registrarse en <code>/registro-admin</code> con token secreto</td><td>+ Crear torneos, cargar resultados, gestionar jugadores, ver dashboard</td></tr>
+</table>
+
+<!-- ══════════ 2. BASE DE DATOS ══════════ -->
+<h1>2. Base de Datos — PostgreSQL</h1>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Tabla</span><span class="filename">categoria</span></div>
+  <div class="module-body">
+    <p>Almacena las divisiones del deporte (5ta, 4ta, 3ra, etc.). El campo <code>valor_numerico</code> (INT 2–8) es el eje del sistema: se usa para validar inscripciones en torneos "suma" y para agrupar el ranking histórico. <strong>No se usa <code>id_categoria</code> para el ranking — solo el valor numérico.</strong></p>
+    <table><tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr>
+      <tr><td>id_categoria</td><td>SERIAL PK</td><td>Identificador único</td></tr>
+      <tr><td>nombre</td><td>VARCHAR</td><td>Nombre de la categoría (ej: "5ta")</td></tr>
+      <tr><td>valor_numerico</td><td>INT</td><td>Valor 2–8 para validaciones y ranking</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Tabla</span><span class="filename">jugador</span></div>
+  <div class="module-body">
+    <p>Tabla central de usuarios del sistema. Un mismo registro sirve tanto para jugadores como organizadores (diferenciados por <code>rol</code>). La contraseña siempre se almacena hasheada con bcrypt.</p>
+    <table><tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr>
+      <tr><td>id_jugador</td><td>SERIAL PK</td><td>Identificador único</td></tr>
+      <tr><td>nombre_jugador / apellido_jugador</td><td>VARCHAR</td><td>Nombre y apellido</td></tr>
+      <tr><td>apodo</td><td>VARCHAR NULL</td><td>Apodo opcional (aparece en nombre de equipo)</td></tr>
+      <tr><td>email</td><td>VARCHAR UNIQUE</td><td>Email (también es el usuario de login)</td></tr>
+      <tr><td>password</td><td>VARCHAR</td><td>Hash bcrypt de la contraseña</td></tr>
+      <tr><td>rol</td><td>VARCHAR</td><td>'jugador' o 'organizador'</td></tr>
+      <tr><td>categoria_id</td><td>FK → categoria</td><td>Categoría del jugador</td></tr>
+      <tr><td>foto_perfil</td><td>VARCHAR NULL</td><td>Path relativo a la imagen subida</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Tabla</span><span class="filename">equipo</span></div>
+  <div class="module-body">
+    <p>Representa una pareja de jugadores. El <code>nombre_equipo</code> se genera automáticamente al inscribirse, combinando apellidos/apodos en orden alfabético (ej: "García/López").</p>
+    <table><tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr>
+      <tr><td>id_equipo</td><td>SERIAL PK</td><td>Identificador único</td></tr>
+      <tr><td>jugador1_id / jugador2_id</td><td>FK → jugador</td><td>Los dos integrantes de la pareja</td></tr>
+      <tr><td>nombre_equipo</td><td>VARCHAR</td><td>Nombre auto-generado ("Apellido1/Apellido2")</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Tabla</span><span class="filename">torneo</span></div>
+  <div class="module-body">
+    <p>Almacena la configuración completa de un torneo. Soporta dos formatos de categoría y dos modalidades de juego.</p>
+    <table><tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr>
+      <tr><td>id_torneo</td><td>SERIAL PK</td><td>Identificador único</td></tr>
+      <tr><td>nombre_torneo</td><td>VARCHAR</td><td>Nombre del torneo</td></tr>
+      <tr><td>fecha_inicio / fecha_fin</td><td>DATE</td><td>Duración del torneo</td></tr>
+      <tr><td>fecha_cierre_inscripcion</td><td>TIMESTAMP</td><td>Límite para inscribirse (guardado a las 23:59:59)</td></tr>
+      <tr><td>max_equipos</td><td>INT</td><td>Capacidad máxima de parejas</td></tr>
+      <tr><td>formato_categoria</td><td>VARCHAR</td><td>'categoria_fija' o 'suma'</td></tr>
+      <tr><td>categoria_id</td><td>FK → categoria NULL</td><td>Solo para formato 'categoria_fija'</td></tr>
+      <tr><td>suma_categoria</td><td>INT NULL</td><td>Solo para formato 'suma' (ej: 9 = 5ta+4ta)</td></tr>
+      <tr><td>modalidad</td><td>VARCHAR</td><td>'fin_de_semana' o 'liga'</td></tr>
+      <tr><td>dias_juego</td><td>VARCHAR NULL</td><td>Para liga: "Lunes,Miércoles"</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Tabla</span><span class="filename">inscripcion · grupos · equipos_grupo · partidos_grupo</span></div>
+  <div class="module-body">
+    <table><tr><th>Tabla</th><th>Propósito</th><th>Campos clave</th></tr>
+      <tr><td><code>inscripcion</code></td><td>Qué equipo está en qué torneo</td><td>id_equipo (CASCADE), id_torneo (CASCADE)</td></tr>
+      <tr><td><code>grupos</code></td><td>Grupos de la fase (ej: "Grupo A")</td><td>id_grupo, id_torneo, nombre</td></tr>
+      <tr><td><code>equipos_grupo</code></td><td>Estadísticas por equipo en cada grupo</td><td>grupo_id, equipo_id, puntos, partidos_jugados, sets_favor/contra, games_favor/contra</td></tr>
+      <tr><td><code>partidos_grupo</code></td><td>Partidos de la fase de grupos con sets y fecha</td><td>grupo_id, equipo1_id, equipo2_id, set1..set3 ×2, estado, fecha</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Tabla clave</span><span class="filename">partidos_llave</span> — Bracket Playoff</div>
+  <div class="module-body">
+    <p>La tabla más compleja. <code>next_match_id</code> y <code>next_slot</code> forman una cadena que conecta los partidos del bracket: cuando un equipo gana, el sistema usa estos campos para colocarlo automáticamente en el partido siguiente.</p>
+    <table><tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr>
+      <tr><td>id_torneo</td><td>FK → torneo</td><td>Torneo al que pertenece</td></tr>
+      <tr><td>ronda</td><td>VARCHAR</td><td>'OCTAVOS' | 'CUARTOS' | 'SEMIS' | 'FINAL'</td></tr>
+      <tr><td>orden</td><td>INT</td><td>Posición dentro de la ronda</td></tr>
+      <tr><td>equipo1_id / equipo2_id</td><td>FK → equipo NULL</td><td>Participantes (NULL = BYE)</td></tr>
+      <tr><td>ganador_id</td><td>FK → equipo NULL</td><td>Se llena al registrar el resultado</td></tr>
+      <tr><td><strong>next_match_id</strong></td><td>FK self-ref NULL</td><td>Partido al que avanza el ganador</td></tr>
+      <tr><td><strong>next_slot</strong></td><td>INT NULL</td><td>1 o 2: posición del ganador en el siguiente partido</td></tr>
+      <tr><td>set1..set3 equipo1/2</td><td>INT NULL</td><td>Resultado de cada set</td></tr>
+      <tr><td>estado</td><td>VARCHAR</td><td>'no_iniciado' | 'finalizado'</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Tabla</span><span class="filename">ranking_jugador · audit_log_ingresos</span></div>
+  <div class="module-body">
+    <div class="alert"><strong>⚠️ Punto crítico:</strong> El campo <code>categoria</code> en <code>ranking_jugador</code> almacena el <code>valor_numerico</code> (entero 2–8), NO el <code>id_categoria</code>. Esto permite que el ranking funcione correctamente en torneos de tipo "suma".</div>
+    <table><tr><th>Tabla</th><th>Campos clave</th></tr>
+      <tr><td><code>ranking_jugador</code></td><td>jugador_id, nombre, apellido, ultima_pareja, torneo_participado, fase_llegada, puntos, <strong>categoria (INT = valor_numerico)</strong></td></tr>
+      <tr><td><code>audit_log_ingresos</code></td><td>jugador_id, nombre, apellido, ip, user_agent, exitoso (bool), motivo, timestamp</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════ 3. BACKEND ══════════ -->
+<h1>3. Módulos del Backend</h1>
+<div class="seccion">📁 <span>backend/src/</span> — Node.js + Express 5.1 (ESM)</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Entry Point</span><span class="filename">app.mjs</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Express</span><span class="tag">CORS</span><span class="tag">dotenv</span><span class="tag">node-cron</span><span class="tag">Static files</span></div>
+    <p><strong>Punto de entrada de toda la aplicación backend.</strong> Hace tres cosas principales:</p>
+    <ol>
+      <li><strong>Configura Express:</strong> activa CORS (permite solicitudes desde cualquier origen), parseo de JSON y sirve la carpeta <code>uploads/</code> como archivos estáticos para que el frontend acceda a las fotos de perfil con <code>/uploads/perfiles/foto.jpg</code>.</li>
+      <li><strong>Monta todas las rutas</strong> bajo el prefijo <code>/api</code>: playoff, rutas principales, auditoría, auth, ranking, torneos y dashboard.</li>
+      <li><strong>Programa el cron job</strong> con <code>node-cron</code> (expresión <code>'0 * * * *'</code> = cada hora en el minuto 0). El job busca torneos cuya <code>fecha_inicio</code> esté entre 23 y 25 horas en el futuro y envía emails de recordatorio a todos los jugadores inscriptos. Un <code>Set</code> en memoria evita enviar el mismo email dos veces en la misma sesión del proceso.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Config</span><span class="filename">config/db.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">PostgreSQL</span><span class="tag">Pool de conexiones</span></div>
+    <p>Crea y exporta un <strong>pool de conexiones</strong> a PostgreSQL usando la librería <code>pg</code>. Un pool reutiliza conexiones abiertas en lugar de abrir una nueva por cada query, lo que mejora el rendimiento significativamente. Las credenciales se leen de variables de entorno: <code>DB_HOST</code>, <code>DB_PORT</code>, <code>DB_USER</code>, <code>DB_PASSWORD</code>, <code>DB_NAME</code>. En producción (Railway), estas las provee automáticamente la variable <code>DATABASE_URL</code>.</p>
+    <p>Todas las rutas importan este pool y lo usan con <code>pool.query()</code> para consultas simples o <code>pool.connect()</code> para obtener un cliente que permite transacciones (<code>BEGIN / COMMIT / ROLLBACK</code>).</p>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Config</span><span class="filename">config/multer.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Multer</span><span class="tag">Upload de archivos</span><span class="tag">Validación MIME</span></div>
+    <p>Configura <strong>Multer</strong> para recibir fotos de perfil. Define tres aspectos clave:</p>
+    <ul>
+      <li><strong>Destino:</strong> guarda los archivos en <code>uploads/perfiles/</code> (la crea si no existe).</li>
+      <li><strong>Nombre único:</strong> genera el nombre con timestamp + número aleatorio para evitar colisiones entre archivos (<code>perfil-1720000000-123456789.jpg</code>).</li>
+      <li><strong>Filtro de tipo:</strong> solo acepta JPEG, JPG, PNG y WebP (valida tanto extensión como MIME type). Si el archivo no pasa, rechaza con error. Límite de 5 MB por archivo.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>Rutas del Backend</h2>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Ruta</span><span class="filename">routes/index.js</span> — Rutas principales</div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Login</span><span class="tag">Registro</span><span class="tag">Jugadores</span><span class="tag">Torneos</span><span class="tag">Inscripción</span><span class="tag">Grupos</span><span class="tag">Partidos</span></div>
+    <p>El archivo de rutas más grande. Concentra toda la lógica CRUD del negocio principal:</p>
+    <table>
+      <tr><th>Endpoint</th><th>Descripción</th></tr>
+      <tr><td><code>POST /registro</code></td><td>Registra un jugador (valida passwords, hashea con bcrypt, guarda categoría)</td></tr>
+      <tr><td><code>POST /registro-organizadores</code></td><td>Registra organizador. Requiere <code>admin_token</code> que debe coincidir con <code>ADMIN_SECRET</code> del entorno</td></tr>
+      <tr><td><code>POST /login</code></td><td>Autentica usuario, genera JWT, registra auditoría, devuelve <code>{ok, token, jugador}</code></td></tr>
+      <tr><td><code>GET/POST/PUT/DELETE /jugadores</code></td><td>CRUD completo. El PUT acepta foto con Multer y construye query dinámica solo con los campos enviados</td></tr>
+      <tr><td><code>POST /inscripcion</code></td><td>Inscribe equipo con 5 validaciones encadenadas. Envía email de confirmación asíncrono</td></tr>
+      <tr><td><code>POST /torneos/:id/generar-grupos</code></td><td>Genera grupos + fixture automático según modalidad (liga o fin_de_semana)</td></tr>
+      <tr><td><code>PUT /partidos-grupo/:id</code></td><td>Carga resultado, actualiza estadísticas. Si todos los partidos finalizaron, auto-genera playoff</td></tr>
+    </table>
+    <p><strong>Validaciones de inscripción (en orden):</strong> ① cierre de inscripción no vencido → ② ningún jugador en torneo con fechas superpuestas → ③ ningún jugador ya inscripto en este torneo → ④ misma pareja no inscripta → ⑤ categoría válida (fija o suma).</p>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Ruta</span><span class="filename">routes/auth.js</span> — Middleware JWT</div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">JWT</span><span class="tag">Middleware</span><span class="tag">Authorization header</span></div>
+    <p>Exporta el middleware <code>requireAuth</code> que protege las rutas sensibles. Extrae el token del header <code>Authorization: Bearer &lt;token&gt;</code>, lo verifica con <code>jwt.verify()</code> y, si es válido, adjunta <code>req.user = { id, role }</code> para que el siguiente handler sepa quién es el usuario. Si el token es inválido o expiró (6h), devuelve 401.</p>
+    <pre>export function requireAuth(req, res, next) {
+  const token = req.headers.authorization?.slice(7); // "Bearer xxx"
+  const payload = jwt.verify(token, process.env.JWT_SECRET);
+  req.user = { id: payload.id, role: payload.role };
+  next(); // continúa al siguiente middleware/handler
+}</pre>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Controller</span><span class="filename">controllers/authController.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Login alternativo</span><span class="tag">Diagnóstico</span><span class="tag">IP real</span><span class="tag">bcrypt dual</span></div>
+    <p>Controlador de login alternativo (montado a través de <code>auth.js</code>). A diferencia del login en <code>routes/index.js</code>, este controlador incluye herramientas de diagnóstico:</p>
+    <ul>
+      <li><strong>IP real:</strong> lee el header <code>x-forwarded-for</code> para obtener la IP real del cliente detrás de proxies (Railway usa proxies).</li>
+      <li><strong>Logs de diagnóstico:</strong> imprime en consola el body recibido y la base de datos activa (<code>SELECT current_database()</code>) para facilitar el debugging en producción.</li>
+      <li><strong>Verificación dual de contraseña:</strong> detecta si el password almacenado es un hash bcrypt (<code>startsWith('$2')</code>) o texto plano (para compatibilidad con datos de prueba), y usa <code>bcrypt.compare()</code> o comparación directa según corresponda.</li>
+      <li><strong>JOIN con categoría:</strong> incluye <code>valor_numerico</code> de la categoría del jugador en la respuesta para que el frontend lo tenga disponible.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Ruta</span><span class="filename">routes/playoffRoutes.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Bracket</span><span class="tag">GET/POST/PUT playoff</span><span class="tag">Auto-avance</span></div>
+    <p>Tres endpoints para el bracket eliminatorio:</p>
+    <ul>
+      <li><code>POST /torneos/:id/playoff</code> — Llama a <code>generarPlayoffSiNoExiste()</code>. Es <strong>idempotente</strong>: si ya existe, no lo regenera.</li>
+      <li><code>GET /torneos/:id/playoff</code> — Devuelve todos los partidos agrupados por ronda en <code>{OCTAVOS:[...], CUARTOS:[...], SEMIS:[...], FINAL:[...]}</code>. Incluye JOIN con fotos de los jugadores.</li>
+      <li><code>PUT /torneos/:id/playoff/partidos/:idPartido</code> — Carga resultado, calcula el ganador por sets y <strong>lo avanza automáticamente</strong> al siguiente partido mediante <code>next_match_id</code> y <code>next_slot</code>.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Ruta</span><span class="filename">routes/torneosRoutes.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Ranking post-torneo</span><span class="tag">Limpiar grupos</span><span class="tag">Upsert</span><span class="tag">Anti-duplicado</span></div>
+    <p>Contiene la <strong>versión definitiva</strong> del algoritmo de generación de ranking y rutas de mantenimiento:</p>
+    <ul>
+      <li><code>POST /torneos/:id/generar-ranking</code> — Función <code>generarRankingTorneo(client, torneoId)</code> exportable: verifica que el playoff esté completo, detecta campeón/subcampeón desde la FINAL, calcula la fase de cada equipo, y hace <em>upsert</em> en <code>ranking_jugador</code>. Tiene <strong>protección anti-duplicado</strong>: si el torneo ya fue procesado, retorna sin volver a insertar. Diseñada para compartir una transacción externa.</li>
+      <li><code>GET /ranking</code> — Devuelve el ranking filtrado por <code>categoria</code> (valor numérico), ordenado por puntos descendente.</li>
+      <li><code>DELETE /torneos/:id/limpiar-grupos</code> — Elimina en cascada todos los datos generados de un torneo (partidos de llave → partidos de grupo → equipos_grupo → grupos) en una sola transacción. Permite reiniciar un torneo desde cero.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Ruta</span><span class="filename">routes/rankingRoutes.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Ranking manual</span><span class="tag">Puntos por fase</span></div>
+    <p>Versión alternativa del endpoint de ranking (expuesta también en la API). Complementa a <code>torneosRoutes.js</code>. Contiene la función <code>puntosPorFase(fase)</code> que mapea el nombre de fase a puntos:</p>
+    <table>
+      <tr><th>Fase</th><th>Puntos</th><th>Fase</th><th>Puntos</th></tr>
+      <tr><td>Campeón</td><td><strong>2000</strong></td><td>Cuartos de final</td><td><strong>360</strong></td></tr>
+      <tr><td>Subcampeón</td><td><strong>1200</strong></td><td>Octavos de final</td><td><strong>180</strong></td></tr>
+      <tr><td>Semifinal</td><td><strong>720</strong></td><td>Fase de grupos</td><td><strong>0</strong></td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Ruta</span><span class="filename">routes/auditoria.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Auditoría</span><span class="tag">Logs</span><span class="tag">Export CSV</span></div>
+    <p>Tres endpoints para consultar los registros de auditoría de login:</p>
+    <ul>
+      <li><code>GET /ingresos</code> — Consulta <code>audit_log_ingresos</code> con filtros opcionales por <code>jugadorId</code>, <code>desde</code> y <code>hasta</code>. Devuelve últimos 100 registros por fecha.</li>
+      <li><code>GET /ingresos/export</code> — Descarga directa del CSV de auditoría (<code>Content-Disposition: attachment</code>) vía stream.</li>
+      <li><code>GET /ingresos/test-write</code> — Endpoint de diagnóstico para verificar que el sistema de logging a archivos funcione en el servidor.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Ruta</span><span class="filename">routes/dashboardRoutes.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Dashboard</span><span class="tag">KPIs</span><span class="tag">Estadísticas</span><span class="tag">Alertas</span></div>
+    <p>Cuatro endpoints bajo <code>/api/dashboard/</code> para el panel de administración:</p>
+    <ul>
+      <li><code>/kpis</code> — Totales: cantidad de jugadores, torneos e inscripciones activas.</li>
+      <li><code>/stats</code> — Participación desglosada por categoría (datos para los gráficos Recharts).</li>
+      <li><code>/alerts</code> — Torneos con cierre de inscripción en las próximas 48 horas.</li>
+      <li><code>/torneos-status</code> — Estado de todos los torneos (activos, finalizados, con inscripciones abiertas).</li>
+    </ul>
+  </div>
+</div>
+
+<h2>Utilidades del Backend</h2>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Util</span><span class="filename">utils/generarGrupos.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Algoritmo</span><span class="tag">Distribución aleatoria</span><span class="tag">Casos especiales</span></div>
+    <p>Exporta <code>generarGruposAleatorios(equipos)</code>. Primero mezcla aleatoriamente los equipos (<code>Math.random() - 0.5</code>) y luego los distribuye según la cantidad total:</p>
+    <table>
+      <tr><th>Equipos</th><th>Distribución</th><th>Fase resultante</th></tr>
+      <tr><td>2</td><td>1 grupo de 2</td><td>Final directa</td></tr>
+      <tr><td>4</td><td>1 grupo de 4</td><td>Semis directas</td></tr>
+      <tr><td>6–7</td><td>2 grupos parejos (3-3 o 4-3)</td><td>Semis o cuartos</td></tr>
+      <tr><td>8</td><td>2 grupos de 4</td><td>Semis</td></tr>
+      <tr><td>10–12</td><td>3 grupos (4-4-2 o 4-4-3)</td><td>Cuartos</td></tr>
+      <tr><td>14–15</td><td>4 grupos (4-4-3-3 o similar)</td><td>Cuartos</td></tr>
+      <tr><td>16</td><td>4 grupos de 4</td><td>Cuartos</td></tr>
+      <tr><td>32</td><td>8 grupos de 4</td><td>Octavos</td></tr>
+    </table>
+    <p>La función <code>cortarParejo(lista, n)</code> distribuye los equipos de a uno por grupo en modo rotativo, garantizando que la diferencia entre grupos sea como máximo 1 equipo.</p>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Util</span><span class="filename">utils/generarPlayoff.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Algoritmo</span><span class="tag">Snake-seeding</span><span class="tag">BYE</span><span class="tag">next_match_id</span></div>
+    <p>Implementa <code>generarPlayoffSiNoExiste(torneoId)</code>. Algoritmo en 6 pasos:</p>
+    <ol>
+      <li><strong>Extrae top 2 de cada grupo</strong> ordenado por puntos → sets a favor → games a favor.</li>
+      <li><strong>Snake-seeding:</strong> 1ro Grupo A vs 2do Grupo B, 1ro Grupo B vs 2do Grupo A, etc. Evita que los mejores se enfrenten antes de la final.</li>
+      <li><strong>Determina rondas</strong> por potencia de 2: 4 equipos → SEMIS+FINAL, 8 → CUARTOS+SEMIS+FINAL, 16 → OCTAVOS+…</li>
+      <li><strong>Asigna BYE</strong> a los mejores seeds si el número no es potencia exacta de 2.</li>
+      <li><strong>Casos especiales:</strong> 3 grupos (6 equipos) → hardcoded con play-in. 1 grupo → va directo a final/semis/cuartos.</li>
+      <li><strong>Encadena los partidos:</strong> guarda <code>next_match_id</code> y <code>next_slot</code> para que el auto-avance funcione sin intervención.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Util</span><span class="filename">utils/mailer.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Resend SDK</span><span class="tag">Email HTML</span><span class="tag">Lazy init</span><span class="tag">Resiliente</span></div>
+    <p>Encapsula el envío de emails con <strong>Resend SDK</strong>. El cliente se inicializa de forma <em>lazy</em>: solo si <code>RESEND_API_KEY</code> existe en el entorno, evitando crash en desarrollo sin credenciales. Si la variable no existe, las funciones retornan silenciosamente sin error.</p>
+    <pre>const resend = process.env.RESEND_API_KEY
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null; // sin clave → no crash, solo no envía</pre>
+    <p>Exporta dos funciones: <code>enviarConfirmacionInscripcion()</code> (al inscribirse) y <code>enviarRecordatorioTorneo()</code> (invocado por el cron job). Ambos usan HTML inline con el estilo de Pro Cup Padel.</p>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Util</span><span class="filename">utils/logIngreso.js + utils/fileAudit.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Auditoría dual</span><span class="tag">CSV + JSONL</span><span class="tag">Promise.allSettled</span></div>
+    <p><strong><code>logIngreso.js</code></strong> es el punto central de auditoría. Se llama desde cada resultado posible del login (éxito, usuario no encontrado, contraseña incorrecta, error interno). Escribe en dos destinos independientes:</p>
+    <ol>
+      <li>Tabla <code>audit_log_ingresos</code> en PostgreSQL (dentro de try/catch propio).</li>
+      <li>Archivos de log vía <code>fileAudit.js</code>.</li>
+    </ol>
+    <p><strong><code>fileAudit.js</code></strong> mantiene dos archivos en <code>./logs/</code>: un CSV y un JSONL (una línea JSON por evento). Usa <code>Promise.allSettled()</code> para escribir ambos en paralelo sin que el fallo de uno afecte al otro. Si el directorio no existe, lo crea automáticamente.</p>
+  </div>
+</div>
+
+<!-- ══════════ 4. FRONTEND ══════════ -->
+<h1>4. Módulos del Frontend</h1>
+<div class="seccion">📁 <span>frontend/src/</span> — React 19 + React Router 7</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Entry Point</span><span class="filename">index.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">React DOM</span><span class="tag">Axios baseURL</span><span class="tag">AuthProvider</span><span class="tag">BrowserRouter</span></div>
+    <p>Punto de entrada del frontend. Hace dos cosas antes de renderizar la app:</p>
+    <ol>
+      <li><strong>Configura el <code>baseURL</code> global de Axios:</strong> <code>process.env.REACT_APP_API_URL || 'http://localhost:3000'</code>. En producción usa la URL del backend de Railway; en local, <code>localhost:3000</code>. Esta es la única fuente de verdad para la URL del backend.</li>
+      <li><strong>Envuelve la app</strong> en <code>AuthProvider</code> (contexto de usuario) y <code>BrowserRouter</code> (router).</li>
+    </ol>
+    <div class="alert"><strong>⚠️ Importante:</strong> <code>REACT_APP_API_URL</code> debe apuntar al backend (<code>b7ce</code>), NO al frontend (<code>6cb8</code>). En Railway se configura como variable de build del servicio frontend.</div>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">App</span><span class="filename">App.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Rutas</span><span class="tag">ProtectedRoute</span><span class="tag">Axios interceptors</span><span class="tag">JWT automático</span></div>
+    <p>Define el árbol de rutas completo y configura Axios globalmente con dos interceptors:</p>
+    <ul>
+      <li><strong>Request interceptor:</strong> lee el token JWT del <code>localStorage</code> y lo adjunta automáticamente en el header <code>Authorization: Bearer &lt;token&gt;</code> en cada llamado. Ningún componente necesita manejar el token manualmente.</li>
+      <li><strong>Response interceptor:</strong> captura globalmente errores 401 (no autenticado) y 403 (sin permisos).</li>
+    </ul>
+    <p><strong>ProtectedRoute:</strong> componente wrapper que verifica si hay usuario logueado en localStorage y si su rol está en la lista <code>allow[]</code>. Si no, redirige al login o al home del rol.</p>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Layout</span><span class="filename">layout/LayoutBase.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Layout</span><span class="tag">Navbar condicional</span><span class="tag">useLocation</span></div>
+    <p>Wrapper que envuelve <strong>todas las páginas</strong> de la aplicación. Usa <code>useLocation()</code> de React Router para conocer la ruta actual. Renderiza el <code>Navbar</code> en todas las páginas <strong>excepto</strong> en <code>/</code> (login) y <code>/registro</code>, donde no tiene sentido mostrarlo. El contenido de cada página va dentro de <code>&lt;main className="layout-content"&gt;</code>.</p>
+    <pre>export default function LayoutBase({ children }) {
+  const { pathname } = useLocation();
+  const hide = pathname === '/' || pathname === '/registro';
+  return (
+    &lt;&gt;
+      {!hide &amp;&amp; &lt;Navbar /&gt;}
+      &lt;main className="layout-content"&gt;{children}&lt;/main&gt;
+    &lt;/&gt;
+  );
+}</pre>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Context</span><span class="filename">context/AuthContext.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">React Context</span><span class="tag">Estado global</span><span class="tag">localStorage</span><span class="tag">Sin prop-drilling</span></div>
+    <p>Provee el estado del usuario autenticado a toda la aplicación sin necesidad de pasar props manualmente entre componentes (problema conocido como <em>prop drilling</em>). Al iniciarse, lee el usuario guardado en <code>localStorage</code> para que la sesión persista entre recargas de página. Expone:</p>
+    <ul>
+      <li><code>jugador</code> — objeto con id, nombre, apellido, email, role y token del usuario logueado.</li>
+      <li><code>setJugador()</code> — función para actualizar el estado global (usada en Login al autenticarse).</li>
+    </ul>
+    <p>Cualquier componente puede acceder al usuario con el hook <code>useAuth()</code> sin importar en qué nivel del árbol esté.</p>
+  </div>
+</div>
+
+<h2>Páginas de Autenticación</h2>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Página</span><span class="filename">pages/Login.js</span> — <code>/</code></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Público</span><span class="tag">JWT</span><span class="tag">Redirección por rol</span></div>
+    <p>Formulario de inicio de sesión. Envía email + contraseña a <code>POST /api/login</code>. Si el login es exitoso, guarda el token y datos del usuario en <code>localStorage</code> y en el contexto <code>AuthContext</code>, luego redirige según el rol: organizador → <code>/home-organizador</code>, jugador → <code>/home-jugador</code>. Muestra mensajes de error específicos por código HTTP (401, 404). También permite entrar como invitado sin credenciales.</p>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Página</span><span class="filename">pages/Registro.js</span> — <code>/registro</code></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Público</span><span class="tag">Rol: jugador</span><span class="tag">Categoría dinámica</span></div>
+    <p>Formulario de auto-registro para jugadores. Incluye selector de categoría que se carga dinámicamente desde <code>GET /api/categorias</code>. Valida localmente que las contraseñas coincidan antes de enviar. Al registrarse exitosamente, redirige al login. Tiene botón "Volver al Login".</p>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Página</span><span class="filename">pages/RegistroOrganizador.js</span> — <code>/registro-admin</code></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Semipúblico</span><span class="tag">Token secreto</span><span class="tag">Rol: organizador</span></div>
+    <p>Formulario para crear una cuenta de organizador. Requiere el token secreto (<code>admin_token</code>) configurado en el backend como <code>ADMIN_SECRET</code>. La ruta es pública (no requiere login previo) pero el token la protege: si es incorrecto, el backend devuelve 403. El token por defecto es <code>procup2026</code>.</p>
+  </div>
+</div>
+
+<h2>Páginas del Organizador</h2>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Página</span><span class="filename">pages/CrearTorneo.js</span> — <code>/crear-torneo</code></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Organizador</span><span class="tag">Formulario dinámico</span></div>
+    <p>Formulario para crear un nuevo torneo con campos condicionales: si el <code>formato_categoria</code> es "categoría fija" muestra selector de categoría; si es "suma" muestra campo numérico. Si la modalidad es "liga", aparece el selector de días de juego. Llama a <code>POST /api/torneos</code>.</p>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Página</span><span class="filename">pages/CargarResultado.js</span> — <code>/cargar-resultado</code></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Organizador</span><span class="tag">Validación de sets</span><span class="tag">Grupos + Playoff</span></div>
+    <p>Permite cargar los resultados de un partido en dos modos: fase de grupos (<code>PUT /api/partidos-grupo/:id</code>) y playoff (<code>PUT /api/torneos/:id/playoff/partidos/:idPartido</code>). Valida marcadores válidos de pádel: 6-0 a 6-4, 7-5, 7-6 (tie-break). El backend actualiza estadísticas y, si todos los partidos de grupos están completos, genera el playoff automáticamente.</p>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Página</span><span class="filename">pages/Dashboard.js</span> — <code>/dashboard</code></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Organizador</span><span class="tag">Recharts</span><span class="tag">KPIs</span><span class="tag">Alertas</span></div>
+    <p>Panel de administración. Carga datos de 4 endpoints en paralelo con <code>Promise.all</code> y los muestra en: tarjetas de KPIs (totales), gráficos de barra/torta con <strong>Recharts</strong> (participación por categoría), alertas de torneos próximos a vencer y estado de torneos activos.</p>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Página</span><span class="filename">pages/AdminJugadores.js</span> — <code>/admin/jugadores</code></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Organizador</span><span class="tag">CRUD completo</span><span class="tag">Modal</span></div>
+    <p>CRUD completo de jugadores. Muestra tabla con opciones de editar y eliminar. Modal para crear/editar con todos los campos. Carga jugadores y categorías en paralelo al montar. Confirmación antes de eliminar.</p>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Página</span><span class="filename">pages/AdminInscripcion.js</span> — <code>/admin/inscripcion</code></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Organizador</span><span class="tag">Inscripción manual</span></div>
+    <p>Permite al organizador inscribir equipos manualmente: selecciona torneo → elige dos jugadores de la lista de disponibles (filtrando los ya inscriptos) → envía inscripción. Útil para cargar datos presencialmente o importar torneos pasados.</p>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Página</span><span class="filename">pages/MisTorneosOrganizador.js</span> — <code>/organizador/torneos</code></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Organizador</span><span class="tag">Hub de gestión</span></div>
+    <p>Hub central de operaciones. Desde aquí el organizador puede: ver equipos inscriptos, generar grupos, ver el fixture, regenerar grupos si hay errores, y navegar al bracket de playoff. Es la pantalla más usada durante un torneo activo.</p>
+  </div>
+</div>
+
+<h2>Páginas del Jugador y Públicas</h2>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Página</span><span class="filename">pages/Inscripcion.js</span> — <code>/inscripcion</code></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Jugador</span><span class="tag">Verificación previa</span></div>
+    <p>Permite inscribirse en un torneo junto con un compañero. Flujo: selecciona torneo → selecciona compañero de la lista de disponibles (sin los ya inscriptos) → verifica previamente si están inscriptos → envía inscripción. El backend valida categorías y superposición de fechas.</p>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Página</span><span class="filename">pages/Perfil.js</span> — <code>/perfil</code></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Jugador / Organizador</span><span class="tag">FormData</span><span class="tag">Foto de perfil</span></div>
+    <p>Edición del perfil personal. La foto se envía como <code>multipart/form-data</code> usando <code>FormData</code> de JavaScript (no JSON), procesada por Multer en el backend. Permite editar nombre, apellido, apodo, teléfono, contraseña y foto.</p>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Página</span><span class="filename">pages/Home.js</span> — <code>/home-*</code></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Todos los roles</span><span class="tag">Dashboard visual</span><span class="tag">Carrusel</span></div>
+    <p>Página principal post-login. Muestra carruseles de torneos activos/próximos, preview del ranking por categoría y accesos rápidos según el rol del usuario. Carga datos de torneos, categorías y ranking en paralelo.</p>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Página</span><span class="filename">pages/Torneos.js</span> — <code>/torneosllave</code></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Todos los roles</span><span class="tag">Bracket visual</span><span class="tag">Grupos</span><span class="tag">Fixture Liga</span></div>
+    <p>Vista principal de un torneo. Tres secciones según el estado: equipos inscriptos (antes de grupos), tabla de posiciones y fixture de grupos (durante la fase grupal), y bracket playoff (fase eliminatoria). Para modalidad liga muestra el fixture completo con fechas por jornada.</p>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Página</span><span class="filename">pages/Ranking.js</span> — <code>/ranking</code></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Todos los roles</span><span class="tag">Filtro por categoría</span></div>
+    <p>Ranking histórico acumulado con filtro por categoría. Muestra posición, nombre, apellido, pareja, último torneo, fase alcanzada y puntos totales. Ordena por puntos descendente.</p>
+  </div>
+</div>
+
+<h2>Componentes Reutilizables</h2>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Componente</span><span class="filename">pages/Navbar.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Navegación</span><span class="tag">Dinámico por rol</span><span class="tag">useAuth</span></div>
+    <p>Barra de navegación dinámica. Lee el rol del usuario desde <code>useAuth()</code> y renderiza opciones distintas para organizador, jugador e invitado. Incluye el botón de cerrar sesión que limpia el <code>localStorage</code>, resetea el contexto y redirige al login. Renderizado condicionalmente por <code>LayoutBase.js</code> (oculto en login y registro).</p>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Componente</span><span class="filename">pages/PlayoffBrackets.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Bracket visual</span><span class="tag">Rondas dinámicas</span><span class="tag">Sets + ganador</span></div>
+    <p>Renderiza el bracket eliminatorio. Recibe el objeto <code>{OCTAVOS, CUARTOS, SEMIS, FINAL}</code> del backend y muestra cada partido como una tarjeta con: nombres de equipos, fotos de perfil de los jugadores (vía <code>TeamAvatar</code>), sets jugados y el ganador resaltado visualmente. Adapta la cantidad de columnas según las rondas del torneo.</p>
+  </div>
+</div>
+
+<div class="module-card no-break">
+  <div class="module-header"><span class="badge">Componente</span><span class="filename">pages/TeamAvatar.js</span></div>
+  <div class="module-body">
+    <div class="tag-row"><span class="tag">Avatar</span><span class="tag">Fotos de perfil</span><span class="tag">Fallback con iniciales</span></div>
+    <p>Muestra el avatar de un equipo combinando las fotos de perfil de los dos jugadores. Si un jugador no tiene foto subida, muestra un avatar con sus iniciales. Las URLs de las fotos apuntan a <code>/uploads/perfiles/</code> servido por Express como estático.</p>
+  </div>
+</div>
+
+<!-- ══════════ 5. FLUJO COMPLETO ══════════ -->
+<h1>5. Flujo Completo de un Torneo</h1>
+
+<div class="flujo-paso">
+  <div class="flujo-num">1</div>
+  <div class="flujo-texto"><strong>[Organizador] Crea el torneo</strong> — Completa el formulario en <code>/crear-torneo</code>: nombre, fechas, formato (categoría fija o suma), modalidad (fin de semana o liga) y máximo de equipos. El backend valida y guarda con <code>POST /api/torneos</code>.</div>
+</div>
+<div class="flujo-paso">
+  <div class="flujo-num">2</div>
+  <div class="flujo-texto"><strong>[Jugadores] Se registran e inscriben</strong> — Cada jugador se registra en <code>/registro</code>. Luego va a <code>/inscripcion</code>, elige el torneo y su compañero. El backend valida categorías, fechas superpuestas y envía emails de confirmación a ambos.</div>
+</div>
+<div class="flujo-paso">
+  <div class="flujo-num">3</div>
+  <div class="flujo-texto"><strong>[Organizador] Genera grupos</strong> — Desde <code>/organizador/torneos</code> genera los grupos. El sistema distribuye aleatoriamente los equipos y crea el fixture. Para liga, calcula las fechas de cada jornada según los días configurados.</div>
+</div>
+<div class="flujo-paso">
+  <div class="flujo-num">4</div>
+  <div class="flujo-texto"><strong>[Organizador] Carga resultados de grupos</strong> — Desde <code>/cargar-resultado</code> ingresa los sets de cada partido. El sistema actualiza la tabla de posiciones. Cuando se carga el último partido pendiente → <strong>el playoff se genera automáticamente</strong>.</div>
+</div>
+<div class="flujo-paso">
+  <div class="flujo-num">5</div>
+  <div class="flujo-texto"><strong>[Organizador] Carga resultados del playoff</strong> — Carga resultado partido por partido. El ganador avanza automáticamente al siguiente encuentro. Al terminar la FINAL → el sistema genera el ranking del torneo automáticamente.</div>
+</div>
+<div class="flujo-paso">
+  <div class="flujo-num">6</div>
+  <div class="flujo-texto"><strong>[Todos] Visualizan resultados y ranking</strong> — Cualquier usuario (incluso invitados) puede ver el bracket en <code>/torneosllave</code> y el ranking acumulado en <code>/ranking</code>, filtrado por categoría.</div>
+</div>
+
+<!-- ══════════ 6. SEGURIDAD Y DEPLOY ══════════ -->
+<h1>6. Seguridad</h1>
+<table>
+  <tr><th>Aspecto</th><th>Implementación</th><th>Por qué</th></tr>
+  <tr><td>Contraseñas</td><td>bcrypt con salt factor 10</td><td>Irreversible. Aunque roben la DB no obtienen contraseñas en claro</td></tr>
+  <tr><td>Sesiones</td><td>JWT con expiración 6h</td><td>Sin estado en servidor, escalable. El token expira automáticamente</td></tr>
+  <tr><td>Autorización</td><td>Middleware por rol (<code>requireAuth</code>, <code>esOrganizador</code>)</td><td>Cada endpoint verifica el rol antes de ejecutar</td></tr>
+  <tr><td>Registro de admins</td><td>Token secreto (<code>ADMIN_SECRET</code>)</td><td>Impide que cualquiera cree cuentas de organizador</td></tr>
+  <tr><td>Variables sensibles</td><td>Variables de entorno (.env / Railway)</td><td>Nunca en el código fuente ni en el repositorio</td></tr>
+  <tr><td>Subida de archivos</td><td>Validación MIME + límite 5MB en Multer</td><td>Previene archivos maliciosos y sobrecarga del servidor</td></tr>
+</table>
+
+<h1>7. Deploy en Producción (Railway)</h1>
+<table>
+  <tr><th>Servicio</th><th>Cómo se construye</th><th>Variables clave</th></tr>
+  <tr><td><strong>Backend</strong></td><td>Dockerfile en <code>/backend</code>. Arranca con <code>node src/app.mjs</code></td><td><code>DATABASE_URL</code>, <code>JWT_SECRET</code>, <code>ADMIN_SECRET</code>, <code>RESEND_API_KEY</code></td></tr>
+  <tr><td><strong>Frontend</strong></td><td>Dockerfile multi-stage: build CRA → sirve con <code>serve</code>. URL del backend bakeada en el bundle.</td><td><code>REACT_APP_API_URL</code> = URL del backend (sin <code>/api</code>)</td></tr>
+  <tr><td><strong>PostgreSQL</strong></td><td>Servicio administrado de Railway</td><td><code>DATABASE_URL</code> generada automáticamente</td></tr>
+</table>
+<div class="info"><strong>CI/CD:</strong> Al hacer <code>git push origin optimized-version</code>, Railway detecta el cambio y rebuilda automáticamente los contenedores sin intervención manual.</div>
+
+<!-- ══════════ 8. PREGUNTAS DE DEFENSA ══════════ -->
+<h1>8. Preguntas Frecuentes de Defensa</h1>
+
+<h4>¿Por qué Node.js y no otro lenguaje backend?</h4>
+<p>JavaScript en el backend permite compartir lógica con el frontend y es ideal para APIs REST por su modelo de I/O no bloqueante (event loop), que maneja eficientemente múltiples conexiones simultáneas sin threads.</p>
+
+<h4>¿Por qué PostgreSQL y no MongoDB?</h4>
+<p>Los datos son fuertemente relacionales: jugadores → equipos → inscripciones → grupos → partidos. El modelo relacional con FK y transacciones garantiza integridad, especialmente en operaciones como inscripción donde varios inserts deben ser atómicos (todos o ninguno).</p>
+
+<h4>¿Cómo funciona JWT?</h4>
+<p>Token con tres partes en base64: header (algoritmo), payload (id y rol del usuario) y firma (HMAC-SHA256 con <code>JWT_SECRET</code>). El backend verifica la firma en cada request sin consultar la DB, lo que hace la autenticación muy eficiente y sin estado.</p>
+
+<h4>¿Cómo se evita que dos jugadores se inscriban en torneos superpuestos?</h4>
+<p>La ruta <code>POST /api/inscripcion</code> hace una query SQL que busca si alguno de los dos jugadores tiene inscripciones en otros torneos cuyos rangos de fechas se solapan con el torneo nuevo: <code>NOT (fecha_fin &lt; fecha_inicio_nuevo OR fecha_inicio &gt; fecha_fin_nuevo)</code>.</p>
+
+<h4>¿Qué es Docker Compose y por qué se usa?</h4>
+<p>Permite definir en un YAML los 3 servicios (DB, backend, frontend) con sus configs y redes. Con <code>docker-compose up --build</code> se levanta todo el sistema en cualquier máquina sin instalar dependencias manualmente, garantizando reproducibilidad.</p>
+
+<h4>¿Por qué <code>valor_numerico</code> y no <code>id_categoria</code> en el ranking?</h4>
+<p>Porque los torneos de tipo "suma" no tienen categoría fija: dos jugadores de distinta categoría juegan juntos (ej: 5ta+4ta=SUMA9). El <code>valor_numerico</code> individual es el único denominador común para agrupar el ranking coherentemente entre ambos tipos de torneo.</p>
+
+<h4>¿Cómo funciona el auto-avance en el playoff?</h4>
+<p>Al crear el bracket, cada partido de playoff tiene <code>next_match_id</code> (FK al partido siguiente) y <code>next_slot</code> (1 o 2). Al cargar el resultado, el sistema calcula el ganador y ejecuta: <code>UPDATE partidos_llave SET equipo{slot}_id = ganador_id WHERE id = next_match_id</code>.</p>
+
+<h4>¿Por qué React Context y no Redux?</h4>
+<p>El estado compartido del sistema es simple: solo el usuario autenticado. Context es suficiente y evita la complejidad de Redux (actions, reducers, store). Redux se justificaría en apps con múltiples fuentes de estado complejo y sincronización frecuente.</p>
+
+<h4>¿Qué pasa si el servidor de email no está configurado?</h4>
+<p>El sistema es resiliente: el cliente Resend se inicializa solo si <code>RESEND_API_KEY</code> está definida. Si no, las funciones retornan silenciosamente sin error. El flujo de inscripción y login completa igual.</p>
+
+<p style="margin-top:24px;text-align:center;color:#888;font-size:10px;border-top:1px solid #eee;padding-top:12px">
+  <em>Resumen Técnico Completo — Pro Cup Padel &nbsp;|&nbsp; Cepeda &amp; Wortley, 2026</em>
+</p>
+
+</body>
+</html>
