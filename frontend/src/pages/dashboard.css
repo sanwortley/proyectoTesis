@@ -463,17 +463,21 @@
     gap: 12px;
     margin-bottom: 1rem;
     flex-wrap: wrap;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .audit-input {
     flex: 1;
-    min-width: 200px;
+    min-width: 0;
+    max-width: 100%;
     background: #252525;
     border: 1px solid #444;
     color: #fff;
     padding: 8px 12px;
     border-radius: 8px;
     font-size: 0.9rem;
+    box-sizing: border-box;
 }
 
 .audit-input::placeholder {
@@ -494,6 +498,7 @@
     font-size: 0.9rem;
     cursor: pointer;
     min-width: 130px;
+    box-sizing: border-box;
 }
 
 .audit-select:focus {
