@@ -124,7 +124,6 @@
 }
 
 .admin-btn-nuevo {
-    max-width: 200px;
     white-space: nowrap;
     flex-shrink: 0;
 }
