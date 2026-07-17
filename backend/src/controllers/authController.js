@@ -25,25 +25,28 @@ export const login = async (req, res) => {
       return res.status(400).json({ error: 'Faltan credenciales' });
     }
 
-    // 🧩 Logs de diagnóstico
+    // Logs de diagnóstico
     console.log('[LOGIN] body:', req.body);
 
-    // 📊 Verificar base de datos actual
+    // Verificar base de datos actual
     const dbMeta = await pool.query('SELECT current_database() db, current_user usr');
     console.log('[DB]', dbMeta.rows[0]); // Ej: { db: 'procup3', usr: 'postgres' }
 
-    // 🎯 Query a tu tabla real con TRIM para evitar espacios invisibles
+    // Query a tu tabla real con TRIM para evitar espacios invisibles
     const { rows } = await pool.query(
       `
-      SELECT 
-        id_jugador,
-        nombre_jugador,
-        apellido_jugador,
-        email,
-        rol,
-        password AS password_norm
-      FROM public.jugador
-      WHERE LOWER(TRIM(email)) = LOWER(TRIM($1))
+      SELECT
+        j.id_jugador,
+        j.nombre_jugador,
+        j.apellido_jugador,
+        j.email,
+        j.rol,
+        j.password AS password_norm,
+        j.categoria_id,
+        c.valor_numerico
+      FROM public.jugador j
+      LEFT JOIN categoria c ON c.id_categoria = j.categoria_id
+      WHERE LOWER(TRIM(j.email)) = LOWER(TRIM($1))
       LIMIT 1
       `,
       [loginInput]
@@ -65,7 +68,7 @@ export const login = async (req, res) => {
       return res.status(404).json({ error: 'Jugador no encontrado' });
     }
 
-    // 🔐 Verificación de contraseña (bcrypt o texto plano)
+    // Verificación de contraseña (bcrypt o texto plano)
     const stored = user.password_norm || '';
     const isHash = stored.startsWith?.('$2');
     const isValid = isHash ? await bcrypt.compare(password, stored) : password === stored;
@@ -84,10 +87,10 @@ export const login = async (req, res) => {
       return res.status(401).json({ error: 'Contraseña incorrecta' });
     }
 
-    // 🏷️ Rol normalizado
+    // Rol normalizado
     const role = (user.rol || 'jugador').toLowerCase();
 
-    // 🎟️ Generar token JWT
+    // Generar token JWT
     const token = jwt.sign(
       { id: user.id_jugador, role },
       process.env.JWT_SECRET || 'dev_secret_change_me',
@@ -104,7 +107,7 @@ export const login = async (req, res) => {
       motivo: 'Login exitoso'
     });
 
-    // 📦 Respuesta al frontend
+    // Respuesta al frontend
     return res.json({
       ok: true,
       token,
@@ -114,7 +117,9 @@ export const login = async (req, res) => {
         apellido: user.apellido_jugador,
         email: user.email,
         role,
-        rol: role
+        rol: role,
+        categoria_id: user.categoria_id,
+        valor_numerico: user.valor_numerico,
       }
     });
 

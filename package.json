@@ -1,4 +1,11 @@
 {
+  "name": "proyecto-tesis",
+  "private": true,
+  "scripts": {
+    "dev": "powershell -ExecutionPolicy Bypass -File ./scripts/start-docker-and-up.ps1",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down"
+  },
   "dependencies": {
     "axios": "^1.9.0"
   }

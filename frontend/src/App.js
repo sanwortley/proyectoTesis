@@ -12,12 +12,13 @@ import Inscripcion from './pages/Inscripcion';
 import Torneos from './pages/Torneos';
 import Dashboard from './pages/Dashboard';           // 👈 nuevo
 import AdminJugadores from './pages/AdminJugadores'; // 👈 nuevo
+import AdminInscripcion from './pages/AdminInscripcion';
 import Perfil from './pages/Perfil';                 // 👈 nuevo
 import LayoutBase from './layout/LayoutBase';         // 👈 layout
 import axios from 'axios';
 
-// axios (igual que ya tenías)
-axios.defaults.baseURL = 'http://localhost:3000';
+// baseURL: en producción la setea index.js desde REACT_APP_API_URL
+// en local queda http://localhost:3000 como fallback
 axios.interceptors.request.use((config) => {
   const raw = localStorage.getItem('user');
   const token = raw ? JSON.parse(raw).token : null;
@@ -119,6 +120,9 @@ function App() {
         } />
         <Route path="/admin/jugadores" element={
           <ProtectedRoute allow={['organizador']}><AdminJugadores /></ProtectedRoute>
+        } />
+        <Route path="/admin/inscripcion" element={
+          <ProtectedRoute allow={['organizador']}><AdminInscripcion /></ProtectedRoute>
         } />
 
         {/* 4. Rutas de JUGADOR */}

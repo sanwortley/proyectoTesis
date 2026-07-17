@@ -1,3 +1,13 @@
+:root {
+  --navbar-height: 100px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --navbar-height: 160px;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -9,6 +19,19 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Evita scroll horizontal accidental en cualquier página */
+html, body {
+  overflow-x: clip;
+  max-width: 100vw;
+}
+
+/* iOS Safari: evita zoom automático al enfocar inputs (requiere font-size >= 16px) */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
 }
 
 code {

@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 300" font-family="Arial,sans-serif" font-size="10">
+  <rect width="620" height="300" fill="white"/>
+  <text x="310" y="18" text-anchor="middle" font-size="13" font-weight="bold">Diagrama de Clases — Login</text>
+
+  <!-- LoginForm (boundary) -->
+  <rect x="20" y="30" width="150" height="18" rx="2" fill="#2E4A7A"/>
+  <text x="95" y="43" text-anchor="middle" fill="white" font-size="9">«boundary»</text>
+  <rect x="20" y="48" width="150" height="18" fill="#dce9f8" stroke="#2E4A7A"/>
+  <text x="95" y="61" text-anchor="middle" font-weight="bold">LoginForm</text>
+  <rect x="20" y="66" width="150" height="58" fill="white" stroke="#2E4A7A"/>
+  <text x="30" y="79" font-size="9">– email: string</text>
+  <text x="30" y="92" font-size="9">– password: string</text>
+  <text x="30" y="105" font-size="9">– errorMsg: string</text>
+  <rect x="20" y="124" width="150" height="30" fill="#f0f4fc" stroke="#2E4A7A"/>
+  <text x="30" y="140" font-size="9">+ handleSubmit()</text>
+  <text x="30" y="153" font-size="9">+ handleGuestLogin()</text>
+
+  <!-- AuthController (control) -->
+  <rect x="230" y="30" width="160" height="18" rx="2" fill="#4a7a2e"/>
+  <text x="310" y="43" text-anchor="middle" fill="white" font-size="9">«control»</text>
+  <rect x="230" y="48" width="160" height="18" fill="#e8f5d8" stroke="#4a7a2e"/>
+  <text x="310" y="61" text-anchor="middle" font-weight="bold">AuthController</text>
+  <rect x="230" y="66" width="160" height="20" fill="white" stroke="#4a7a2e"/>
+  <text x="240" y="79" font-size="9">(sin atributos de estado)</text>
+  <rect x="230" y="86" width="160" height="52" fill="#f4fcea" stroke="#4a7a2e"/>
+  <text x="240" y="99" font-size="9">+ login(email, pwd): JWT</text>
+  <text x="240" y="112" font-size="9">+ validateToken(token)</text>
+  <text x="240" y="125" font-size="9">+ registrarLog(datos)</text>
+
+  <!-- Jugador (entity) -->
+  <rect x="450" y="30" width="155" height="18" rx="2" fill="#7a2e2e"/>
+  <text x="527" y="43" text-anchor="middle" fill="white" font-size="9">«entity»</text>
+  <rect x="450" y="48" width="155" height="18" fill="#f8e8e8" stroke="#7a2e2e"/>
+  <text x="527" y="61" text-anchor="middle" font-weight="bold">Jugador</text>
+  <rect x="450" y="66" width="155" height="90" fill="white" stroke="#7a2e2e"/>
+  <text x="460" y="79" font-size="9">– id_jugador: int (PK)</text>
+  <text x="460" y="92" font-size="9">– email: varchar</text>
+  <text x="460" y="105" font-size="9">– password: varchar (hash)</text>
+  <text x="460" y="118" font-size="9">– rol: varchar</text>
+  <text x="460" y="131" font-size="9">– nombre_jugador: varchar</text>
+  <text x="460" y="144" font-size="9">– apellido_jugador: varchar</text>
+
+  <!-- AuditLog (entity) -->
+  <rect x="450" y="190" width="155" height="18" rx="2" fill="#555"/>
+  <text x="527" y="203" text-anchor="middle" fill="white" font-size="9">«entity»</text>
+  <rect x="450" y="208" width="155" height="18" fill="#f0f0f0" stroke="#555"/>
+  <text x="527" y="221" text-anchor="middle" font-weight="bold">AuditLogIngreso</text>
+  <rect x="450" y="226" width="155" height="65" fill="white" stroke="#555"/>
+  <text x="460" y="239" font-size="9">– id: int (PK)</text>
+  <text x="460" y="252" font-size="9">– jugador_id: int (FK)</text>
+  <text x="460" y="265" font-size="9">– exitoso: boolean</text>
+  <text x="460" y="278" font-size="9">– ip: varchar</text>
+  <text x="460" y="291" font-size="9">– timestamp: timestamp</text>
+
+  <!-- Relations -->
+  <!-- LoginForm → AuthController -->
+  <line x1="170" y1="100" x2="230" y2="100" stroke="#333" stroke-width="1.5" marker-end="url(#open)"/>
+  <text x="190" y="95" font-size="8">llama</text>
+
+  <!-- AuthController → Jugador -->
+  <line x1="390" y1="100" x2="450" y2="100" stroke="#333" stroke-width="1.5" marker-end="url(#open)"/>
+  <text x="400" y="95" font-size="8">consulta</text>
+
+  <!-- AuthController → AuditLog -->
+  <line x1="390" y1="120" x2="440" y2="240" stroke="#333" stroke-width="1.5" marker-end="url(#open)"/>
+  <text x="395" y="190" font-size="8">registra</text>
+
+  <defs>
+    <marker id="open" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6" fill="none" stroke="#333" stroke-width="1.2"/>
+    </marker>
+  </defs>
+</svg>

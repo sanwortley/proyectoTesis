@@ -46,6 +46,8 @@ CREATE TABLE torneo (
       CHECK (formato_categoria IN ('categoria_fija', 'suma')),
 
   suma_categoria           INT,
+  modalidad                VARCHAR(50) NOT NULL DEFAULT 'fin_de_semana',
+  dias_juego               VARCHAR(100),
 
   CONSTRAINT ck_formato_categoria_valida CHECK (
       (formato_categoria = 'categoria_fija' AND categoria_id IS NOT NULL AND suma_categoria IS NULL)
@@ -68,7 +70,8 @@ CREATE TABLE jugador (
   rol              VARCHAR(20) NOT NULL DEFAULT 'jugador'
                     CHECK (rol IN ('jugador', 'organizador')),
   fecha_registro   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  categoria_id     INT REFERENCES categoria(id_categoria)
+  categoria_id     INT REFERENCES categoria(id_categoria),
+  foto_perfil      TEXT
 );
 
 -- ============================
@@ -112,7 +115,9 @@ CREATE TABLE equipos_grupo (
   puntos           INT DEFAULT 0,
   partidos_jugados INT DEFAULT 0,
   sets_favor       INT DEFAULT 0,
-  sets_contra      INT DEFAULT 0
+  sets_contra      INT DEFAULT 0,
+  games_favor      INT DEFAULT 0,
+  games_contra     INT DEFAULT 0
 );
 
 -- Partidos de fase de grupos (round-robin)
@@ -128,6 +133,7 @@ CREATE TABLE partidos_grupo (
   set2_equipo2    INT,
   set3_equipo1    INT,
   set3_equipo2    INT,
+  fecha           TIMESTAMP,
 
   estado          VARCHAR(20) DEFAULT 'no_iniciado'
                     CHECK (estado IN ('no_iniciado','iniciado','finalizado'))

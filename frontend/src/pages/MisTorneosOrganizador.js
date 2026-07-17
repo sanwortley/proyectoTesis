@@ -14,8 +14,8 @@ function MisTorneosOrganizador() {
     (async () => {
       try {
         const [resT, resC] = await Promise.all([
-          axios.get(`${process.env.REACT_APP_API_URL}/torneos`),
-          axios.get(`${process.env.REACT_APP_API_URL}/categorias`)
+          axios.get(`/api/torneos`),
+          axios.get(`/api/categorias`)
         ]);
 
         setTorneos(resT.data || []);

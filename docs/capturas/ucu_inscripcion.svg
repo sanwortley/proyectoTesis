@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 600" font-family="Arial,sans-serif" font-size="10">
+  <rect width="950" height="600" fill="white"/>
+  <text x="475" y="17" text-anchor="middle" font-size="13" font-weight="bold">UCU — Módulo Inscripción a Torneo</text>
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7" fill="none" stroke="#333" stroke-width="1.2"/>
+    </marker>
+    <marker id="blu" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7" fill="none" stroke="#2E4A7A" stroke-width="1.2"/>
+    </marker>
+  </defs>
+
+  <!-- Boundary -->
+  <rect x="140" y="28" width="790" height="550" rx="6" fill="#f7f9fc" stroke="#2E4A7A" stroke-width="1.5"/>
+  <text x="535" y="46" text-anchor="middle" font-size="10" font-weight="bold" fill="#2E4A7A">Sistema — Módulo Inscripción</text>
+
+  <!-- Actor: Jugador -->
+  <circle cx="60" cy="280" r="14" fill="none" stroke="#333" stroke-width="1.5"/>
+  <line x1="60" y1="294" x2="60" y2="330" stroke="#333" stroke-width="1.5"/>
+  <line x1="42" y1="308" x2="78" y2="308" stroke="#333" stroke-width="1.5"/>
+  <line x1="60" y1="330" x2="42" y2="353" stroke="#333" stroke-width="1.5"/>
+  <line x1="60" y1="330" x2="78" y2="353" stroke="#333" stroke-width="1.5"/>
+  <text x="60" y="367" text-anchor="middle" font-size="9">Jugador</text>
+
+  <!-- UC Central: Inscribirse a Torneo -->
+  <ellipse cx="380" cy="280" rx="95" ry="30" fill="#d6e4f7" stroke="#2E4A7A" stroke-width="1.5"/>
+  <text x="380" y="276" text-anchor="middle" font-weight="bold">Inscribirse</text>
+  <text x="380" y="291" text-anchor="middle">a Torneo</text>
+
+  <!-- UC: Mostrar navbar -->
+  <ellipse cx="380" cy="90" rx="90" ry="24" fill="#e8f0fb" stroke="#2E4A7A" stroke-width="1.2"/>
+  <text x="380" y="95" text-anchor="middle">Mostrar navbar</text>
+
+  <!-- Navbar extends -->
+  <ellipse cx="260" cy="55" rx="75" ry="19" fill="#f0f4f0" stroke="#888" stroke-width="1"/>
+  <text x="260" y="60" text-anchor="middle" font-size="8.5">Navegar Torneos</text>
+  <ellipse cx="510" cy="55" rx="75" ry="19" fill="#f0f4f0" stroke="#888" stroke-width="1"/>
+  <text x="510" y="60" text-anchor="middle" font-size="8.5">Navegar Ranking / Home</text>
+
+  <!-- UC: Seleccionar compañero -->
+  <ellipse cx="650" cy="150" rx="95" ry="24" fill="#e8f0fb" stroke="#2E4A7A" stroke-width="1.2"/>
+  <text x="650" y="146" text-anchor="middle">Seleccionar compañero</text>
+  <text x="650" y="160" text-anchor="middle">(buscar jugador)</text>
+
+  <!-- UC: Verificar cupos disponibles -->
+  <ellipse cx="650" cy="240" rx="95" ry="24" fill="#e8f0fb" stroke="#2E4A7A" stroke-width="1.2"/>
+  <text x="650" y="236" text-anchor="middle">Verificar cupos</text>
+  <text x="650" y="250" text-anchor="middle">disponibles</text>
+
+  <!-- UC: Crear equipo -->
+  <ellipse cx="650" cy="330" rx="95" ry="24" fill="#e8f0fb" stroke="#2E4A7A" stroke-width="1.2"/>
+  <text x="650" y="335" text-anchor="middle">Crear equipo</text>
+
+  <!-- UC: Notificar por email -->
+  <ellipse cx="650" cy="420" rx="95" ry="24" fill="#e8f0fb" stroke="#2E4A7A" stroke-width="1.2"/>
+  <text x="650" y="416" text-anchor="middle">Notificar confirmación</text>
+  <text x="650" y="430" text-anchor="middle">por email</text>
+
+  <!-- Extends: Filtrar jugadores -->
+  <ellipse cx="840" cy="150" rx="85" ry="24" fill="#f0f8f0" stroke="#4a7a2e" stroke-width="1"/>
+  <text x="840" y="146" text-anchor="middle" font-size="9">Filtrar jugadores</text>
+  <text x="840" y="160" text-anchor="middle" font-size="9">disponibles</text>
+
+  <!-- Extends: Mostrar error cupo lleno -->
+  <ellipse cx="840" cy="240" rx="85" ry="24" fill="#fce8e8" stroke="#c00" stroke-width="1.2"/>
+  <text x="840" y="236" text-anchor="middle">Mostrar error</text>
+  <text x="840" y="250" text-anchor="middle">cupo lleno</text>
+
+  <!-- Extends: Mostrar error fecha cerrada -->
+  <ellipse cx="250" cy="175" rx="85" ry="24" fill="#fce8e8" stroke="#c00" stroke-width="1.2"/>
+  <text x="250" y="171" text-anchor="middle">Mostrar error</text>
+  <text x="250" y="185" text-anchor="middle">inscripción cerrada</text>
+
+  <!-- Extends: Validar categoría -->
+  <ellipse cx="250" cy="370" rx="85" ry="24" fill="#e8f0fb" stroke="#2E4A7A" stroke-width="1"/>
+  <text x="250" y="366" text-anchor="middle" font-size="9">Validar categoría</text>
+  <text x="250" y="380" text-anchor="middle" font-size="9">del equipo</text>
+
+  <!-- Extends: Mostrar error categoría inválida -->
+  <ellipse cx="250" cy="460" rx="85" ry="24" fill="#fce8e8" stroke="#c00" stroke-width="1.2"/>
+  <text x="250" y="456" text-anchor="middle">Mostrar error</text>
+  <text x="250" y="470" text-anchor="middle">categoría inválida</text>
+
+  <!-- Extends: Mostrar mensaje de éxito -->
+  <ellipse cx="380" cy="450" rx="90" ry="24" fill="#e8fce8" stroke="#4a7a2e" stroke-width="1.2"/>
+  <text x="380" y="446" text-anchor="middle">Mostrar mensaje</text>
+  <text x="380" y="460" text-anchor="middle">de éxito</text>
+
+  <!-- Extends: Aplicar diseño responsive -->
+  <ellipse cx="200" cy="90" rx="80" ry="20" fill="#f0f8f0" stroke="#4a7a2e" stroke-width="1"/>
+  <text x="200" y="95" text-anchor="middle" font-size="8.5">Aplicar diseño responsive</text>
+
+  <!-- LÍNEAS -->
+  <line x1="74" y1="280" x2="285" y2="280" stroke="#333" stroke-width="1.3"/>
+
+  <!-- Inscribirse -use-> Mostrar navbar -->
+  <line x1="380" y1="250" x2="380" y2="114" stroke="#2E4A7A" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="353" y="182" font-size="8" fill="#2E4A7A">«use»</text>
+
+  <!-- Mostrar navbar Extends navegar -->
+  <line x1="330" y1="76" x2="305" y2="67" stroke="#333" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+  <line x1="432" y1="76" x2="468" y2="67" stroke="#333" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+  <text x="390" y="55" text-anchor="middle" font-size="7.5" fill="#555">Extends</text>
+
+  <!-- Inscribirse -use-> Seleccionar compañero -->
+  <line x1="470" y1="262" x2="555" y2="162" stroke="#2E4A7A" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="510" y="205" text-anchor="middle" font-size="8" fill="#2E4A7A">«use»</text>
+
+  <!-- Inscribirse -use-> Verificar cupos -->
+  <line x1="475" y1="278" x2="555" y2="247" stroke="#2E4A7A" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="517" y="257" text-anchor="middle" font-size="8" fill="#2E4A7A">«use»</text>
+
+  <!-- Inscribirse -use-> Crear equipo -->
+  <line x1="475" y1="295" x2="555" y2="335" stroke="#2E4A7A" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="513" y="322" text-anchor="middle" font-size="8" fill="#2E4A7A">«use»</text>
+
+  <!-- Inscribirse -use-> Notificar email -->
+  <line x1="460" y1="305" x2="555" y2="415" stroke="#2E4A7A" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="505" y="368" text-anchor="middle" font-size="8" fill="#2E4A7A">«use»</text>
+
+  <!-- Seleccionar Extends→ Filtrar jugadores -->
+  <line x1="745" y1="150" x2="755" y2="150" stroke="#333" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="790" y="138" font-size="8">Extends</text>
+
+  <!-- Verificar cupos Extends→ Mostrar error cupo -->
+  <line x1="745" y1="240" x2="755" y2="240" stroke="#333" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="790" y="228" font-size="8">Extends</text>
+
+  <!-- Inscribirse Extends→ Mostrar error fecha cerrada -->
+  <line x1="295" y1="264" x2="295" y2="195" stroke="#333" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="268" y="228" font-size="8">Extends</text>
+
+  <!-- Crear equipo -use-> Validar categoría -->
+  <line x1="555" y1="345" x2="335" y2="375" stroke="#2E4A7A" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="440" y="368" text-anchor="middle" font-size="8" fill="#2E4A7A">«use»</text>
+
+  <!-- Validar categoría Extends→ error categoría -->
+  <line x1="250" y1="394" x2="250" y2="436" stroke="#333" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="223" y="418" font-size="8">Extends</text>
+
+  <!-- Notificar Extends→ Mostrar éxito -->
+  <line x1="555" y1="430" x2="470" y2="455" stroke="#333" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="500" y="440" font-size="8">Extends</text>
+
+  <!-- Aplicar responsive Extends→ Inscribirse -->
+  <line x1="245" y1="103" x2="298" y2="258" stroke="#4a7a2e" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="248" y="190" font-size="8" fill="#4a7a2e">Extends</text>
+
+  <!-- Leyenda -->
+  <rect x="155" y="525" width="355" height="46" rx="3" fill="#f9f9f9" stroke="#ccc"/>
+  <text x="338" y="541" text-anchor="middle" font-weight="bold" font-size="9">Leyenda</text>
+  <line x1="165" y1="554" x2="200" y2="554" stroke="#2E4A7A" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="205" y="558" font-size="8">«use» — incluye el caso de uso</text>
+  <line x1="165" y1="566" x2="200" y2="566" stroke="#333" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="205" y="570" font-size="8">Extends — comportamiento alternativo/extendido</text>
+</svg>

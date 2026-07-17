@@ -6,7 +6,7 @@ import {
   PieChart, Pie, Cell, LineChart, Line
 } from 'recharts';
 import {
-  Trophy, Users, CheckCircle, Clock, UserCheck, ClipboardList
+  Trophy, Users, CheckCircle, Clock, UserCheck, ClipboardList, Shield
 } from 'lucide-react';
 import './dashboard.css';
 // ... (existing helper functions)
@@ -36,6 +36,10 @@ export default function Dashboard() {
   const [alerts, setAlerts] = useState([]);
   const [torneosStatus, setTorneosStatus] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [auditLogs, setAuditLogs] = useState([]);
+  const [auditLoading, setAuditLoading] = useState(true);
+  const [auditSearch, setAuditSearch] = useState('');
+  const [auditExitoso, setAuditExitoso] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,6 +55,15 @@ export default function Dashboard() {
         setStats(statsRes.data);
         setAlerts(alertsRes.data);
         setTorneosStatus(statusRes.data);
+
+        try {
+          const auditRes = await axios.get('/api/ingresos');
+          setAuditLogs(auditRes.data);
+        } catch (auditErr) {
+          console.error('Error cargando logs de auditoría:', auditErr);
+        } finally {
+          setAuditLoading(false);
+        }
       } catch (error) {
         console.error('Error cargando dashboard:', error);
       } finally {
@@ -129,30 +142,31 @@ export default function Dashboard() {
                       <Pie
                         data={stats.equiposPorCategoria}
                         cx="50%"
-                        cy="50%"
+                        cy="45%"
                         innerRadius={50}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        paddingAngle={5}
+                        outerRadius={75}
+                        paddingAngle={4}
                         dataKey="cantidad"
                         nameKey="categoria"
                         label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+                          const RADIAN = Math.PI / 180;
                           const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                          const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
-                          const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
-                          return (
-                            <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+                          const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                          const y = cy + radius * Math.sin(-midAngle * RADIAN);
+                          return percent > 0.05 ? (
+                            <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={12} fontWeight={700}>
                               {`${(percent * 100).toFixed(0)}%`}
                             </text>
-                          );
+                          ) : null;
                         }}
+                        labelLine={false}
                       >
                         {stats.equiposPorCategoria.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
                       <Tooltip contentStyle={{ backgroundColor: '#333', borderColor: '#444', color: '#fff' }} />
-                      <Legend />
+                      <Legend wrapperStyle={{ paddingTop: '8px', fontSize: '0.82rem' }} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
@@ -212,7 +226,7 @@ export default function Dashboard() {
             <div className="alerts-list">
               {alerts.map((a, idx) => (
                 <div key={idx} className={`alert-item ${a.type}`}>
-                  <span className="alert-title">{a.type === 'error' ? '⛔ Atención' : '⚠️ Aviso'}</span>
+                  <span className="alert-title">{a.type === 'error' ? 'Atención' : 'Aviso'}</span>
                   <span className="alert-msg">{a.message}</span>
                 </div>
               ))}
@@ -251,6 +265,121 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+      {/* Audit Logs */}
+      <AuditSection
+        logs={auditLogs}
+        loading={auditLoading}
+        search={auditSearch}
+        onSearchChange={setAuditSearch}
+        exitoso={auditExitoso}
+        onExitosoChange={setAuditExitoso}
+      />
+    </div>
+  );
+}
+
+function AuditSection({ logs, loading, search, onSearchChange, exitoso, onExitosoChange }) {
+  const filtered = logs.filter(log => {
+    const text = `${log.nombre ?? ''} ${log.apellido ?? ''} ${log.motivo ?? ''} ${log.ip ?? ''}`.toLowerCase();
+    const matchSearch = !search || text.includes(search.toLowerCase());
+    const matchExitoso = exitoso === '' || String(log.exitoso) === exitoso;
+    return matchSearch && matchExitoso;
+  });
+
+  return (
+    <div className="section-container audit-section">
+      <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+        <Shield size={18} color="#FFD700" /> Logs de Auditoría — Ingresos
+      </h2>
+
+      <div className="audit-filters">
+        <input
+          type="text"
+          className="audit-input"
+          placeholder="Buscar por nombre, apellido, IP o motivo..."
+          value={search}
+          onChange={e => onSearchChange(e.target.value)}
+        />
+        <select
+          className="audit-select"
+          value={exitoso}
+          onChange={e => onExitosoChange(e.target.value)}
+        >
+          <option value="">Todos</option>
+          <option value="true">Exitosos</option>
+          <option value="false">Fallidos</option>
+        </select>
+      </div>
+
+      {loading ? (
+        <p style={{ color: '#aaa', textAlign: 'center', padding: '1rem' }}>Cargando logs...</p>
+      ) : (
+        <>
+          {/* Tabla desktop */}
+          <div className="audit-table-wrapper">
+            <table className="audit-table">
+              <thead>
+                <tr>
+                  <th>Fecha / Hora</th>
+                  <th>Jugador</th>
+                  <th>IP</th>
+                  <th>Estado</th>
+                  <th>Motivo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((log, idx) => (
+                  <tr key={idx}>
+                    <td className="audit-ts">
+                      {new Date(log.timestamp).toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' })}
+                    </td>
+                    <td>{log.nombre ? `${log.nombre} ${log.apellido}` : '—'}</td>
+                    <td className="audit-ip">{log.ip || '—'}</td>
+                    <td>
+                      <span className={`audit-badge ${log.exitoso ? 'audit-ok' : 'audit-fail'}`}>
+                        {log.exitoso ? 'Exitoso' : 'Fallido'}
+                      </span>
+                    </td>
+                    <td className="audit-motivo">{log.motivo || '—'}</td>
+                  </tr>
+                ))}
+                {filtered.length === 0 && (
+                  <tr>
+                    <td colSpan="5" style={{ textAlign: 'center', color: '#aaa', padding: '1.5rem' }}>
+                      Sin resultados.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Cards mobile */}
+          <div className="audit-cards">
+            {filtered.length === 0 && (
+              <p style={{ color: '#aaa', textAlign: 'center' }}>Sin resultados.</p>
+            )}
+            {filtered.map((log, idx) => (
+              <div key={idx} className="audit-card">
+                <div className="audit-card-header">
+                  <span className="audit-card-name">
+                    {log.nombre ? `${log.nombre} ${log.apellido}` : 'Desconocido'}
+                  </span>
+                  <span className={`audit-badge ${log.exitoso ? 'audit-ok' : 'audit-fail'}`}>
+                    {log.exitoso ? 'Exitoso' : 'Fallido'}
+                  </span>
+                </div>
+                <div className="audit-card-ts">
+                  {new Date(log.timestamp).toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' })}
+                </div>
+                <div className="audit-card-motivo">{log.motivo || '—'}</div>
+              </div>
+            ))}
+          </div>
+
+          <p className="audit-count">{filtered.length} de {logs.length} registros</p>
+        </>
+      )}
     </div>
   );
 }

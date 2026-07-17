@@ -27,7 +27,7 @@ function Perfil() {
 
     const cargarDatos = async (id) => {
         try {
-            const res = await axios.get(`${process.env.REACT_APP_API_URL}/jugadores/${id}`);
+            const res = await axios.get(`/api/jugadores/${id}`);
             setJugador(res.data);
             setFormData({
                 nombre_jugador: res.data.nombre_jugador,
@@ -38,7 +38,7 @@ function Perfil() {
                 password: '', // siempre vacía al inicio
             });
             if (res.data.foto_perfil) {
-                const baseUrl = process.env.REACT_APP_API_URL.replace(/\/api$/, '');
+                const baseUrl = (process.env.REACT_APP_API_URL || 'http://localhost:3000').replace(/\/api$/, '');
                 setFotoPreview(`${baseUrl}/${res.data.foto_perfil}`);
             }
         } catch (err) {
@@ -82,7 +82,7 @@ function Perfil() {
 
             const token = localStorage.getItem('token');
             const res = await axios.put(
-                `${process.env.REACT_APP_API_URL}/jugadores/${jugador.id_jugador}`,
+                `/api/jugadores/${jugador.id_jugador}`,
                 data,
                 {
                     headers: {

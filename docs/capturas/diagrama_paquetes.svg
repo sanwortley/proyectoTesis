@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" font-family="Arial,sans-serif" font-size="11">
+  <rect width="720" height="400" fill="white"/>
+  <text x="360" y="22" text-anchor="middle" font-size="13" font-weight="bold">Diagrama de Paquetes — Pro Cup Padel</text>
+
+  <!-- arrows marker -->
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#444"/>
+    </marker>
+    <marker id="dep" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#999"/>
+    </marker>
+  </defs>
+
+  <!-- Interfaz de Usuario -->
+  <rect x="270" y="35" width="180" height="20" rx="3" fill="#2E4A7A"/>
+  <rect x="270" y="55" width="180" height="34" fill="#E8F0FB" stroke="#2E4A7A" stroke-width="1.5"/>
+  <text x="360" y="49" text-anchor="middle" fill="white" font-size="9">«package»</text>
+  <text x="360" y="77" text-anchor="middle" font-weight="bold">Interfaz de Usuario</text>
+
+  <!-- UI → Auth -->
+  <line x1="295" y1="89" x2="120" y2="140" stroke="#444" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- UI → Adm Torneos -->
+  <line x1="340" y1="89" x2="300" y2="140" stroke="#444" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- UI → Inscripciones -->
+  <line x1="360" y1="89" x2="460" y2="140" stroke="#444" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- UI → Gestión Jugadores -->
+  <line x1="420" y1="89" x2="610" y2="140" stroke="#444" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Autenticación y Roles -->
+  <rect x="30" y="140" width="160" height="20" rx="3" fill="#2E4A7A"/>
+  <rect x="30" y="160" width="160" height="34" fill="#E8F0FB" stroke="#2E4A7A" stroke-width="1.5"/>
+  <text x="110" y="154" text-anchor="middle" fill="white" font-size="9">«package»</text>
+  <text x="110" y="182" text-anchor="middle" font-weight="bold">Autenticación y Roles</text>
+
+  <!-- Adm Torneos -->
+  <rect x="210" y="140" width="160" height="20" rx="3" fill="#2E4A7A"/>
+  <rect x="210" y="160" width="160" height="34" fill="#E8F0FB" stroke="#2E4A7A" stroke-width="1.5"/>
+  <text x="290" y="154" text-anchor="middle" fill="white" font-size="9">«package»</text>
+  <text x="290" y="182" text-anchor="middle" font-weight="bold">Adm. de Torneos</text>
+
+  <!-- Inscripciones -->
+  <rect x="390" y="140" width="160" height="20" rx="3" fill="#2E4A7A"/>
+  <rect x="390" y="160" width="160" height="34" fill="#E8F0FB" stroke="#2E4A7A" stroke-width="1.5"/>
+  <text x="470" y="154" text-anchor="middle" fill="white" font-size="9">«package»</text>
+  <text x="470" y="182" text-anchor="middle" font-weight="bold">Gest. Inscripciones</text>
+
+  <!-- Gestión Jugadores -->
+  <rect x="560" y="140" width="150" height="20" rx="3" fill="#2E4A7A"/>
+  <rect x="560" y="160" width="150" height="34" fill="#E8F0FB" stroke="#2E4A7A" stroke-width="1.5"/>
+  <text x="635" y="154" text-anchor="middle" fill="white" font-size="9">«package»</text>
+  <text x="635" y="182" text-anchor="middle" font-weight="bold">Gest. Jugadores</text>
+
+  <!-- Adm Torneos → Fixture -->
+  <line x1="290" y1="194" x2="290" y2="255" stroke="#444" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- Inscripciones → Fixture -->
+  <line x1="430" y1="194" x2="370" y2="255" stroke="#999" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#dep)"/>
+
+  <!-- Fixture y Resultados -->
+  <rect x="200" y="255" width="180" height="20" rx="3" fill="#4a7a2e"/>
+  <rect x="200" y="275" width="180" height="34" fill="#f0fbe8" stroke="#4a7a2e" stroke-width="1.5"/>
+  <text x="290" y="269" text-anchor="middle" fill="white" font-size="9">«package» CORE</text>
+  <text x="290" y="297" text-anchor="middle" font-weight="bold">Fixture y Resultados</text>
+
+  <!-- Fixture → Ranking -->
+  <line x1="380" y1="292" x2="460" y2="292" stroke="#444" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Ranking y Estadísticas -->
+  <rect x="460" y="255" width="170" height="20" rx="3" fill="#2E4A7A"/>
+  <rect x="460" y="275" width="170" height="34" fill="#E8F0FB" stroke="#2E4A7A" stroke-width="1.5"/>
+  <text x="545" y="269" text-anchor="middle" fill="white" font-size="9">«package»</text>
+  <text x="545" y="297" text-anchor="middle" font-weight="bold">Ranking y Estadísticas</text>
+
+  <!-- Multimedia -->
+  <rect x="30" y="255" width="150" height="20" rx="3" fill="#7a5a2e"/>
+  <rect x="30" y="275" width="150" height="34" fill="#fdf5e8" stroke="#7a5a2e" stroke-width="1.5"/>
+  <text x="105" y="269" text-anchor="middle" fill="white" font-size="9">«package»</text>
+  <text x="105" y="297" text-anchor="middle" font-weight="bold">Multimedia</text>
+
+  <!-- Leyenda -->
+  <rect x="200" y="340" width="320" height="50" fill="#f9f9f9" stroke="#ccc" rx="4"/>
+  <text x="360" y="357" text-anchor="middle" font-size="10" font-weight="bold">Leyenda</text>
+  <line x1="220" y1="372" x2="250" y2="372" stroke="#444" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="255" y="376" font-size="9">Dependencia directa</text>
+  <line x1="340" y1="372" x2="370" y2="372" stroke="#999" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#dep)"/>
+  <text x="375" y="376" font-size="9">Dependencia opcional</text>
+</svg>

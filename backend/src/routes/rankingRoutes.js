@@ -63,38 +63,26 @@ router.post('/torneos/:id/generar-ranking', async (req, res) => {
     const torneo = tRes.rows[0];
     const nombreTorneo = torneo.nombre_torneo;
 
-    // 🔒 EVITAR DUPLICADOS: Si ya hay entradas para este torneo, no procesar de nuevo.
-    const yaRes = await client.query(
-      'SELECT COUNT(*)::int AS cant FROM ranking_jugador WHERE torneo_participado = $1',
+    // Si ya hay entradas para este torneo, borrarlas y regenerar (permite re-procesar)
+    await client.query(
+      'DELETE FROM ranking_jugador WHERE torneo_participado = $1',
       [nombreTorneo]
     );
-    if ((yaRes.rows[0]?.cant ?? 0) > 0) {
-      await client.query('ROLLBACK');
-      return res.json({
-        ok: true,
-        mensaje: 'Este torneo ya ha sido procesado para el ranking anteriormente.',
-        jugadores_procesados: 0
-      });
-    }
 
-    // ✅ Categoría a guardar en ranking_jugador.categoria
-    // - Si es categoría fija => 2..8 (valor_numerico)
-    // - Si es SUMA => guardamos la suma (ej 12) (si preferís otra regla, lo ajustamos)
+    // Para torneo de categoría fija: usar valor_numerico de la categoría.
+    // Para torneo SUMA: cada jugador usará su propia categoría individual.
     let categoriaRanking = null;
+    const isSuma = torneo.formato_categoria === 'suma';
     if (torneo.formato_categoria === 'categoria_fija') {
       categoriaRanking = torneo.categoria_num ?? null;
-    } else if (torneo.formato_categoria === 'suma') {
-      categoriaRanking =
-        torneo.suma_categoria != null ? Number(torneo.suma_categoria) : null;
+      if (categoriaRanking == null || Number.isNaN(Number(categoriaRanking))) {
+        await client.query('ROLLBACK');
+        return res.status(400).json({
+          error: 'No se pudo determinar la categoría del ranking (torneo mal configurado)',
+        });
+      }
     }
-
-    if (categoriaRanking == null || Number.isNaN(Number(categoriaRanking))) {
-      await client.query('ROLLBACK');
-      return res.status(400).json({
-        error:
-          'No se pudo determinar la categoría del ranking (torneo mal configurado)',
-      });
-    }
+    // Para SUMA: categoriaRanking queda null y se usa la categoría de cada jugador en el loop
 
     // 2) Verificar que haya play-off generado
     const playoffRes = await client.query(
@@ -249,9 +237,11 @@ router.post('/torneos/:id/generar-ranking', async (req, res) => {
 
     const jugRes = await client.query(
       `
-      SELECT id_jugador, nombre_jugador, apellido_jugador
-      FROM jugador
-      WHERE id_jugador = ANY($1::int[])
+      SELECT j.id_jugador, j.nombre_jugador, j.apellido_jugador,
+             c.valor_numerico AS cat_num
+      FROM jugador j
+      LEFT JOIN categoria c ON j.categoria_id = c.id_categoria
+      WHERE j.id_jugador = ANY($1::int[])
       `,
       [idsJugadores]
     );
@@ -271,13 +261,17 @@ router.post('/torneos/:id/generar-ranking', async (req, res) => {
       ultimaPareja,
       fase,
       puntosAAgregar,
+      catUsada,
     }) {
+      const catFinal = catUsada ?? categoriaRanking;
+      if (catFinal == null) return; // sin categoría no se puede rankear
+
       // buscar existente por jugador_id + categoria
       const r = await client.query(
         `SELECT id, puntos
          FROM ranking_jugador
          WHERE jugador_id = $1 AND categoria = $2`,
-        [jugadorId, categoriaRanking]
+        [jugadorId, catFinal]
       );
 
       if (r.rowCount) {
@@ -303,7 +297,7 @@ router.post('/torneos/:id/generar-ranking', async (req, res) => {
             nombreTorneo,
             fase,
             nuevoTotal,
-            categoriaRanking,
+            catFinal,
             r.rows[0].id,
           ]
         );
@@ -322,7 +316,7 @@ router.post('/torneos/:id/generar-ranking', async (req, res) => {
             nombreTorneo,
             fase,
             Number(puntosAAgregar) || 0,
-            categoriaRanking,
+            catFinal,
           ]
         );
       }
@@ -339,24 +333,19 @@ router.post('/torneos/:id/generar-ranking', async (req, res) => {
       const j1 = id1 ? mapaJugadores.get(id1) : null;
       const j2 = id2 ? mapaJugadores.get(id2) : null;
 
-      console.log(`[DEBUG] EQ ${eq.id_equipo}: ID1=${id1} found=${!!j1}, ID2=${id2} found=${!!j2}`);
-      if (j2) console.log('[DEBUG] j2 object:', JSON.stringify(j2));
-
       if (j1) {
         const nombrePareja = j2
           ? `${j2.nombre_jugador} ${j2.apellido_jugador}`.trim()
           : '-';
-
-        const upsertParams1 = {
+        await upsertRanking({
           jugadorId: id1,
           nombre: j1.nombre_jugador,
           apellido: j1.apellido_jugador,
           ultimaPareja: nombrePareja,
           fase,
           puntosAAgregar: puntos,
-        };
-        console.log('[DEBUG] upsertRanking params (j1):', JSON.stringify(upsertParams1));
-        await upsertRanking(upsertParams1);
+          catUsada: isSuma ? (j1.cat_num ?? null) : null,
+        });
         jugadoresProcesados++;
       }
 
@@ -364,17 +353,15 @@ router.post('/torneos/:id/generar-ranking', async (req, res) => {
         const nombrePareja = j1
           ? `${j1.nombre_jugador} ${j1.apellido_jugador}`.trim()
           : '-';
-
-        const upsertParams2 = {
+        await upsertRanking({
           jugadorId: id2,
           nombre: j2.nombre_jugador,
           apellido: j2.apellido_jugador,
           ultimaPareja: nombrePareja,
           fase,
           puntosAAgregar: puntos,
-        };
-        console.log('[DEBUG] upsertRanking params (j2):', JSON.stringify(upsertParams2));
-        await upsertRanking(upsertParams2);
+          catUsada: isSuma ? (j2.cat_num ?? null) : null,
+        });
         jugadoresProcesados++;
       }
     }
@@ -385,7 +372,6 @@ router.post('/torneos/:id/generar-ranking', async (req, res) => {
       ok: true,
       torneo_id: torneoId,
       torneo: nombreTorneo,
-      categoria_ranking: Number(categoriaRanking),
       jugadores_procesados: jugadoresProcesados,
     });
   } catch (err) {
@@ -407,34 +393,27 @@ router.post('/torneos/:id/generar-ranking', async (req, res) => {
 router.get('/ranking', async (req, res) => {
   try {
     const { categoria } = req.query;
+    const sinFiltro = categoria == null || String(categoria).trim() === '';
 
-    // No mostrar nada hasta que el front elija una categoría
-    if (categoria == null || String(categoria).trim() === '') {
-      return res.json([]);
-    }
-
-    const catNum = Number(categoria);
-    if (Number.isNaN(catNum)) {
+    if (!sinFiltro && Number.isNaN(Number(categoria))) {
       return res.status(400).json({ error: 'Categoría inválida' });
     }
 
-    const result = await pool.query(
-      `
-      SELECT id,
-             jugador_id,
-             nombre,
-             apellido,
-             ultima_pareja,
-             torneo_participado,
-             fase_llegada,
-             puntos,
-             categoria
-      FROM ranking_jugador
-      WHERE categoria = $1
-      ORDER BY puntos DESC, apellido ASC, nombre ASC
-      `,
-      [catNum]
-    );
+    const result = sinFiltro
+      ? await pool.query(
+          `SELECT id, jugador_id, nombre, apellido, ultima_pareja,
+                  torneo_participado, fase_llegada, puntos, categoria
+           FROM ranking_jugador
+           ORDER BY puntos DESC, apellido ASC, nombre ASC`
+        )
+      : await pool.query(
+          `SELECT id, jugador_id, nombre, apellido, ultima_pareja,
+                  torneo_participado, fase_llegada, puntos, categoria
+           FROM ranking_jugador
+           WHERE categoria = $1
+           ORDER BY puntos DESC, apellido ASC, nombre ASC`,
+          [Number(categoria)]
+        );
 
     return res.json(result.rows);
   } catch (err) {

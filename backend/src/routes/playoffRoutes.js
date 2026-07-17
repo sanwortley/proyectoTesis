@@ -142,7 +142,7 @@ router.post("/torneos/:id/playoff", async (req, res) => {
     );
     if (ya.rowCount) {
       await client.query("ROLLBACK");
-      return res.status(409).json({ error: "El play-off ya fue generado" });
+      return res.json({ ok: true, message: "El play-off ya fue generado" });
     }
 
     // Validar que TODOS los partidos de grupos estén finalizados
@@ -216,27 +216,185 @@ router.post("/torneos/:id/playoff", async (req, res) => {
     let rondaInicial = "FINAL";
 
     if (gruposOrden.length === 1) {
-      // ----- Un solo grupo -----
-      const lista = byGroup[gruposOrden[0]];
-      if (lista.length < 2) {
+      // ----- Un solo grupo (liga o finde con 1 grupo) -----
+      const grupoId = gruposRes.rows[0].id_grupo;
+
+      const { rows: countRows } = await client.query(
+        `SELECT COUNT(*) AS total FROM equipos_grupo WHERE grupo_id=$1`,
+        [grupoId]
+      );
+      const totalEquipos = parseInt(countRows[0].total);
+      const clasifican = totalEquipos >= 8 ? 8 : totalEquipos >= 4 ? 4 : 2;
+
+      const { rows: topN } = await client.query(
+        `SELECT equipo_id FROM equipos_grupo WHERE grupo_id=$1
+         ORDER BY puntos DESC, (sets_favor - sets_contra) DESC, sets_favor DESC
+         LIMIT $2`,
+        [grupoId, clasifican]
+      );
+
+      if (topN.length < 2) {
         await client.query("ROLLBACK");
-        return res.status(400).json({
-          error:
-            "No hay suficientes clasificados en el grupo para armar play-off",
-        });
+        return res.status(400).json({ error: "No hay suficientes clasificados en el grupo para armar play-off" });
       }
-      if (lista.length >= 4) {
-        // SEMIS: 1 vs 4, 2 vs 3
-        rondaInicial = "SEMIS";
-        cruces.push({ local: lista[0].equipo_id, visita: lista[3].equipo_id }); // 1 vs 4
-        cruces.push({ local: lista[1].equipo_id, visita: lista[2].equipo_id }); // 2 vs 3
+
+      const s = topN.map(r => r.equipo_id);
+
+      if (s.length >= 8) {
+        // CUARTOS → SEMIS → FINAL  (8 equipos, seeding clásico)
+        const finalRes = await client.query(
+          `INSERT INTO partidos_llave (id_torneo, ronda, orden, estado) VALUES ($1,'FINAL',0,'no_iniciado') RETURNING id`,
+          [id]
+        );
+        const finalId = finalRes.rows[0].id;
+
+        const sem0 = await client.query(
+          `INSERT INTO partidos_llave (id_torneo, ronda, orden, estado, next_match_id, next_slot) VALUES ($1,'SEMIS',0,'no_iniciado',$2,1) RETURNING id`,
+          [id, finalId]
+        );
+        const sem1 = await client.query(
+          `INSERT INTO partidos_llave (id_torneo, ronda, orden, estado, next_match_id, next_slot) VALUES ($1,'SEMIS',1,'no_iniciado',$2,2) RETURNING id`,
+          [id, finalId]
+        );
+        const semId0 = sem0.rows[0].id;
+        const semId1 = sem1.rows[0].id;
+
+        // (1v8)→semi0/1, (4v5)→semi0/2, (2v7)→semi1/1, (3v6)→semi1/2
+        await client.query(
+          `INSERT INTO partidos_llave (id_torneo,ronda,orden,estado,equipo1_id,equipo2_id,next_match_id,next_slot) VALUES ($1,'CUARTOS',0,'no_iniciado',$2,$3,$4,1)`,
+          [id, s[0], s[7], semId0]
+        );
+        await client.query(
+          `INSERT INTO partidos_llave (id_torneo,ronda,orden,estado,equipo1_id,equipo2_id,next_match_id,next_slot) VALUES ($1,'CUARTOS',1,'no_iniciado',$2,$3,$4,2)`,
+          [id, s[3], s[4], semId0]
+        );
+        await client.query(
+          `INSERT INTO partidos_llave (id_torneo,ronda,orden,estado,equipo1_id,equipo2_id,next_match_id,next_slot) VALUES ($1,'CUARTOS',2,'no_iniciado',$2,$3,$4,1)`,
+          [id, s[1], s[6], semId1]
+        );
+        await client.query(
+          `INSERT INTO partidos_llave (id_torneo,ronda,orden,estado,equipo1_id,equipo2_id,next_match_id,next_slot) VALUES ($1,'CUARTOS',3,'no_iniciado',$2,$3,$4,2)`,
+          [id, s[2], s[5], semId1]
+        );
+
+        await client.query("COMMIT");
+        return res.json({ ok: true, rondaInicial: 'CUARTOS', partidos: 4, info: `Bracket de 8 (liga, top 8 de ${totalEquipos})` });
+
+      } else if (s.length >= 4) {
+        // SEMIS → FINAL  (4 equipos: 1v4, 2v3)
+        const finalRes = await client.query(
+          `INSERT INTO partidos_llave (id_torneo, ronda, orden, estado) VALUES ($1,'FINAL',0,'no_iniciado') RETURNING id`,
+          [id]
+        );
+        const finalId = finalRes.rows[0].id;
+
+        await client.query(
+          `INSERT INTO partidos_llave (id_torneo,ronda,orden,estado,equipo1_id,equipo2_id,next_match_id,next_slot) VALUES ($1,'SEMIS',0,'no_iniciado',$2,$3,$4,1)`,
+          [id, s[0], s[3], finalId]
+        );
+        await client.query(
+          `INSERT INTO partidos_llave (id_torneo,ronda,orden,estado,equipo1_id,equipo2_id,next_match_id,next_slot) VALUES ($1,'SEMIS',1,'no_iniciado',$2,$3,$4,2)`,
+          [id, s[1], s[2], finalId]
+        );
+
+        await client.query("COMMIT");
+        return res.json({ ok: true, rondaInicial: 'SEMIS', partidos: 2, info: `Bracket de 4 (liga, top 4 de ${totalEquipos})` });
+
       } else {
-        // FINAL directa: 1 vs 2
-        rondaInicial = "FINAL";
-        cruces.push({ local: lista[0].equipo_id, visita: lista[1].equipo_id });
+        // FINAL directa  (2 equipos)
+        await client.query(
+          `INSERT INTO partidos_llave (id_torneo,ronda,orden,estado,equipo1_id,equipo2_id) VALUES ($1,'FINAL',0,'no_iniciado',$2,$3)`,
+          [id, s[0], s[1]]
+        );
+        await client.query("COMMIT");
+        return res.json({ ok: true, rondaInicial: 'FINAL', partidos: 1, info: `Final directa (top 2 de ${totalEquipos})` });
       }
+
     } else {
       // ----- Múltiples grupos -----
+      // Caso especial: 3 grupos → top2 por grupo (6) + 2 mejores terceros = 8 equipos → CUARTOS completos
+      if (gruposOrden.length === 3) {
+        console.log(`[PLAYOFF DEBUG] Caso 3 grupos — bracket de 8 equipos (top2 + 2 mejores terceros)`);
+
+        // Buscar el 3er lugar de cada grupo
+        const terceros = [];
+        for (const g of gruposRes.rows) {
+          const { rows } = await client.query(
+            `SELECT equipo_id, puntos, (sets_favor - sets_contra) AS dif, sets_favor AS sf
+             FROM equipos_grupo WHERE grupo_id = $1
+             ORDER BY puntos DESC, (sets_favor - sets_contra) DESC, sets_favor DESC
+             LIMIT 3`,
+            [g.id_grupo]
+          );
+          if (rows.length >= 3) terceros.push(rows[2]);
+        }
+
+        // Ordenar los terceros y tomar los 2 mejores
+        terceros.sort((a, b) => {
+          if (b.puntos !== a.puntos) return b.puntos - a.puntos;
+          if (b.dif !== a.dif) return b.dif - a.dif;
+          return b.sf - a.sf;
+        });
+
+        const base6 = clasif.map(c => ({ equipo_id: c.equipo_id, puntos: c.puntos, dif: c.dif, sf: c.sf }));
+        const extra = terceros.slice(0, 2);
+        const total8 = [...base6, ...extra];
+
+        if (total8.length < 8) {
+          await client.query("ROLLBACK");
+          return res.status(400).json({ error: "No hay suficientes equipos para armar un bracket de 8 (cada grupo necesita al menos 3 equipos)" });
+        }
+
+        // Ordenar los 8 globalmente por criterio
+        const seeded = total8.sort((a, b) => {
+          if (b.puntos !== a.puntos) return b.puntos - a.puntos;
+          if (b.dif !== a.dif) return b.dif - a.dif;
+          return b.sf - a.sf;
+        });
+
+        const s = seeded.map(x => x.equipo_id); // s[0]=seed1 ... s[7]=seed8
+
+        // Crear FINAL
+        const finalRes = await client.query(
+          `INSERT INTO partidos_llave (id_torneo, ronda, orden, estado) VALUES ($1,'FINAL',0,'no_iniciado') RETURNING id`,
+          [id]
+        );
+        const finalId = finalRes.rows[0].id;
+
+        // Crear 2 SEMIS → apuntan a FINAL
+        const sem0 = await client.query(
+          `INSERT INTO partidos_llave (id_torneo, ronda, orden, estado, next_match_id, next_slot) VALUES ($1,'SEMIS',0,'no_iniciado',$2,1) RETURNING id`,
+          [id, finalId]
+        );
+        const sem1 = await client.query(
+          `INSERT INTO partidos_llave (id_torneo, ronda, orden, estado, next_match_id, next_slot) VALUES ($1,'SEMIS',1,'no_iniciado',$2,2) RETURNING id`,
+          [id, finalId]
+        );
+        const semId0 = sem0.rows[0].id;
+        const semId1 = sem1.rows[0].id;
+
+        // Crear 4 CUARTOS con seeding clásico: (1v8),(4v5) → semi0; (2v7),(3v6) → semi1
+        await client.query(
+          `INSERT INTO partidos_llave (id_torneo, ronda, orden, estado, equipo1_id, equipo2_id, next_match_id, next_slot) VALUES ($1,'CUARTOS',0,'no_iniciado',$2,$3,$4,1)`,
+          [id, s[0], s[7], semId0]
+        );
+        await client.query(
+          `INSERT INTO partidos_llave (id_torneo, ronda, orden, estado, equipo1_id, equipo2_id, next_match_id, next_slot) VALUES ($1,'CUARTOS',1,'no_iniciado',$2,$3,$4,2)`,
+          [id, s[3], s[4], semId0]
+        );
+        await client.query(
+          `INSERT INTO partidos_llave (id_torneo, ronda, orden, estado, equipo1_id, equipo2_id, next_match_id, next_slot) VALUES ($1,'CUARTOS',2,'no_iniciado',$2,$3,$4,1)`,
+          [id, s[1], s[6], semId1]
+        );
+        await client.query(
+          `INSERT INTO partidos_llave (id_torneo, ronda, orden, estado, equipo1_id, equipo2_id, next_match_id, next_slot) VALUES ($1,'CUARTOS',3,'no_iniciado',$2,$3,$4,2)`,
+          [id, s[2], s[5], semId1]
+        );
+
+        await client.query("COMMIT");
+        return res.json({ ok: true, rondaInicial: 'CUARTOS', partidos: 4, info: 'Bracket de 8 equipos (top2 + 2 mejores terceros)' });
+      }
+
       if (gruposOrden.length % 2 !== 0) {
         await client.query("ROLLBACK");
         return res.status(400).json({
@@ -269,15 +427,103 @@ router.post("/torneos/:id/playoff", async (req, res) => {
 
       const total = cruces.length * 2;
       console.log(`[PLAYOFF DEBUG] gruposOrden.length = ${gruposOrden.length}, cruces.length = ${cruces.length}, total = ${total}`);
+
+      // Determinar ronda inicial por tamaño total esperado (potencia de 2)
+      const nextPow2 = (n) => {
+        let p = 1;
+        while (p < n) p *= 2;
+        return p;
+      };
+
+      const isPow2 = (n) => (n & (n - 1)) === 0;
+      const P = nextPow2(total);
+
       rondaInicial =
-        total === 16
+        P === 16
           ? "OCTAVOS"
-          : total === 8
+          : P === 8
             ? "CUARTOS"
-            : total === 4
+            : P === 4
               ? "SEMIS"
               : "FINAL";
-      console.log(`[PLAYOFF DEBUG] rondaInicial = ${rondaInicial}`);
+
+      console.log(`[PLAYOFF DEBUG] rondaInicial = ${rondaInicial} (P=${P})`);
+
+      // Si la cantidad real de equipos (total) no es potencia de dos, armamos un bracket con byes
+      if (!isPow2(total)) {
+        console.log(`[PLAYOFF DEBUG] total=${total} no es potencia de 2 → aplicando byes: P=${P}`);
+
+        // ordenar clasificados globalmente por criterio (puntos, dif, sf)
+        const seeded = [...clasif].sort((a, b) => {
+          if (b.puntos !== a.puntos) return b.puntos - a.puntos;
+          if (b.dif !== a.dif) return b.dif - a.dif;
+          return b.sf - a.sf;
+        });
+
+        const byes = P - total; // cantidad de byes (mejores seeds avanzan)
+        const remainingTeams = seeded.slice(byes).map((x) => x.equipo_id);
+        const initialMatches = remainingTeams.length / 2;
+
+        // Crear idsPorRonda para rondas posteriores similar a estructura habitual
+        const RONDAS = ["OCTAVOS", "CUARTOS", "SEMIS", "FINAL"];
+        const ordenR = RONDAS.slice(RONDAS.indexOf(rondaInicial));
+        const idsPorRonda = {};
+        let count = initialMatches;
+        for (let i = 1; i < ordenR.length; i++) {
+          const ronda = ordenR[i];
+          const cant = Math.ceil(count / 2);
+          idsPorRonda[ronda] = [];
+          for (let j = 0; j < cant; j++) {
+            const ins = await client.query(
+              `
+              INSERT INTO partidos_llave (id_torneo, ronda, orden, estado)
+              VALUES ($1,$2,$3,'no_iniciado') RETURNING id
+            `,
+              [id, ronda, j]
+            );
+            idsPorRonda[ronda].push(ins.rows[0].id);
+          }
+          count = cant;
+        }
+
+        const siguiente = ordenR[1]; // ronda que sigue a la inicial
+
+        // Si hay byes, colocarlos directamente en la siguiente ronda como equipos precargados
+        if (byes > 0 && siguiente && idsPorRonda[siguiente]) {
+          for (let k = 0; k < byes; k++) {
+            const targetMatchId = idsPorRonda[siguiente][k % idsPorRonda[siguiente].length];
+            // intentamos colocar en equipo1 si está vacío
+            await client.query(
+              `UPDATE partidos_llave SET equipo1_id = $2 WHERE id = $1 AND equipo1_id IS NULL`,
+              [targetMatchId, seeded[k].equipo_id]
+            );
+          }
+        }
+
+        // Insertar partidos de ronda inicial (pareo de los restantes)
+        for (let i = 0; i < initialMatches; i++) {
+          const a = remainingTeams[i];
+          const b = remainingTeams[remainingTeams.length - 1 - i];
+          let nextId = null,
+            nextSlot = null;
+          if (siguiente) {
+            const idxNext = Math.floor(i / 2);
+            nextId = idsPorRonda[siguiente][idxNext];
+            nextSlot = i % 2 === 0 ? 1 : 2;
+          }
+          await client.query(
+            `
+            INSERT INTO partidos_llave
+              (id_torneo, ronda, orden, estado, equipo1_id, equipo2_id, next_match_id, next_slot)
+            VALUES ($1,$2,$3,'no_iniciado',$4,$5,$6,$7)
+          `,
+            [id, rondaInicial, i, a, b, nextId, nextSlot]
+          );
+        }
+
+        await client.query("COMMIT");
+        return res.json({ ok: true, rondaInicial, partidos: initialMatches, info: `Bracket con ${byes} byes creado (P=${P})` });
+      }
     }
 
     if (cruces.length === 0) {

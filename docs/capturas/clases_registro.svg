@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 260" font-family="Arial,sans-serif" font-size="10">
+  <rect width="620" height="260" fill="white"/>
+  <text x="310" y="18" text-anchor="middle" font-size="13" font-weight="bold">Diagrama de Clases — Registro</text>
+  <defs>
+    <marker id="open" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6" fill="none" stroke="#333" stroke-width="1.2"/>
+    </marker>
+  </defs>
+
+  <!-- RegisterForm (boundary) -->
+  <rect x="20" y="30" width="150" height="18" rx="2" fill="#2E4A7A"/>
+  <text x="95" y="43" text-anchor="middle" fill="white" font-size="9">«boundary»</text>
+  <rect x="20" y="48" width="150" height="18" fill="#dce9f8" stroke="#2E4A7A"/>
+  <text x="95" y="61" text-anchor="middle" font-weight="bold">RegisterForm</text>
+  <rect x="20" y="66" width="150" height="80" fill="white" stroke="#2E4A7A"/>
+  <text x="30" y="79" font-size="9">– nombre: string</text>
+  <text x="30" y="92" font-size="9">– apellido: string</text>
+  <text x="30" y="105" font-size="9">– email: string</text>
+  <text x="30" y="118" font-size="9">– telefono: string</text>
+  <text x="30" y="131" font-size="9">– password: string</text>
+  <rect x="20" y="146" width="150" height="20" fill="#f0f4fc" stroke="#2E4A7A"/>
+  <text x="30" y="159" font-size="9">+ handleSubmit()</text>
+
+  <!-- RegisterController (control) -->
+  <rect x="225" y="30" width="165" height="18" rx="2" fill="#4a7a2e"/>
+  <text x="307" y="43" text-anchor="middle" fill="white" font-size="9">«control»</text>
+  <rect x="225" y="48" width="165" height="18" fill="#e8f5d8" stroke="#4a7a2e"/>
+  <text x="307" y="61" text-anchor="middle" font-weight="bold">RegisterController</text>
+  <rect x="225" y="66" width="165" height="20" fill="white" stroke="#4a7a2e"/>
+  <text x="235" y="79" font-size="9">(sin atributos de estado)</text>
+  <rect x="225" y="86" width="165" height="40" fill="#f4fcea" stroke="#4a7a2e"/>
+  <text x="235" y="99" font-size="9">+ register(datos): Jugador</text>
+  <text x="235" y="112" font-size="9">+ validarEmail(email): bool</text>
+
+  <!-- Bcrypt (utility) -->
+  <rect x="225" y="160" width="165" height="18" rx="2" fill="#555"/>
+  <text x="307" y="173" text-anchor="middle" fill="white" font-size="9">«utility»</text>
+  <rect x="225" y="178" width="165" height="18" fill="#f0f0f0" stroke="#555"/>
+  <text x="307" y="191" text-anchor="middle" font-weight="bold">Bcrypt</text>
+  <rect x="225" y="196" width="165" height="20" fill="white" stroke="#555"/>
+  <text x="235" y="209" font-size="9">+ hash(pwd, rounds): string</text>
+
+  <!-- Jugador (entity) -->
+  <rect x="450" y="30" width="155" height="18" rx="2" fill="#7a2e2e"/>
+  <text x="527" y="43" text-anchor="middle" fill="white" font-size="9">«entity»</text>
+  <rect x="450" y="48" width="155" height="18" fill="#f8e8e8" stroke="#7a2e2e"/>
+  <text x="527" y="61" text-anchor="middle" font-weight="bold">Jugador</text>
+  <rect x="450" y="66" width="155" height="90" fill="white" stroke="#7a2e2e"/>
+  <text x="460" y="79" font-size="9">– id_jugador: int (PK)</text>
+  <text x="460" y="92" font-size="9">– nombre_jugador: varchar</text>
+  <text x="460" y="105" font-size="9">– apellido_jugador: varchar</text>
+  <text x="460" y="118" font-size="9">– email: varchar (UNIQUE)</text>
+  <text x="460" y="131" font-size="9">– password: varchar (hash)</text>
+  <text x="460" y="144" font-size="9">– rol: varchar = 'jugador'</text>
+
+  <!-- Relations -->
+  <line x1="170" y1="100" x2="225" y2="100" stroke="#333" stroke-width="1.5" marker-end="url(#open)"/>
+  <text x="180" y="95" font-size="8">llama</text>
+  <line x1="307" y1="126" x2="307" y2="160" stroke="#333" stroke-width="1.5" marker-end="url(#open)"/>
+  <text x="312" y="147" font-size="8">usa</text>
+  <line x1="390" y1="100" x2="450" y2="100" stroke="#333" stroke-width="1.5" marker-end="url(#open)"/>
+  <text x="400" y="95" font-size="8">crea</text>
+</svg>

@@ -6,9 +6,11 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/app.mjs",
     "dev": "nodemon src/app.mjs ",
     "docker:up": "docker-compose up --build",
-    "docker:down": "docker-compose down"
+    "docker:down": "docker-compose down",
+    "db:patch": "node tools/apply_schema_patch.js"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +25,8 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
-    "pg": "^8.16.0"
+    "node-cron": "^4.5.0",
+    "pg": "^8.16.0",
+    "resend": "^6.16.0"
   }
 }

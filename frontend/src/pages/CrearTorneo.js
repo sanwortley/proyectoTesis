@@ -31,12 +31,13 @@ function CrearTorneo() {
   const [formEdit, setFormEdit] = useState({});
   const [mensajeGrupos, setMensajeGrupos] = useState('');
   const [torneoConGrupos, setTorneoConGrupos] = useState(null);
+  const [confirmRegenerar, setConfirmRegenerar] = useState(null); // id del torneo pendiente de regenerar
 
   /* const location = useLocation(); // Eliminado por no uso */
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/categorias`)
+      .get(`/api/categorias`)
       .then((res) => setCategorias(res.data))
       .catch(() => setError('Error al cargar categorías'));
 
@@ -64,9 +65,19 @@ function CrearTorneo() {
       return;
     }
 
+    // Validaciones de fechas
+    if (fechaInicio && fecha_cierre_inscripcion && fecha_cierre_inscripcion > fechaInicio) {
+      setError('La fecha de cierre de inscripción no puede ser posterior al inicio del torneo.');
+      return;
+    }
+    if (modalidad !== 'liga' && fechaInicio && fechaFin && fechaFin < fechaInicio) {
+      setError('La fecha de finalización no puede ser anterior al inicio del torneo.');
+      return;
+    }
+
     try {
       // 👇 YA NO PEDIMOS /torneos/nuevo-id, lo genera la DB
-      await axios.post(`${process.env.REACT_APP_API_URL}/torneos`, {
+      await axios.post(`/api/torneos`, {
         nombre_torneo,
         fecha_inicio: fechaInicio,
         fecha_fin: modalidad === 'liga' ? null : fechaFin,
@@ -116,7 +127,7 @@ function CrearTorneo() {
 
   const obtenerTorneos = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/torneos`);
+      const res = await axios.get(`/api/torneos`);
       const todos = res.data;
       const hoy = new Date();
 
@@ -135,8 +146,8 @@ function CrearTorneo() {
       });
 
       const torneosValidos = todos.filter((t) => {
-        const fin = new Date(t.fecha_fin);
-        if (fin < hoy) return false; // finalizados van aparte
+        const fin = t.fecha_fin ? new Date(t.fecha_fin) : null;
+        if (fin && fin < hoy) return false; // finalizados van aparte
         const inicio = new Date(t.fecha_inicio);
         const diffDias = (hoy - inicio) / (1000 * 60 * 60 * 24);
         const esReciente = diffDias <= 7;
@@ -161,7 +172,7 @@ function CrearTorneo() {
   const obtenerEquipos = async (id_torneo) => {
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/torneos/${id_torneo}/equipos`
+        `/api/torneos/${id_torneo}/equipos`
       );
       setEquiposPorTorneo((prev) => ({
         ...prev,
@@ -172,22 +183,30 @@ function CrearTorneo() {
     }
   };
 
-  const eliminarEquipo = async (id_equipo) => {
+  const eliminarEquipo = async (id_equipo, id_torneo) => {
     try {
-      await axios.delete(
-        `${process.env.REACT_APP_API_URL}/equipos/${id_equipo}`
-      );
-      alert('Equipo eliminado');
-      obtenerTorneos();
+      const check = await axios.get(`/api/equipos/${id_equipo}/tiene-partidos`);
+      const tienePartidos = check.data?.tienePartidos;
+
+      const mensaje = tienePartidos
+        ? '⚠️ Este equipo ya tiene partidos generados.\nAl eliminarlo se borrarán sus partidos de grupos y playoff.\nVas a tener que regenerar los grupos.\n\n¿Confirmás?'
+        : '¿Eliminás este equipo?';
+
+      if (!window.confirm(mensaje)) return;
+
+      await axios.delete(`/api/equipos/${id_equipo}`);
+      await obtenerTorneos();
+      if (id_torneo) await obtenerEquipos(id_torneo);
     } catch (err) {
-      console.error('Error al eliminar equipo');
+      console.error('Error al eliminar equipo', err);
+      alert('No se pudo eliminar el equipo.');
     }
   };
 
   const eliminarTorneo = async (id_torneo) => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_API_URL}/torneos/${id_torneo}`
+        `/api/torneos/${id_torneo}`
       );
       alert('Torneo eliminado');
       obtenerTorneos();
@@ -197,6 +216,18 @@ function CrearTorneo() {
   };
 
   const editarTorneo = async () => {
+    // Validaciones de fechas
+    if (formEdit.fecha_inicio && formEdit.fecha_cierre_inscripcion &&
+        formEdit.fecha_cierre_inscripcion > formEdit.fecha_inicio) {
+      alert('La fecha de cierre de inscripción no puede ser posterior al inicio del torneo.');
+      return;
+    }
+    if (formEdit.modalidad !== 'liga' && formEdit.fecha_inicio && formEdit.fecha_fin &&
+        formEdit.fecha_fin < formEdit.fecha_inicio) {
+      alert('La fecha de finalización no puede ser anterior al inicio del torneo.');
+      return;
+    }
+
     try {
       const payload = {
         nombre_torneo: formEdit.nombre_torneo,
@@ -219,7 +250,7 @@ function CrearTorneo() {
       };
 
       await axios.put(
-        `${process.env.REACT_APP_API_URL}/torneos/${editando.id_torneo}`,
+        `/api/torneos/${editando.id_torneo}`,
         payload
       );
       setEditando(null);
@@ -241,22 +272,47 @@ function CrearTorneo() {
   };
 
   const generarGrupos = async (idTorneo) => {
-    try {
-      const res = await fetch(
-        `${process.env.REACT_APP_API_URL}/torneos/${idTorneo}/generar-grupos`,
-        { method: 'POST' }
-      );
+    const token = localStorage.getItem('token');
+    const headers = { Authorization: `Bearer ${token}` };
 
+    try {
+      await axios.post(`/api/torneos/${idTorneo}/generar-grupos`, {}, { headers });
       setTorneoConGrupos(idTorneo);
-      if (res.ok) {
-        setMensajeGrupos('Grupos generados correctamente');
-        obtenerTorneos();
-      } else {
-        setMensajeGrupos('Error al generar grupos');
-      }
+      setMensajeGrupos('Grupos generados correctamente');
+      obtenerTorneos();
     } catch (err) {
+      const status = err.response?.status;
+      const data = err.response?.data;
+
+      if (status === 400 && data?.error?.includes('ya fueron generados')) {
+        setConfirmRegenerar(idTorneo); // abre el confirm propio
+        return;
+      }
+
       console.error('Error generando grupos:', err);
-      setMensajeGrupos('Ocurrió un error inesperado');
+      setMensajeGrupos(data?.error || 'Error al generar grupos');
+    }
+  };
+
+  const confirmarRegenerarGrupos = async () => {
+    const idTorneo = confirmRegenerar;
+    setConfirmRegenerar(null);
+    const token = localStorage.getItem('token');
+    const headers = { Authorization: `Bearer ${token}` };
+
+    try {
+      await axios.delete(`/api/torneos/${idTorneo}/grupos`, { headers });
+    } catch {
+      setMensajeGrupos('Error al eliminar los grupos existentes');
+      return;
+    }
+    try {
+      await axios.post(`/api/torneos/${idTorneo}/generar-grupos`, {}, { headers });
+      setTorneoConGrupos(idTorneo);
+      setMensajeGrupos('Grupos regenerados correctamente');
+      obtenerTorneos();
+    } catch {
+      setMensajeGrupos('Error al regenerar grupos');
     }
   };
 
@@ -323,6 +379,7 @@ function CrearTorneo() {
                 <input
                   type="date"
                   value={fechaFin}
+                  min={fechaInicio || undefined}
                   onChange={(e) => setFechaFin(e.target.value)}
                   required={modalidad !== 'liga'}
                 />
@@ -333,6 +390,7 @@ function CrearTorneo() {
             <input
               type="date"
               value={fecha_cierre_inscripcion}
+              max={fechaInicio || undefined}
               onChange={(e) => setFechaCierreInscripcion(e.target.value)}
               required
             />
@@ -481,7 +539,7 @@ function CrearTorneo() {
                       }}>Finalizado</span>
                       <h3 style={{ color: '#bdc3c7', fontSize: '1.2rem' }}>{t.nombre_torneo}</h3>
                       <p style={{ fontSize: '0.9rem' }}><strong>Inicio:</strong> {new Date(t.fecha_inicio).toLocaleDateString()}</p>
-                      <p style={{ fontSize: '0.9rem' }}><strong>Fin:</strong> {new Date(t.fecha_fin).toLocaleDateString()}</p>
+                      <p style={{ fontSize: '0.9rem' }}><strong>Fin:</strong> {t.fecha_fin ? new Date(t.fecha_fin).toLocaleDateString('es-ES', { timeZone: 'UTC' }) : 'En curso'}</p>
                       <p style={{ fontSize: '0.9rem' }}>
                         <strong>Formato:</strong>{' '}
                         {t.formato_categoria === 'suma'
@@ -546,7 +604,7 @@ function CrearTorneo() {
                 </p>
                 <p>
                   <strong>Fin:</strong>{' '}
-                  {new Date(t.fecha_fin).toLocaleDateString()}
+                  {t.fecha_fin ? new Date(t.fecha_fin).toLocaleDateString('es-ES', { timeZone: 'UTC' }) : 'En curso'}
                 </p>
                 <p>
                   <strong>Cierre inscripción:</strong>{' '}
@@ -617,7 +675,7 @@ function CrearTorneo() {
                             {e.nombre_jugador2} {e.apellido_jugador2}
                           </span>
                           <button
-                            onClick={() => eliminarEquipo(e.id_equipo)}
+                            onClick={() => eliminarEquipo(e.id_equipo, t.id_torneo)}
                             className="btn-warning"
                           >
                             Eliminar equipo
@@ -675,6 +733,7 @@ function CrearTorneo() {
                     <input
                       type="date"
                       value={formEdit.fecha_fin || ''}
+                      min={formEdit.fecha_inicio || undefined}
                       onChange={(e) =>
                         setFormEdit({ ...formEdit, fecha_fin: e.target.value })
                       }
@@ -688,6 +747,7 @@ function CrearTorneo() {
                 <input
                   type="date"
                   value={formEdit.fecha_cierre_inscripcion || ''}
+                  max={formEdit.fecha_inicio || undefined}
                   onChange={(e) =>
                     setFormEdit({
                       ...formEdit,
@@ -802,6 +862,26 @@ function CrearTorneo() {
             <div className="modal-actions">
               <button className="btn-save" onClick={editarTorneo}>Guardar Cambios</button>
               <button className="btn-cancel" onClick={() => setEditando(null)}>Cancelar</button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Confirm regenerar grupos — reemplaza window.confirm() que iOS bloquea */}
+      {confirmRegenerar && ReactDOM.createPortal(
+        <div className="modal-overlay" onClick={() => setConfirmRegenerar(null)}>
+          <div className="modal-content premium-modal" onClick={e => e.stopPropagation()}
+            style={{ maxWidth: 360, padding: 0 }}>
+            <h3 style={{ fontSize: '1.1rem', padding: '20px 20px 12px' }}>⚠️ Regenerar grupos</h3>
+            <div style={{ padding: '0 24px 20px', color: '#ccc', fontSize: '0.9rem', lineHeight: 1.6 }}>
+              Ya existen grupos para este torneo.<br />
+              Si regenerás, se borrarán todos los resultados de partidos de grupos y playoff.<br /><br />
+              <strong style={{ color: '#ffd700' }}>¿Confirmás la regeneración?</strong>
+            </div>
+            <div className="modal-actions" style={{ padding: '0 24px 20px', gap: 12 }}>
+              <button className="btn-save" onClick={confirmarRegenerarGrupos}>Sí, regenerar</button>
+              <button className="btn-cancel" onClick={() => setConfirmRegenerar(null)}>Cancelar</button>
             </div>
           </div>
         </div>,

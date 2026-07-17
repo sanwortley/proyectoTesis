@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 
 import { generarGruposAleatorios } from '../utils/generarGrupos.js';
 import { generarPlayoffSiNoExiste } from '../utils/generarPlayoff.js';
+import { enviarConfirmacionInscripcion } from '../utils/mailer.js';
 
 const router = Router();
 
@@ -84,6 +85,9 @@ router.post('/registro-organizadores', async (req, res) => {
     const { rows } = await pool.query(q, [nombre_jugador, apellido_jugador, apodo, email, telefono, hashedPassword]);
     res.status(201).json({ jugador: rows[0] });
   } catch (error) {
+    if (error.code === '23505') {
+      return res.status(400).json({ error: 'El email ya está registrado' });
+    }
     console.error('Error al registrar organizador:', error);
     res.status(500).json({ error: 'No se pudo registrar el organizador' });
   }
@@ -132,6 +136,9 @@ router.post('/registro', async (req, res) => {
 
     return res.status(201).json({ jugador: rows[0] });
   } catch (error) {
+    if (error.code === '23505') {
+      return res.status(400).json({ error: 'El email ya está registrado' });
+    }
     console.error('Error al registrar jugador:', error);
     return res.status(500).json({ error: 'No se pudo registrar el jugador' });
   }
@@ -518,14 +525,18 @@ router.get('/torneos/:idTorneo/jugadores-disponibles', async (req, res) => {
     const { idTorneo } = req.params;
 
     const q = `
-      SELECT 
+      SELECT
         j.id_jugador,
         j.nombre_jugador,
         j.apellido_jugador,
+        j.apodo,
         j.rol,
-        j.categoria_id
+        j.categoria_id,
+        c.nombre        AS categoria_nombre,
+        c.valor_numerico
       FROM jugador j
-      WHERE j.rol = 'jugador'
+      LEFT JOIN categoria c ON c.id_categoria = j.categoria_id
+      WHERE (j.rol = 'jugador' OR (j.rol = 'organizador' AND j.categoria_id IS NOT NULL))
         AND j.id_jugador NOT IN (
           SELECT e.jugador1_id
           FROM inscripcion i
@@ -537,7 +548,7 @@ router.get('/torneos/:idTorneo/jugadores-disponibles', async (req, res) => {
           JOIN equipo e ON e.id_equipo = i.id_equipo
           WHERE i.id_torneo = $1
         )
-      ORDER BY j.apellido_jugador, j.nombre_jugador
+      ORDER BY c.valor_numerico, j.apellido_jugador, j.nombre_jugador
     `;
 
     const { rows } = await pool.query(q, [idTorneo]);
@@ -895,9 +906,13 @@ router.post('/inscripcion', async (req, res) => {
       return res.status(400).json({ error: 'La inscripción a este torneo ya está cerrada' });
     }
 
-    // ✅ B) Bloquear si alguno ya está inscripto en OTRO torneo que se pisa por fecha (comparten al menos 1 día)
+    // ✅ B) Chequeo de conflicto de fechas según modalidad:
+    //   - Liga: bloquear si hay solapamiento de rango completo (ya que los partidos son semanales)
+    //   - Fin de semana: solo bloquear si coincide el mismo día de inicio
+    const esLiga = torneo.modalidad === 'liga';
+
     const solapado = await client.query(`
-      SELECT t2.id_torneo, t2.nombre_torneo, t2.fecha_inicio, t2.fecha_fin
+      SELECT t2.id_torneo, t2.nombre_torneo, t2.fecha_inicio, t2.fecha_fin, t2.modalidad
       FROM inscripcion i
       JOIN equipo e ON i.id_equipo = e.id_equipo
       JOIN torneo t2 ON t2.id_torneo = i.id_torneo
@@ -907,15 +922,26 @@ router.post('/inscripcion', async (req, res) => {
         $2 IN (e.jugador1_id, e.jugador2_id)
       )
       AND i.id_torneo <> $3
-      AND NOT (t2.fecha_fin < $4 OR t2.fecha_inicio > $5)
+      AND (
+        -- Si alguno de los dos torneos es liga: bloquear solapamiento completo
+        ($6 = true OR t2.modalidad = 'liga')
+        AND NOT (t2.fecha_fin < $4 OR t2.fecha_inicio > $5)
+        OR
+        -- Si ambos son fin de semana: solo bloquear si es el mismo día
+        ($6 = false AND t2.modalidad <> 'liga')
+        AND t2.fecha_inicio = $4
+      )
       LIMIT 1
-    `, [jugador1_id, jugador2_id, id_torneo, torneo.fecha_inicio, torneo.fecha_fin]);
+    `, [jugador1_id, jugador2_id, id_torneo, torneo.fecha_inicio, torneo.fecha_fin, esLiga]);
 
     if (solapado.rowCount > 0) {
       await client.query('ROLLBACK');
       const t = solapado.rows[0];
+      const esConflictoLiga = esLiga || t.modalidad === 'liga';
       return res.status(400).json({
-        error: `Alguno de los jugadores ya está inscripto en otro torneo que se pisa por fecha: ${t.nombre_torneo}`
+        error: esConflictoLiga
+          ? `Alguno de los jugadores ya está inscripto en una liga que se superpone en fechas: ${t.nombre_torneo}`
+          : `Alguno de los jugadores ya está inscripto en otro torneo el mismo día: ${t.nombre_torneo}`
       });
     }
 
@@ -1032,18 +1058,15 @@ router.post('/inscripcion', async (req, res) => {
     const j1Data = resJ1.rows[0];
     const j2Data = resJ2.rows[0];
 
-    // Formato: ApodoApellido o solo Apellido
-    const getNombreDisplay = (j) => {
-      if (j.apodo) return `${j.apodo}${j.apellido_jugador}`;
-      return j.apellido_jugador;
-    };
+    // Formato: apodo si tiene, sino apellido (más único que nombre)
+    const getNombreDisplay = (j) => j.apodo || j.apellido_jugador;
 
     const n1 = getNombreDisplay(j1Data);
     const n2 = getNombreDisplay(j2Data);
 
     // Ordenar alfabéticamente para evitar duplicados A/B vs B/A
     const [name1, name2] = [n1, n2].sort();
-    const nombre_equipo = `${name1}/${name2}`;
+    const nombre_equipo = `${name1} / ${name2}`;
 
     const nuevoEquipo = await client.query(
       `INSERT INTO equipo (jugador1_id, jugador2_id, nombre_equipo)
@@ -1059,6 +1082,35 @@ router.post('/inscripcion', async (req, res) => {
 
     await client.query('COMMIT');
     res.status(201).json({ mensaje: 'Inscripción exitosa', nombre_equipo });
+
+    // Enviar emails de confirmación (sin await — no bloquea la respuesta)
+    try {
+      const emailsRes = await pool.query(
+        `SELECT j.nombre_jugador, j.apellido_jugador, j.email
+         FROM jugador j WHERE j.id_jugador = ANY($1::int[])`,
+        [[jugador1_id, jugador2_id]]
+      );
+      const torneoInfoRes = await pool.query(
+        `SELECT nombre_torneo, fecha_inicio FROM torneo WHERE id_torneo = $1`,
+        [id_torneo]
+      );
+      const t = torneoInfoRes.rows[0];
+      for (const j of emailsRes.rows) {
+        if (j.email) {
+          console.log('[MAIL] Enviando confirmación a:', j.email);
+          enviarConfirmacionInscripcion({
+            email: j.email,
+            nombre: `${j.nombre_jugador} ${j.apellido_jugador}`,
+            nombreEquipo: nombre_equipo,
+            nombreTorneo: t?.nombre_torneo || '',
+            fechaTorneo: t?.fecha_inicio || null,
+          }).then(() => console.log('[MAIL] Confirmación enviada a:', j.email))
+            .catch(err => console.error('[MAIL] Error enviando a', j.email, ':', err.message));
+        }
+      }
+    } catch (mailErr) {
+      console.error('[MAIL] error al enviar confirmación:', mailErr.message);
+    }
   } catch (error) {
     await client.query('ROLLBACK');
     console.error('Error en inscripción:', error);
@@ -1084,7 +1136,7 @@ router.get('/torneos/:idTorneo/jugadores-disponibles', async (req, res) => {
         j.rol,
         j.categoria_id
       FROM jugador j
-      WHERE j.rol = 'jugador'
+      WHERE (j.rol = 'jugador' OR (j.rol = 'organizador' AND j.categoria_id IS NOT NULL))
         AND j.id_jugador NOT IN (
           SELECT e.jugador1_id
           FROM inscripcion i
@@ -1161,13 +1213,34 @@ router.put('/equipos/:id', async (req, res) => {
   }
 });
 
+router.get('/equipos/:id/tiene-partidos', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const r = await pool.query(
+      `SELECT EXISTS (
+         SELECT 1 FROM partidos_grupo WHERE equipo1_id=$1 OR equipo2_id=$1
+         UNION ALL
+         SELECT 1 FROM partidos_llave WHERE equipo1_id=$1 OR equipo2_id=$1
+       ) AS tiene`,
+      [id]
+    );
+    res.json({ tienePartidos: r.rows[0]?.tiene === true });
+  } catch (err) {
+    res.json({ tienePartidos: false });
+  }
+});
+
 router.delete('/equipos/:id', async (req, res) => {
   const { id } = req.params;
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-    await client.query('DELETE FROM inscripcion WHERE id_equipo = $1', [id]);
-    await client.query('DELETE FROM equipo WHERE id_equipo = $1', [id]);
+    // Borrar en orden para respetar FK constraints
+    await client.query('DELETE FROM partidos_llave WHERE equipo1_id=$1 OR equipo2_id=$1 OR ganador_id=$1', [id]);
+    await client.query('DELETE FROM partidos_grupo WHERE equipo1_id=$1 OR equipo2_id=$1', [id]);
+    await client.query('DELETE FROM equipos_grupo WHERE equipo_id=$1', [id]);
+    await client.query('DELETE FROM inscripcion WHERE id_equipo=$1', [id]);
+    await client.query('DELETE FROM equipo WHERE id_equipo=$1', [id]);
     await client.query('COMMIT');
     res.json({ mensaje: 'Equipo eliminado correctamente' });
   } catch (error) {
@@ -1441,7 +1514,7 @@ router.get('/torneos/:id/grupos', async (req, res) => {
 
       const equiposRes = await client.query(
         `
-        SELECT 
+        SELECT
           eg.equipo_id,
           e.nombre_equipo,
           eg.puntos,
@@ -1457,7 +1530,12 @@ router.get('/torneos/:id/grupos', async (req, res) => {
         LEFT JOIN jugador j1 ON e.jugador1_id = j1.id_jugador
         LEFT JOIN jugador j2 ON e.jugador2_id = j2.id_jugador
         WHERE eg.grupo_id = $1
-        `,
+        ORDER BY
+          eg.puntos DESC,
+          (eg.sets_favor - eg.sets_contra) DESC,
+          (eg.games_favor - eg.games_contra) DESC,
+          eg.games_favor DESC
+`,
         [grupoId]
       );
 
@@ -1570,6 +1648,16 @@ router.put('/partidos-grupo/:id', async (req, res) => {
       return res.status(404).json({ error: 'Partido no encontrado' });
     }
     const { grupo_id, equipo1_id, equipo2_id } = partidoRes.rows[0];
+
+    const torneoRes = await client.query(
+      `SELECT id_torneo FROM grupos WHERE id_grupo = $1`,
+      [grupo_id]
+    );
+    if (torneoRes.rowCount === 0) {
+      await client.query('ROLLBACK');
+      return res.status(500).json({ error: 'No se pudo determinar el torneo del grupo' });
+    }
+    const idTorneo = torneoRes.rows[0].id_torneo;
 
     await client.query(
       `

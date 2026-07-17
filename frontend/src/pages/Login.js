@@ -19,22 +19,28 @@ function Login() {
 
     try {
       const res = await axios.post('/api/login', { email, password });
+      console.log('[LOGIN] response:', res.status, res.data);
       const { token, jugador } = res.data;
+
+      if (!jugador || !token) {
+        console.error('[LOGIN] Respuesta inesperada del servidor:', res.data);
+        setError('Error inesperado al iniciar sesión. Intenta de nuevo.');
+        return;
+      }
 
       const role = (jugador?.role ?? jugador?.rol ?? 'invitado').toLowerCase();
 
-      // 🔧 Normalizamos SIEMPRE las mismas claves:
       const user = {
-        id: jugador.id ?? jugador.id_jugador,
-        nombre: jugador.nombre ?? jugador.nombre_jugador ?? '',
-        apellido: jugador.apellido ?? jugador.apellido_jugador ?? '',
-        email: jugador.email ?? '',
+        id: jugador?.id ?? jugador?.id_jugador,
+        nombre: jugador?.nombre ?? jugador?.nombre_jugador ?? '',
+        apellido: jugador?.apellido ?? jugador?.apellido_jugador ?? '',
+        email: jugador?.email ?? '',
         role,
         token,
       };
 
       setJugador?.(user);
-      localStorage.setItem('user', JSON.stringify(user)); // <- clave única y consistente
+      localStorage.setItem('user', JSON.stringify(user));
 
       if (role === 'organizador') navigate('/home-organizador', { replace: true });
       else if (role === 'jugador') navigate('/home-jugador', { replace: true });
@@ -42,9 +48,9 @@ function Login() {
     } catch (err) {
       const status = err?.response?.status;
       if (status === 401) setError('Usuario o contraseña incorrectos');
-      else if (status === 404) setError('Jugador no encontrado');
+      else if (status === 404) setError('Jugador no encontrado. Registrate primero.');
       else setError('No se pudo iniciar sesión. Intentá nuevamente.');
-      console.error('Login error:', err?.response?.data || err.message);
+      console.error('[LOGIN] error status:', status, 'data:', err?.response?.data, 'msg:', err?.message);
     }
   };
 

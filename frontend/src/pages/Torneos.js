@@ -206,7 +206,7 @@ export default function Torneos() {
   const hayTorneo = Boolean(torneoActual);
 
 
-  const torneoFinalizado = torneoActual
+  const torneoFinalizado = torneoActual && torneoActual.fecha_fin
     ? new Date(torneoActual.fecha_fin) < new Date()
     : false;
 
@@ -315,7 +315,7 @@ export default function Torneos() {
       </div>
 
 
-      {/* Selector de mes */}
+      {/* Selector de mes — botones (desktop) */}
       <div className="meses-scroll">
         {Array.from({ length: 12 }, (_, i) => (
           <button
@@ -328,6 +328,21 @@ export default function Torneos() {
               .toUpperCase()}
           </button>
         ))}
+      </div>
+
+      {/* Selector de mes — dropdown (móvil) */}
+      <div className="meses-select-mobile-wrapper">
+        <select
+          className="meses-select-mobile"
+          value={mesSeleccionado}
+          onChange={(e) => setMesSeleccionado(Number(e.target.value))}
+        >
+          {Array.from({ length: 12 }, (_, i) => (
+            <option key={i} value={i}>
+              {new Date(0, i).toLocaleString('es-ES', { month: 'long' }).toUpperCase()}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="torneo-categorias-container">
@@ -371,7 +386,7 @@ export default function Torneos() {
                         transition: 'all 0.2s'
                       }}
                     >
-                      {t.modalidad === 'liga' ? '🏆 LIGA' : 'FINDE'} {new Date(t.fecha_inicio).getDate()}/{new Date(t.fecha_inicio).getMonth() + 1}
+                      {t.modalidad === 'liga' ? 'LIGA' : 'FINDE'} {new Date(t.fecha_inicio).getDate()}/{new Date(t.fecha_inicio).getMonth() + 1}
                     </button>
                   ))}
                 </div>
@@ -418,7 +433,7 @@ export default function Torneos() {
 
                       {torneoActual.modalidad === 'liga' && torneoActual.dias_juego && (
                         <p style={{ textAlign: 'center', fontSize: '0.9rem', color: '#ffd700', marginTop: '5px' }}>
-                          📅 Días: {torneoActual.dias_juego}
+                          Dias: {torneoActual.dias_juego}
                         </p>
                       )}
                     </>
@@ -484,7 +499,7 @@ export default function Torneos() {
             <>
               {!gruposCompletos && (
                 <div className="banner-aviso">
-                  🕒 Esperando resultados de la fase de grupos
+                  Esperando resultados de la fase de grupos
                 </div>
               )}
               <div className="grupos-grid">
@@ -495,6 +510,7 @@ export default function Torneos() {
                       }`}
                   >
                     <h3 className="grupo-titulo">{grupo.nombre}</h3>
+                    <div className="grupo-tabla-wrapper">
                     <table className="grupo-tabla">
                       <thead>
                         <tr className="grupo-tabla-encabezado">
@@ -507,7 +523,7 @@ export default function Torneos() {
                           <th title="Diferencia de Sets">DS</th>
                           <th title="Games a Favor">GF</th>
                           <th title="Games en Contra">GC</th>
-                          <th title="Diferencia de Games">DG</th>
+                          <th title="Diferencia de Games">GS</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -525,7 +541,7 @@ export default function Torneos() {
                             <td>{e.partidos_jugados}</td>
                             <td>{e.sets_favor}</td>
                             <td>{e.sets_contra}</td>
-                            <td>{e.sets_favor - e.sets_contra}</td>
+                            <td>{(e.sets_favor ?? 0) - (e.sets_contra ?? 0)}</td>
                             <td>{e.games_favor ?? 0}</td>
                             <td>{e.games_contra ?? 0}</td>
                             <td>{(e.games_favor ?? 0) - (e.games_contra ?? 0)}</td>
@@ -533,6 +549,7 @@ export default function Torneos() {
                         ))}
                       </tbody>
                     </table>
+                    </div>{/* grupo-tabla-wrapper */}
 
                     <h4 className="grupo-subtitulo">Partidos</h4>
                     <div className="grupo-partidos">
@@ -638,7 +655,7 @@ export default function Torneos() {
                   <>
                     {!gruposCompletos && (
                       <div className="banner-aviso">
-                        🕒 Esperando resultados de la fase de grupos
+                        Esperando resultados de la fase de grupos
                       </div>
                     )}
                     <div className="mensaje-playoff">

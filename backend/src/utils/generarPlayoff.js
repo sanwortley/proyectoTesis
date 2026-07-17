@@ -228,8 +228,11 @@ export async function generarPlayoffSiNoExiste(idTorneo) {
     }
 
     await client.query('COMMIT');
+    const semisCount = (segundaRonda === 'SEMIS')
+      ? segundaRondaIds.length
+      : (terceraRonda === 'SEMIS' ? terceraRondaIds.length : 0);
     console.log(
-      `[PLAYOFF] Árbol generado: N=${N}, cuartos=${cuartosIds.length}, semis=${semisIds.length}, final=1`
+      `[PLAYOFF] Árbol generado: N=${N}, cuartos=${cuartosIds.length}, semis=${semisCount}, final=1`
     );
   } catch (err) {
     // 👇 usar el mismo client

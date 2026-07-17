@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
+import { AlertTriangle, Trophy } from 'lucide-react';
 import axios from 'axios';
 import { formatName } from '../utils/formatName';
 import '../style.css';
-import '../ranking.css'; // New refined styles
+import '../ranking.css';
 
 function Ranking() {
   const [ranking, setRanking] = useState([]);
@@ -48,14 +49,13 @@ function Ranking() {
   }, [categoria]);
 
   return (
-    <div className="app-root">
-      <main className="ranking-page">
-        <header className="ranking-header">
+    <main className="ranking-page">
+        <div className="ranking-header">
           <h1 className="ranking-title">Ranking de Jugadores</h1>
           <p className="ranking-subtitle">
             Explorá el desempeño de los mejores jugadores. Puntos basados en fase alcanzada y bonus por victorias.
           </p>
-        </header>
+        </div>
 
         {/* Filtro por categoría */}
         <section className="filter-section">
@@ -84,14 +84,14 @@ function Ranking() {
 
           {error && !loading && (
             <div className="empty-state">
-              <span className="empty-state-icon">⚠️</span>
+              <AlertTriangle size={32} className="empty-state-icon" />
               <p className="error-text">{error}</p>
             </div>
           )}
 
           {!loading && !error && ranking.length === 0 && (
             <div className="empty-state">
-              <span className="empty-state-icon">🏆</span>
+              <Trophy size={32} className="empty-state-icon" />
               <p className="empty-state-text">
                 {categoria
                   ? 'No hay registros de ranking para esta categoría todavía.'
@@ -139,8 +139,7 @@ function Ranking() {
             </>
           )}
         </section>
-      </main>
-    </div>
+    </main>
   );
 }
 

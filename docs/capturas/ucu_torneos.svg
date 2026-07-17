@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 590" font-family="Arial,sans-serif" font-size="10">
+  <rect width="920" height="590" fill="white"/>
+  <text x="460" y="17" text-anchor="middle" font-size="13" font-weight="bold">UCU — Módulo Visualización de Torneos</text>
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7" fill="none" stroke="#333" stroke-width="1.2"/>
+    </marker>
+    <marker id="blu" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7" fill="none" stroke="#2E4A7A" stroke-width="1.2"/>
+    </marker>
+  </defs>
+
+  <!-- Boundary -->
+  <rect x="145" y="28" width="755" height="540" rx="6" fill="#f7f9fc" stroke="#2E4A7A" stroke-width="1.5"/>
+  <text x="522" y="46" text-anchor="middle" font-size="10" font-weight="bold" fill="#2E4A7A">Sistema — Módulo Ver Torneos</text>
+
+  <!-- Actor: Espectador -->
+  <circle cx="60" cy="210" r="14" fill="none" stroke="#333" stroke-width="1.5"/>
+  <line x1="60" y1="224" x2="60" y2="260" stroke="#333" stroke-width="1.5"/>
+  <line x1="42" y1="238" x2="78" y2="238" stroke="#333" stroke-width="1.5"/>
+  <line x1="60" y1="260" x2="42" y2="283" stroke="#333" stroke-width="1.5"/>
+  <line x1="60" y1="260" x2="78" y2="283" stroke="#333" stroke-width="1.5"/>
+  <text x="60" y="297" text-anchor="middle" font-size="9">Espectador</text>
+
+  <!-- Actor: Jugador -->
+  <circle cx="60" cy="390" r="14" fill="none" stroke="#333" stroke-width="1.5"/>
+  <line x1="60" y1="404" x2="60" y2="440" stroke="#333" stroke-width="1.5"/>
+  <line x1="42" y1="418" x2="78" y2="418" stroke="#333" stroke-width="1.5"/>
+  <line x1="60" y1="440" x2="42" y2="463" stroke="#333" stroke-width="1.5"/>
+  <line x1="60" y1="440" x2="78" y2="463" stroke="#333" stroke-width="1.5"/>
+  <text x="60" y="477" text-anchor="middle" font-size="9">Jugador</text>
+
+  <!-- UC Central: Ver Torneos -->
+  <ellipse cx="380" cy="280" rx="95" ry="30" fill="#d6e4f7" stroke="#2E4A7A" stroke-width="1.5"/>
+  <text x="380" y="276" text-anchor="middle" font-weight="bold">Ver Torneos</text>
+  <text x="380" y="291" text-anchor="middle" font-size="9">(listado / filtros)</text>
+
+  <!-- UC: Mostrar navbar -->
+  <ellipse cx="380" cy="90" rx="90" ry="24" fill="#e8f0fb" stroke="#2E4A7A" stroke-width="1.2"/>
+  <text x="380" y="95" text-anchor="middle">Mostrar navbar</text>
+
+  <!-- Navbar extends -->
+  <ellipse cx="250" cy="52" rx="80" ry="19" fill="#f0f4f0" stroke="#888" stroke-width="1"/>
+  <text x="250" y="57" text-anchor="middle" font-size="8.5">Navegar Ranking / Login</text>
+  <ellipse cx="520" cy="52" rx="80" ry="19" fill="#f0f4f0" stroke="#888" stroke-width="1"/>
+  <text x="520" y="57" text-anchor="middle" font-size="8.5">Navegar Home</text>
+
+  <!-- UC: Filtrar torneos -->
+  <ellipse cx="640" cy="160" rx="90" ry="24" fill="#e8f0fb" stroke="#2E4A7A" stroke-width="1.2"/>
+  <text x="640" y="165" text-anchor="middle">Filtrar torneos</text>
+
+  <!-- UC: Ver fixture del torneo -->
+  <ellipse cx="640" cy="260" rx="90" ry="24" fill="#e8f0fb" stroke="#2E4A7A" stroke-width="1.2"/>
+  <text x="640" y="256" text-anchor="middle">Ver fixture</text>
+  <text x="640" y="270" text-anchor="middle">del torneo</text>
+
+  <!-- UC: Ver ranking del torneo -->
+  <ellipse cx="640" cy="360" rx="90" ry="24" fill="#e8f0fb" stroke="#2E4A7A" stroke-width="1.2"/>
+  <text x="640" y="356" text-anchor="middle">Ver ranking</text>
+  <text x="640" y="370" text-anchor="middle">del torneo</text>
+
+  <!-- UC: Ver transmisión / multimedia -->
+  <ellipse cx="640" cy="455" rx="90" ry="24" fill="#e8f0fb" stroke="#2E4A7A" stroke-width="1.2"/>
+  <text x="640" y="451" text-anchor="middle">Ver transmisión</text>
+  <text x="640" y="465" text-anchor="middle">y multimedia</text>
+
+  <!-- Extends filtro: por mes -->
+  <ellipse cx="820" cy="130" rx="78" ry="20" fill="#f0f8f0" stroke="#4a7a2e" stroke-width="1"/>
+  <text x="820" y="135" text-anchor="middle" font-size="9">Filtrar por mes</text>
+
+  <!-- Extends filtro: por categoría -->
+  <ellipse cx="820" cy="190" rx="78" ry="20" fill="#f0f8f0" stroke="#4a7a2e" stroke-width="1"/>
+  <text x="820" y="195" text-anchor="middle" font-size="9">Filtrar por categoría</text>
+
+  <!-- Extends fixture: ver grupos -->
+  <ellipse cx="820" cy="240" rx="78" ry="20" fill="#f0f4f0" stroke="#888" stroke-width="1"/>
+  <text x="820" y="245" text-anchor="middle" font-size="9">Ver grupos de fase</text>
+
+  <!-- Extends fixture: ver llave playoff -->
+  <ellipse cx="820" cy="285" rx="78" ry="20" fill="#f0f4f0" stroke="#888" stroke-width="1"/>
+  <text x="820" y="290" text-anchor="middle" font-size="9">Ver llave Playoff</text>
+
+  <!-- Extends ranking: posiciones por grupo -->
+  <ellipse cx="820" cy="360" rx="78" ry="20" fill="#f0f4f0" stroke="#888" stroke-width="1"/>
+  <text x="820" y="356" text-anchor="middle" font-size="9">Ver posiciones</text>
+  <text x="820" y="370" text-anchor="middle" font-size="9">por grupo</text>
+
+  <!-- Extends Ver Torneos: Aplicar responsive -->
+  <ellipse cx="230" cy="170" rx="80" ry="22" fill="#f0f8f0" stroke="#4a7a2e" stroke-width="1"/>
+  <text x="230" y="166" text-anchor="middle" font-size="9">Aplicar diseño</text>
+  <text x="230" y="180" text-anchor="middle" font-size="9">responsive</text>
+
+  <!-- Extends Ver Torneos: Respetar estilo -->
+  <ellipse cx="230" cy="390" rx="80" ry="22" fill="#f0f8f0" stroke="#4a7a2e" stroke-width="1"/>
+  <text x="230" y="386" text-anchor="middle" font-size="9">Respetar estilo</text>
+  <text x="230" y="400" text-anchor="middle" font-size="9">gráfico</text>
+
+  <!-- Jugador: Ver mis resultados -->
+  <ellipse cx="380" cy="450" rx="90" ry="24" fill="#d6e4f7" stroke="#2E4A7A" stroke-width="1.3"/>
+  <text x="380" y="446" text-anchor="middle">Ver mis resultados</text>
+  <text x="380" y="460" text-anchor="middle">(perfil jugador)</text>
+
+  <!-- LÍNEAS -->
+  <line x1="74" y1="210" x2="285" y2="268" stroke="#333" stroke-width="1.3"/>
+  <line x1="74" y1="390" x2="285" y2="292" stroke="#333" stroke-width="1.3"/>
+  <line x1="74" y1="390" x2="290" y2="450" stroke="#333" stroke-width="1.3"/>
+
+  <!-- -use-> navbar -->
+  <line x1="380" y1="250" x2="380" y2="114" stroke="#2E4A7A" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="353" y="183" font-size="8" fill="#2E4A7A">«use»</text>
+
+  <!-- navbar Extends -->
+  <line x1="318" y1="76" x2="295" y2="65" stroke="#333" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+  <line x1="445" y1="76" x2="465" y2="65" stroke="#333" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+
+  <!-- -use-> Filtrar torneos -->
+  <line x1="473" y1="263" x2="550" y2="172" stroke="#2E4A7A" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="510" y="212" text-anchor="middle" font-size="8" fill="#2E4A7A">«use»</text>
+
+  <!-- -use-> Ver fixture -->
+  <line x1="475" y1="278" x2="550" y2="264" stroke="#2E4A7A" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="514" y="265" text-anchor="middle" font-size="8" fill="#2E4A7A">«use»</text>
+
+  <!-- -use-> Ver ranking -->
+  <line x1="475" y1="296" x2="550" y2="362" stroke="#2E4A7A" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="510" y="338" text-anchor="middle" font-size="8" fill="#2E4A7A">«use»</text>
+
+  <!-- -use-> Ver transmisión -->
+  <line x1="460" y1="304" x2="550" y2="452" stroke="#2E4A7A" stroke-width="1.1" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="500" y="385" text-anchor="middle" font-size="8" fill="#2E4A7A">«use»</text>
+
+  <!-- Filtrar Extends→ por mes, por categoría -->
+  <line x1="730" y1="153" x2="742" y2="138" stroke="#333" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+  <line x1="730" y1="165" x2="742" y2="188" stroke="#333" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+  <text x="762" y="158" font-size="8">Extends</text>
+
+  <!-- Ver fixture Extends→ grupos, llave -->
+  <line x1="730" y1="255" x2="742" y2="248" stroke="#333" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+  <line x1="730" y1="270" x2="742" y2="283" stroke="#333" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+  <text x="758" y="260" font-size="8">Extends</text>
+
+  <!-- Ver ranking Extends→ posiciones -->
+  <line x1="730" y1="360" x2="742" y2="360" stroke="#333" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+  <text x="748" y="348" font-size="8">Extends</text>
+
+  <!-- Responsive Extends→ Ver Torneos -->
+  <line x1="294" y1="185" x2="310" y2="264" stroke="#4a7a2e" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="282" y="232" font-size="8" fill="#4a7a2e">Extends</text>
+
+  <!-- Estilo gráfico Extends→ Ver Torneos -->
+  <line x1="294" y1="376" x2="310" y2="300" stroke="#4a7a2e" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="277" y="334" font-size="8" fill="#4a7a2e">Extends</text>
+
+  <!-- Leyenda -->
+  <rect x="160" y="522" width="355" height="42" rx="3" fill="#f9f9f9" stroke="#ccc"/>
+  <text x="338" y="538" text-anchor="middle" font-weight="bold" font-size="9">Leyenda</text>
+  <line x1="170" y1="550" x2="205" y2="550" stroke="#2E4A7A" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#blu)"/>
+  <text x="210" y="554" font-size="8">«use» — incluye el caso de uso</text>
+  <line x1="170" y1="561" x2="205" y2="561" stroke="#333" stroke-width="1.2" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+  <text x="210" y="565" font-size="8">Extends — comportamiento alternativo/extendido</text>
+</svg>

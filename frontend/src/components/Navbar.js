@@ -1,18 +1,38 @@
 // src/components/Navbar.js
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import '../style.css';
 import { useAuth } from '../context/AuthContext';
-import { LogOut } from 'lucide-react';
+import { LogOut, Menu, X } from 'lucide-react';
 
 export default function Navbar() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const navRef = useRef(null);
 
-  // ✅ Llamar SIEMPRE a useAuth (sin condicionales)
-  const auth = useAuth(); // suponiendo que existe el provider en el árbol
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
-  // Fallbacks por si tu AuthContext aún no tiene todas estas props
+  useEffect(() => {
+    const el = navRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(() => {
+      document.documentElement.style.setProperty(
+        '--navbar-height',
+        `${el.getBoundingClientRect().height}px`
+      );
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const auth = useAuth();
   const ctxUser = auth?.user ?? auth?.jugador ?? null;
   const ctxLogout = auth?.logout ?? (() => {
     localStorage.removeItem('user');
@@ -21,7 +41,6 @@ export default function Navbar() {
     navigate('/', { replace: true });
   });
 
-  // Leer del LS si no hay user en contexto
   let stored = null;
   try {
     stored =
@@ -41,31 +60,41 @@ export default function Navbar() {
       : role === 'jugador' ? '/home'
         : '/home';
 
+  const closeMenu = () => setMenuOpen(false);
+
   return (
-    <nav className="navbar">
+    <nav ref={navRef} className={`navbar${scrolled ? ' navbar-scrolled' : ''}`}>
       <div className="navbar-container">
         <div className="navbar-logo-container">
-          <Link to={homeByRole}>
+          <Link to={homeByRole} onClick={closeMenu}>
             <img src={logo} alt="Logo" className="navbar-logo" />
           </Link>
         </div>
 
-        <div className="navbar-links">
+        <button
+          className="navbar-hamburger"
+          onClick={() => setMenuOpen(prev => !prev)}
+          aria-label="Menú"
+        >
+          {menuOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
+
+        <div className={`navbar-links ${menuOpen ? 'open' : ''}`}>
           {/* Comunes */}
-          <Link to="/torneosllave" className={`nav-link ${isActive('/torneosllave')}`}><span>TORNEOS</span></Link>
-          <Link to="/ranking" className={`nav-link ${isActive('/ranking')}`}><span>RANKING</span></Link>
+          <Link to="/torneosllave" className={`nav-link ${isActive('/torneosllave')}`} onClick={closeMenu}><span>TORNEOS</span></Link>
+          <Link to="/ranking" className={`nav-link ${isActive('/ranking')}`} onClick={closeMenu}><span>RANKING</span></Link>
 
           {/* Invitado */}
           {role === 'invitado' && (
-            <button className="nav-logout" onClick={goLogin}>LOGIN</button>
+            <button className="nav-logout" onClick={() => { closeMenu(); goLogin(); }}>LOGIN</button>
           )}
 
           {/* Jugador */}
           {role === 'jugador' && (
             <>
-              <Link to="/inscripcion" className={`nav-link ${isActive('/inscripcion')}`}><span>INSCRIPCIÓN</span></Link>
-              <Link to="/perfil" className={`nav-link ${isActive('/perfil')}`}><span>MI PERFIL</span></Link>
-              <button className="nav-logout" onClick={ctxLogout} title="Cerrar Sesión">
+              <Link to="/inscripcion" className={`nav-link ${isActive('/inscripcion')}`} onClick={closeMenu}><span>INSCRIPCIÓN</span></Link>
+              <Link to="/perfil" className={`nav-link ${isActive('/perfil')}`} onClick={closeMenu}><span>MI PERFIL</span></Link>
+              <button className="nav-logout" onClick={() => { closeMenu(); ctxLogout(); }} title="Cerrar Sesión">
                 <LogOut size={20} />
               </button>
             </>
@@ -74,12 +103,13 @@ export default function Navbar() {
           {/* Organizador */}
           {role === 'organizador' && (
             <>
-              <Link to="/crear-torneo" className={`nav-link ${isActive('/crear-torneo')}`}><span>CREAR TORNEO</span></Link>
-              <Link to="/cargar-resultado" className={`nav-link ${isActive('/cargar-resultado')}`}><span>RESULTADOS</span></Link>
-              <Link to="/admin/jugadores" className={`nav-link ${isActive('/admin/jugadores')}`}><span>JUGADORES</span></Link>
-              <Link to="/dashboard" className={`nav-link ${isActive('/dashboard')}`}><span>DASHBOARD</span></Link>
-              <Link to="/perfil" className={`nav-link ${isActive('/perfil')}`}><span>MI PERFIL</span></Link>
-              <button className="nav-logout" onClick={ctxLogout} title="Cerrar Sesión">
+              <Link to="/crear-torneo" className={`nav-link ${isActive('/crear-torneo')}`} onClick={closeMenu}><span>CREAR TORNEO</span></Link>
+              <Link to="/cargar-resultado" className={`nav-link ${isActive('/cargar-resultado')}`} onClick={closeMenu}><span>RESULTADOS</span></Link>
+              <Link to="/admin/jugadores" className={`nav-link ${isActive('/admin/jugadores')}`} onClick={closeMenu}><span>JUGADORES</span></Link>
+              <Link to="/admin/inscripcion" className={`nav-link ${isActive('/admin/inscripcion')}`} onClick={closeMenu}><span>INSCRIBIR</span></Link>
+              <Link to="/dashboard" className={`nav-link ${isActive('/dashboard')}`} onClick={closeMenu}><span>DASHBOARD</span></Link>
+              <Link to="/perfil" className={`nav-link ${isActive('/perfil')}`} onClick={closeMenu}><span>MI PERFIL</span></Link>
+              <button className="nav-logout" onClick={() => { closeMenu(); ctxLogout(); }} title="Cerrar Sesión">
                 <LogOut size={20} />
               </button>
             </>
