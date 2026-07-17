@@ -123,6 +123,12 @@
     font-size: 1.6rem;
 }
 
+.admin-btn-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
 .admin-btn-nuevo {
     white-space: nowrap;
     flex-shrink: 0;
@@ -499,11 +505,14 @@
         letter-spacing: 0;
     }
 
+    .admin-btn-group {
+        width: 100%;
+    }
+
     .admin-btn-nuevo {
         font-size: 0.85rem;
         padding: 10px 14px;
-        max-width: none;
-        width: auto;
+        flex: 1;
     }
 
     /* Tabla scrollable dentro del wrapper (NO la página entera) */

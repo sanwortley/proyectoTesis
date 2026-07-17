@@ -176,7 +176,7 @@ export default function AdminJugadores() {
         <div className="admin-container admin-page-container">
             <div className="admin-page-header">
                 <h2 className="admin-page-title">Gestión de Jugadores</h2>
-                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <div className="admin-btn-group">
                     <button className="btn-save admin-btn-nuevo" onClick={handleCreateClick}>
                         + NUEVO JUGADOR
                     </button>
