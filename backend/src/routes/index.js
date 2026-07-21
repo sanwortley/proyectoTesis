@@ -742,7 +742,9 @@ router.put('/torneos/:id', async (req, res) => {
     fecha_inicio,
     fecha_fin,
     fecha_cierre_inscripcion,
-    max_equipos
+    max_equipos,
+    modalidad,
+    dias_juego
   } = req.body;
 
   if (!['categoria_fija', 'suma'].includes(formato_categoria)) {
@@ -766,8 +768,10 @@ router.put('/torneos/:id', async (req, res) => {
            max_equipos=$5,
            categoria_id=$6,
            formato_categoria=$7,
-           suma_categoria=$8
-       WHERE id_torneo=$9`,
+           suma_categoria=$8,
+           modalidad=$9,
+           dias_juego=$10
+       WHERE id_torneo=$11`,
       [
         nombre_torneo,
         fecha_inicio,
@@ -777,6 +781,8 @@ router.put('/torneos/:id', async (req, res) => {
         formato_categoria === 'categoria_fija' ? categoria_id : null,
         formato_categoria,
         formato_categoria === 'suma' ? suma_categoria : null,
+        modalidad || 'fin_de_semana',
+        modalidad === 'liga' ? (dias_juego || null) : null,
         id
       ]
     );

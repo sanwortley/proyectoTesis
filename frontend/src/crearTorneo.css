@@ -75,12 +75,19 @@
 }
 
 .crear-torneo-form input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    min-width: 18px;
-    padding: 0;
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    max-width: 18px !important;
+    padding: 0 !important;
+    background-color: transparent !important;
+    border-radius: 3px !important;
+    border: 2px solid #555 !important;
+    -webkit-appearance: checkbox !important;
+    appearance: checkbox !important;
     cursor: pointer;
     accent-color: #ffd700;
+    flex-shrink: 0;
 }
 
 /* iOS Safari: evita que date inputs desborden */
@@ -295,7 +302,7 @@
     flex: 1;
 }
 
-.modal-content input,
+.modal-content input:not([type="checkbox"]),
 .modal-content select {
     width: 100%;
     box-sizing: border-box;
@@ -305,6 +312,22 @@
     border-radius: 10px;
     color: #fff;
     font-size: 1rem;
+}
+
+.modal-content input[type="checkbox"] {
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    max-width: 18px !important;
+    padding: 0 !important;
+    background-color: transparent !important;
+    border-radius: 3px !important;
+    border: 2px solid #555 !important;
+    -webkit-appearance: checkbox !important;
+    appearance: checkbox !important;
+    cursor: pointer;
+    accent-color: #ffd700;
+    flex-shrink: 0;
 }
 
 .modal-content input:focus {
