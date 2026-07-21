@@ -157,18 +157,24 @@ export async function generarPlayoffSiNoExiste(idTorneo) {
       }
     }
 
-    // FINAL (siempre 1 partido)
-    const finalId = (
-      await client.query(
-        `
-        INSERT INTO partidos_llave
-          (id_torneo, ronda, orden, estado)
-        VALUES ($1,'FINAL',1,'no_iniciado')
-        RETURNING id
-        `,
-        [idTorneo]
-      )
-    ).rows[0].id;
+    // FINAL: si segundaRonda ya es 'FINAL', el partido fue creado arriba; si no, insertar uno nuevo
+    let finalId;
+    if (segundaRonda === 'FINAL') {
+      // N=4: SEMIS → FINAL; el único partido de FINAL ya está en segundaRondaIds[0]
+      finalId = segundaRondaIds[0];
+    } else {
+      finalId = (
+        await client.query(
+          `
+          INSERT INTO partidos_llave
+            (id_torneo, ronda, orden, estado)
+          VALUES ($1,'FINAL',1,'no_iniciado')
+          RETURNING id
+          `,
+          [idTorneo]
+        )
+      ).rows[0].id;
+    }
 
     // Linkear primera ronda → segunda ronda
     for (let i = 0; i < cuartosIds.length; i++) {
@@ -185,6 +191,7 @@ export async function generarPlayoffSiNoExiste(idTorneo) {
     }
 
     // Linkear segunda ronda → tercera ronda (o FINAL)
+    // Si segundaRonda === 'FINAL' no hay que linkear nada más (ya es la final)
     if (terceraRondaIds.length > 0) {
       // Hay tercera ronda (ej: OCTAVOS→CUARTOS→SEMIS)
       for (let i = 0; i < segundaRondaIds.length; i++) {
@@ -212,8 +219,8 @@ export async function generarPlayoffSiNoExiste(idTorneo) {
           [finalId, slot, terceraRondaIds[i]]
         );
       }
-    } else {
-      // No hay tercera ronda - segunda ronda va directo a FINAL
+    } else if (segundaRonda !== 'FINAL') {
+      // Segunda ronda va directo a FINAL (ej: CUARTOS→SEMIS→FINAL con N=8)
       for (let i = 0; i < segundaRondaIds.length; i++) {
         const slot = (i % 2) === 0 ? 1 : 2;
         await client.query(
