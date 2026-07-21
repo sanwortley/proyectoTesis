@@ -1,7 +1,6 @@
 import React from 'react';
 
-// Ajustar base URL según tu entorno (o usar variable de entorno)
-const BASE_URL = 'http://localhost:3000/';
+const BASE_URL = (process.env.REACT_APP_API_URL || 'http://localhost:3000/api').replace('/api', '');
 
 const TeamAvatar = ({ foto1, foto2, iniciales1, iniciales2, size = 30 }) => {
     const getUrl = (path) => {

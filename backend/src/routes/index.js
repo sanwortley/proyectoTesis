@@ -1535,7 +1535,11 @@ router.get('/torneos/:id/grupos', async (req, res) => {
           eg.games_favor,
           eg.games_contra,
           j1.foto_perfil AS foto1,
-          j2.foto_perfil AS foto2
+          j2.foto_perfil AS foto2,
+          j1.nombre_jugador AS j1_nombre,
+          j1.apellido_jugador AS j1_apellido,
+          j2.nombre_jugador AS j2_nombre,
+          j2.apellido_jugador AS j2_apellido
         FROM equipos_grupo eg
         JOIN equipo e ON eg.equipo_id = e.id_equipo
         LEFT JOIN jugador j1 ON e.jugador1_id = j1.id_jugador

@@ -534,7 +534,11 @@ export default function Torneos() {
                           >
                             <td><span className={`pos-rank pos-${i + 1}`}>{i + 1}</span></td>
                             <td className="grupo-equipo-nombre" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                              <TeamAvatar foto1={e.foto1} foto2={e.foto2} />
+                              <TeamAvatar
+                                foto1={e.foto1} foto2={e.foto2}
+                                iniciales1={e.j1_nombre ? `${e.j1_nombre[0]}${e.j1_apellido?.[0] || ''}`.toUpperCase() : null}
+                                iniciales2={e.j2_nombre ? `${e.j2_nombre[0]}${e.j2_apellido?.[0] || ''}`.toUpperCase() : null}
+                              />
                               <span>{e.nombre_equipo}</span>
                             </td>
                             <td><strong>{e.puntos}</strong></td>
@@ -583,11 +587,19 @@ export default function Torneos() {
 
                               <div className="game-col-teams">
                                 <div className="team-row">
-                                  <TeamAvatar foto1={eq1?.foto1} foto2={eq1?.foto2} size={28} />
+                                  <TeamAvatar
+                                    foto1={eq1?.foto1} foto2={eq1?.foto2} size={28}
+                                    iniciales1={eq1?.j1_nombre ? `${eq1.j1_nombre[0]}${eq1.j1_apellido?.[0] || ''}`.toUpperCase() : null}
+                                    iniciales2={eq1?.j2_nombre ? `${eq1.j2_nombre[0]}${eq1.j2_apellido?.[0] || ''}`.toUpperCase() : null}
+                                  />
                                   <span className="team-name-text">{p.equipo1}</span>
                                 </div>
                                 <div className="team-row">
-                                  <TeamAvatar foto1={eq2?.foto1} foto2={eq2?.foto2} size={28} />
+                                  <TeamAvatar
+                                    foto1={eq2?.foto1} foto2={eq2?.foto2} size={28}
+                                    iniciales1={eq2?.j1_nombre ? `${eq2.j1_nombre[0]}${eq2.j1_apellido?.[0] || ''}`.toUpperCase() : null}
+                                    iniciales2={eq2?.j2_nombre ? `${eq2.j2_nombre[0]}${eq2.j2_apellido?.[0] || ''}`.toUpperCase() : null}
+                                  />
                                   <span className="team-name-text">{p.equipo2}</span>
                                 </div>
                               </div>
