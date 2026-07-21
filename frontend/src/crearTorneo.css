@@ -57,7 +57,7 @@
     font-size: 0.95rem;
 }
 
-.crear-torneo-form input,
+.crear-torneo-form input:not([type="checkbox"]),
 .crear-torneo-form select {
     width: 100%;
     max-width: 100%;
@@ -72,6 +72,15 @@
     transition: border-color 0.2s;
     -webkit-appearance: none;
     appearance: none;
+}
+
+.crear-torneo-form input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    padding: 0;
+    cursor: pointer;
+    accent-color: #ffd700;
 }
 
 /* iOS Safari: evita que date inputs desborden */
