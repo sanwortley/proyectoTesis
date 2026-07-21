@@ -1570,6 +1570,7 @@ router.get('/torneos/:id/grupos', async (req, res) => {
         JOIN equipo e1 ON pg.equipo1_id = e1.id_equipo
         JOIN equipo e2 ON pg.equipo2_id = e2.id_equipo
         WHERE pg.grupo_id = $1
+        ORDER BY pg.fecha ASC NULLS LAST, pg.id ASC
         `,
         [grupoId]
       );
