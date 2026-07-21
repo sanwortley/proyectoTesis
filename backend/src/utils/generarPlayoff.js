@@ -15,36 +15,70 @@ export async function generarPlayoffSiNoExiste(idTorneo) {
     }
 
     // ============================
-    // TOP 2 POR GRUPO (CLASIFICADOS)
+    // CLASIFICADOS SEGÚN MODALIDAD
     // ============================
-    const clasif = await client.query(
-      `
-      SELECT
-        sub.equipo_id      AS id_equipo,
-        e.nombre_equipo,
-        sub.id_grupo,
-        sub.pos
-      FROM (
-        SELECT
-          eg.equipo_id,
-          g.id_grupo,
-          RANK() OVER (
-            PARTITION BY g.id_grupo
-            ORDER BY
-              eg.puntos DESC,
-              (eg.sets_favor - eg.sets_contra) DESC,
-              eg.sets_favor DESC
-          ) AS pos
-        FROM equipos_grupo eg
-        JOIN grupos g ON g.id_grupo = eg.grupo_id
-        WHERE g.id_torneo = $1
-      ) sub
-      JOIN equipo e ON e.id_equipo = sub.equipo_id
-      WHERE sub.pos <= 2               -- 👈 SOLO 1° y 2° de cada grupo
-      ORDER BY sub.id_grupo, sub.pos   -- 1° grupo A, 2° grupo A, 1° grupo B, 2° grupo B, etc.
-      `,
+    const torneoRes = await client.query(
+      'SELECT modalidad FROM torneo WHERE id_torneo = $1',
       [idTorneo]
     );
+    const modalidad = torneoRes.rows[0]?.modalidad ?? 'fin_de_semana';
+
+    let clasif;
+    if (modalidad === 'liga') {
+      // Liga: todos los equipos ordenados por tabla global (puntos, DS, DG, GF)
+      clasif = await client.query(
+        `
+        SELECT
+          eg.equipo_id                              AS id_equipo,
+          e.nombre_equipo,
+          SUM(eg.puntos)                            AS total_puntos,
+          SUM(eg.sets_favor  - eg.sets_contra)      AS total_ds,
+          SUM(eg.games_favor - eg.games_contra)     AS total_dg,
+          SUM(eg.games_favor)                       AS total_gf
+        FROM equipos_grupo eg
+        JOIN grupos  g ON g.id_grupo   = eg.grupo_id
+        JOIN equipo  e ON e.id_equipo  = eg.equipo_id
+        WHERE g.id_torneo = $1
+        GROUP BY eg.equipo_id, e.nombre_equipo
+        ORDER BY
+          total_puntos DESC,
+          total_ds     DESC,
+          total_dg     DESC,
+          total_gf     DESC
+        `,
+        [idTorneo]
+      );
+    } else {
+      // Fin de semana: top 2 por grupo
+      clasif = await client.query(
+        `
+        SELECT
+          sub.equipo_id      AS id_equipo,
+          e.nombre_equipo,
+          sub.id_grupo,
+          sub.pos
+        FROM (
+          SELECT
+            eg.equipo_id,
+            g.id_grupo,
+            RANK() OVER (
+              PARTITION BY g.id_grupo
+              ORDER BY
+                eg.puntos DESC,
+                (eg.sets_favor - eg.sets_contra) DESC,
+                eg.sets_favor DESC
+            ) AS pos
+          FROM equipos_grupo eg
+          JOIN grupos g ON g.id_grupo = eg.grupo_id
+          WHERE g.id_torneo = $1
+        ) sub
+        JOIN equipo e ON e.id_equipo = sub.equipo_id
+        WHERE sub.pos <= 2
+        ORDER BY sub.id_grupo, sub.pos
+        `,
+        [idTorneo]
+      );
+    }
 
     const seeds = clasif.rows; // [{id_equipo, nombre_equipo, id_grupo, pos}, ...]
     const N = seeds.length;
