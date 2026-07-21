@@ -283,37 +283,33 @@ export async function generarRankingTorneo(client, torneoId) {
     const j1 = eq.jugador1_id ? mapaJugadores.get(eq.jugador1_id) : null;
     const j2 = eq.jugador2_id ? mapaJugadores.get(eq.jugador2_id) : null;
 
+    const parejaDeJ1 = j2 ? `${j2.nombre_jugador} ${j2.apellido_jugador}`.trim() : '-';
+    const parejaDeJ2 = j1 ? `${j1.nombre_jugador} ${j1.apellido_jugador}`.trim() : '-';
+
     if (j1) {
       const r1 = await client.query(
         "SELECT id, puntos FROM ranking_jugador WHERE jugador_id = $1 AND categoria = $2",
-          [eq.jugador1_id, categoriaRanking]
+        [eq.jugador1_id, categoriaRanking]
       );
 
       if (r1.rowCount) {
         await client.query(
-          `
-          UPDATE ranking_jugador
-          SET puntos = puntos + $1
-          WHERE id = $2
-`,
-          [puntosTotalesEquipo, r1.rows[0].id]
+          `UPDATE ranking_jugador
+           SET puntos = puntos + $1,
+               nombre = $2,
+               apellido = $3,
+               ultima_pareja = $4,
+               torneo_participado = $5,
+               fase_llegada = $6
+           WHERE id = $7`,
+          [puntosTotalesEquipo, j1.nombre_jugador, j1.apellido_jugador, parejaDeJ1, nombreTorneo, fase, r1.rows[0].id]
         );
       } else {
         await client.query(
-          `
-          INSERT INTO ranking_jugador
-            (jugador_id, nombre, apellido, torneo_participado, fase_llegada, puntos, categoria)
-          VALUES ($1,$2,$3,$4,$5,$6,$7)
-          `,
-          [
-            eq.jugador1_id,
-            j1.nombre_jugador,
-            j1.apellido_jugador,
-            nombreTorneo,
-            fase,
-            puntosTotalesEquipo,
-            categoriaRanking,
-          ]
+          `INSERT INTO ranking_jugador
+             (jugador_id, nombre, apellido, ultima_pareja, torneo_participado, fase_llegada, puntos, categoria)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
+          [eq.jugador1_id, j1.nombre_jugador, j1.apellido_jugador, parejaDeJ1, nombreTorneo, fase, puntosTotalesEquipo, categoriaRanking]
         );
       }
       jugadoresProcesados++;
@@ -327,29 +323,22 @@ export async function generarRankingTorneo(client, torneoId) {
 
       if (r2.rowCount) {
         await client.query(
-          `
-          UPDATE ranking_jugador
-          SET puntos = puntos + $1
-          WHERE id = $2
-`,
-          [puntosTotalesEquipo, r2.rows[0].id]
+          `UPDATE ranking_jugador
+           SET puntos = puntos + $1,
+               nombre = $2,
+               apellido = $3,
+               ultima_pareja = $4,
+               torneo_participado = $5,
+               fase_llegada = $6
+           WHERE id = $7`,
+          [puntosTotalesEquipo, j2.nombre_jugador, j2.apellido_jugador, parejaDeJ2, nombreTorneo, fase, r2.rows[0].id]
         );
       } else {
         await client.query(
-          `
-          INSERT INTO ranking_jugador
-            (jugador_id, nombre, apellido, torneo_participado, fase_llegada, puntos, categoria)
-          VALUES ($1,$2,$3,$4,$5,$6,$7)
-          `,
-          [
-            eq.jugador2_id,
-            j2.nombre_jugador,
-            j2.apellido_jugador,
-            nombreTorneo,
-            fase,
-            puntosTotalesEquipo,
-            categoriaRanking,
-          ]
+          `INSERT INTO ranking_jugador
+             (jugador_id, nombre, apellido, ultima_pareja, torneo_participado, fase_llegada, puntos, categoria)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
+          [eq.jugador2_id, j2.nombre_jugador, j2.apellido_jugador, parejaDeJ2, nombreTorneo, fase, puntosTotalesEquipo, categoriaRanking]
         );
       }
       jugadoresProcesados++;
