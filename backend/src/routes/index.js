@@ -1289,6 +1289,14 @@ router.post('/torneos/:id/generar-grupos', async (req, res) => {
     const tInfo = await client.query('SELECT modalidad FROM torneo WHERE id_torneo = $1', [id]);
     const modalidad = tInfo.rows[0]?.modalidad || 'fin_de_semana';
 
+    // Liga requiere número par de equipos (todos juegan el playoff)
+    if (modalidad === 'liga' && equipos.length % 2 !== 0) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
+        error: `La modalidad liga requiere un número par de equipos. Actualmente hay ${equipos.length} equipo${equipos.length !== 1 ? 's' : ''}.`
+      });
+    }
+
     if (equipos.length === 2) {
       // (Misma lógica existente para 2 equipos - FINAL)
       await client.query(
@@ -1325,9 +1333,6 @@ router.post('/torneos/:id/generar-grupos', async (req, res) => {
       // --- LOGICA DE FIXTURE (ROUND ROBIN) ---
       // Algoritmo de Berger o similar
       let listaEquipos = [...equipos];
-      if (listaEquipos.length % 2 !== 0) {
-        listaEquipos.push(null); // Dummy para fecha libre
-      }
       const numRondas = listaEquipos.length - 1;
       const partPorFecha = listaEquipos.length / 2;
 
