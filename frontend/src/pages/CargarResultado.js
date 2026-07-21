@@ -180,6 +180,20 @@ export default function CargarResultado() {
     }));
   };
 
+  const handleScoreKeyDown = (e) => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    e.preventDefault();
+    const inputs = Array.from(document.querySelectorAll('.tabla-input'));
+    const idx = inputs.indexOf(e.target);
+    if (e.key === 'ArrowRight' && idx < inputs.length - 1) {
+      inputs[idx + 1].focus();
+      inputs[idx + 1].select();
+    } else if (e.key === 'ArrowLeft' && idx > 0) {
+      inputs[idx - 1].focus();
+      inputs[idx - 1].select();
+    }
+  };
+
   const guardarGrupo = async (grupo) => {
     const partidos = grupo.partidos || [];
     const key = grupo.id_grupo;
@@ -582,6 +596,7 @@ export default function CargarResultado() {
                                 <input
                                   className="tabla-input"
                                   type="text"
+                                  onKeyDown={handleScoreKeyDown}
                                   placeholder="-"
                                   value={val.set1_equipo1 ?? ""}
                                   onChange={(e) => handleInputGrupo(p.id, "set1_equipo1", e.target.value)}
@@ -590,6 +605,7 @@ export default function CargarResultado() {
                                 <input
                                   className="tabla-input"
                                   type="text"
+                                  onKeyDown={handleScoreKeyDown}
                                   placeholder="-"
                                   value={val.set1_equipo2 ?? ""}
                                   onChange={(e) => handleInputGrupo(p.id, "set1_equipo2", e.target.value)}
@@ -599,6 +615,7 @@ export default function CargarResultado() {
                                 <input
                                   className="tabla-input"
                                   type="text"
+                                  onKeyDown={handleScoreKeyDown}
                                   placeholder="-"
                                   value={val.set2_equipo1 ?? ""}
                                   onChange={(e) => handleInputGrupo(p.id, "set2_equipo1", e.target.value)}
@@ -607,6 +624,7 @@ export default function CargarResultado() {
                                 <input
                                   className="tabla-input"
                                   type="text"
+                                  onKeyDown={handleScoreKeyDown}
                                   placeholder="-"
                                   value={val.set2_equipo2 ?? ""}
                                   onChange={(e) => handleInputGrupo(p.id, "set2_equipo2", e.target.value)}
@@ -616,6 +634,7 @@ export default function CargarResultado() {
                                 <input
                                   className="tabla-input"
                                   type="text"
+                                  onKeyDown={handleScoreKeyDown}
                                   placeholder="-"
                                   value={val.set3_equipo1 ?? ""}
                                   onChange={(e) => handleInputGrupo(p.id, "set3_equipo1", e.target.value)}
@@ -624,6 +643,7 @@ export default function CargarResultado() {
                                 <input
                                   className="tabla-input"
                                   type="text"
+                                  onKeyDown={handleScoreKeyDown}
                                   placeholder="-"
                                   value={val.set3_equipo2 ?? ""}
                                   onChange={(e) => handleInputGrupo(p.id, "set3_equipo2", e.target.value)}
@@ -701,6 +721,7 @@ export default function CargarResultado() {
                                   <input
                                     className="tabla-input"
                                     type="text"
+                                    onKeyDown={handleScoreKeyDown}
                                     placeholder="-"
                                     value={val.set1_equipo1 ?? ""}
                                     onChange={(e) => handleInputPO(m.id, "set1_equipo1", e.target.value)}
@@ -709,6 +730,7 @@ export default function CargarResultado() {
                                   <input
                                     className="tabla-input"
                                     type="text"
+                                    onKeyDown={handleScoreKeyDown}
                                     placeholder="-"
                                     value={val.set1_equipo2 ?? ""}
                                     onChange={(e) => handleInputPO(m.id, "set1_equipo2", e.target.value)}
@@ -718,6 +740,7 @@ export default function CargarResultado() {
                                   <input
                                     className="tabla-input"
                                     type="text"
+                                    onKeyDown={handleScoreKeyDown}
                                     placeholder="-"
                                     value={val.set2_equipo1 ?? ""}
                                     onChange={(e) => handleInputPO(m.id, "set2_equipo1", e.target.value)}
@@ -726,6 +749,7 @@ export default function CargarResultado() {
                                   <input
                                     className="tabla-input"
                                     type="text"
+                                    onKeyDown={handleScoreKeyDown}
                                     placeholder="-"
                                     value={val.set2_equipo2 ?? ""}
                                     onChange={(e) => handleInputPO(m.id, "set2_equipo2", e.target.value)}
@@ -735,6 +759,7 @@ export default function CargarResultado() {
                                   <input
                                     className="tabla-input"
                                     type="text"
+                                    onKeyDown={handleScoreKeyDown}
                                     placeholder="-"
                                     value={val.set3_equipo1 ?? ""}
                                     onChange={(e) => handleInputPO(m.id, "set3_equipo1", e.target.value)}
@@ -743,6 +768,7 @@ export default function CargarResultado() {
                                   <input
                                     className="tabla-input"
                                     type="text"
+                                    onKeyDown={handleScoreKeyDown}
                                     placeholder="-"
                                     value={val.set3_equipo2 ?? ""}
                                     onChange={(e) => handleInputPO(m.id, "set3_equipo2", e.target.value)}
