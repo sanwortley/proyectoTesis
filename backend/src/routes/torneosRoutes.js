@@ -293,10 +293,9 @@ export async function generarRankingTorneo(client, torneoId) {
         await client.query(
           `
           UPDATE ranking_jugador
-          SET puntos = puntos + $1,
-              updated_at = NOW()
+          SET puntos = puntos + $1
           WHERE id = $2
-          `,
+`,
           [puntosTotalesEquipo, r1.rows[0].id]
         );
       } else {
@@ -330,10 +329,9 @@ export async function generarRankingTorneo(client, torneoId) {
         await client.query(
           `
           UPDATE ranking_jugador
-          SET puntos = puntos + $1,
-              updated_at = NOW()
+          SET puntos = puntos + $1
           WHERE id = $2
-          `,
+`,
           [puntosTotalesEquipo, r2.rows[0].id]
         );
       } else {
