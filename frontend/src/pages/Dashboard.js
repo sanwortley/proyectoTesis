@@ -6,7 +6,7 @@ import {
   PieChart, Pie, Cell, LineChart, Line
 } from 'recharts';
 import {
-  Trophy, Users, CheckCircle, Clock, UserCheck, ClipboardList, Shield
+  Trophy, Users, CheckCircle, Clock, UserCheck, ClipboardList, Shield, Download
 } from 'lucide-react';
 import './dashboard.css';
 // ... (existing helper functions)
@@ -278,6 +278,35 @@ export default function Dashboard() {
   );
 }
 
+function downloadBlob(content, filename, mime) {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportarCSV(rows) {
+  const cols = ['timestamp', 'nombre', 'apellido', 'ip', 'exitoso', 'motivo'];
+  const header = cols.join(',');
+  const body = rows.map(r =>
+    cols.map(c => {
+      const val = r[c] ?? '';
+      const str = String(val).replace(/"/g, '""');
+      return `"${str}"`;
+    }).join(',')
+  ).join('\n');
+  const fecha = new Date().toISOString().slice(0, 10);
+  downloadBlob(`${header}\n${body}`, `audit_ingresos_${fecha}.csv`, 'text/csv;charset=utf-8;');
+}
+
+function exportarJSON(rows) {
+  const fecha = new Date().toISOString().slice(0, 10);
+  downloadBlob(JSON.stringify(rows, null, 2), `audit_ingresos_${fecha}.json`, 'application/json');
+}
+
 function AuditSection({ logs, loading, search, onSearchChange, exitoso, onExitosoChange }) {
   const filtered = logs.filter(log => {
     const text = `${log.nombre ?? ''} ${log.apellido ?? ''} ${log.motivo ?? ''} ${log.ip ?? ''}`.toLowerCase();
@@ -377,7 +406,27 @@ function AuditSection({ logs, loading, search, onSearchChange, exitoso, onExitos
             ))}
           </div>
 
-          <p className="audit-count">{filtered.length} de {logs.length} registros</p>
+          <div className="audit-export-row">
+            <p className="audit-count">{filtered.length} de {logs.length} registros</p>
+            <div className="audit-export-btns">
+              <button
+                className="audit-export-btn"
+                onClick={() => exportarCSV(filtered)}
+                disabled={filtered.length === 0}
+                title="Exportar registros visibles como CSV"
+              >
+                <Download size={14} /> CSV
+              </button>
+              <button
+                className="audit-export-btn"
+                onClick={() => exportarJSON(filtered)}
+                disabled={filtered.length === 0}
+                title="Exportar registros visibles como JSON"
+              >
+                <Download size={14} /> JSON
+              </button>
+            </div>
+          </div>
         </>
       )}
     </div>

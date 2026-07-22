@@ -595,11 +595,48 @@
     border-color: #ef4444;
 }
 
+.audit-export-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.75rem;
+    gap: 8px;
+}
+
 .audit-count {
     color: #555;
     font-size: 0.78rem;
-    margin-top: 0.75rem;
-    text-align: right;
+    margin: 0;
+}
+
+.audit-export-btns {
+    display: flex;
+    gap: 8px;
+}
+
+.audit-export-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    background: transparent;
+    border: 1px solid #444;
+    border-radius: 5px;
+    color: #aaa;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.audit-export-btn:hover:not(:disabled) {
+    border-color: #FFD700;
+    color: #FFD700;
+}
+
+.audit-export-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
 }
 
 /* Mobile: ocultar tabla, mostrar cards */
@@ -661,7 +698,12 @@
         min-width: unset;
     }
 
+    .audit-export-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
     .audit-count {
-        text-align: center;
+        text-align: left;
     }
 }
