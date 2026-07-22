@@ -1675,6 +1675,30 @@ router.put('/partidos-grupo/:id', async (req, res) => {
     }
     const idTorneo = torneoRes.rows[0].id_torneo;
 
+    const sets = [
+      [set1_equipo1, set1_equipo2],
+      [set2_equipo1, set2_equipo2],
+      [set3_equipo1, set3_equipo2]
+    ];
+    let setsGanados1 = 0, setsGanados2 = 0, gamesFavor1 = 0, gamesFavor2 = 0;
+    for (const [s1, s2] of sets) {
+      if (s1 == null || s2 == null) continue;
+      if (s1 > s2) setsGanados1++; else if (s2 > s1) setsGanados2++;
+      gamesFavor1 += (s1 ?? 0);
+      gamesFavor2 += (s2 ?? 0);
+    }
+
+    // Validar que haya un ganador claro antes de marcar finalizado
+    if (setsGanados1 < 2 && setsGanados2 < 2) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
+        error: 'Resultado inválido: un equipo debe ganar al menos 2 sets para finalizar el partido.'
+      });
+    }
+
+    const puntos1 = setsGanados1 > setsGanados2 ? 3 : 0;
+    const puntos2 = setsGanados2 > setsGanados1 ? 3 : 0;
+
     await client.query(
       `
       UPDATE partidos_grupo
@@ -1692,21 +1716,6 @@ router.put('/partidos-grupo/:id', async (req, res) => {
         id
       ]
     );
-
-    const sets = [
-      [set1_equipo1, set1_equipo2],
-      [set2_equipo1, set2_equipo2],
-      [set3_equipo1, set3_equipo2]
-    ];
-    let setsGanados1 = 0, setsGanados2 = 0, gamesFavor1 = 0, gamesFavor2 = 0;
-    for (const [s1, s2] of sets) {
-      if (s1 == null || s2 == null) continue;
-      if (s1 > s2) setsGanados1++; else if (s2 > s1) setsGanados2++;
-      gamesFavor1 += (s1 ?? 0);
-      gamesFavor2 += (s2 ?? 0);
-    }
-    const puntos1 = setsGanados1 > setsGanados2 ? 3 : 0;
-    const puntos2 = setsGanados2 > setsGanados1 ? 3 : 0;
 
     // Adquirir locks en orden consistente (equipo_id ASC) para evitar deadlocks
     await client.query(

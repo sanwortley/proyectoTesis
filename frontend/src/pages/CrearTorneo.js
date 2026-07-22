@@ -400,6 +400,8 @@ function CrearTorneo() {
               placeholder="Máx equipos"
               value={max_equipos}
               onChange={(e) => setMaxEquipos(e.target.value)}
+              onWheel={(e) => e.target.blur()}
+              min="2"
               required
             />
 
@@ -766,6 +768,8 @@ function CrearTorneo() {
                     onChange={(e) =>
                       setFormEdit({ ...formEdit, max_equipos: e.target.value })
                     }
+                    onWheel={(e) => e.target.blur()}
+                    min="2"
                   />
                 </div>
                 <div className="form-group">

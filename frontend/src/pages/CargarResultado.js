@@ -216,6 +216,17 @@ export default function CargarResultado() {
           return;
         }
       }
+      // Validar que haya un ganador claro (mínimo 2 sets ganados por algún equipo)
+      let sg1 = 0, sg2 = 0;
+      for (const [a, b] of sets) {
+        if (a != null && b != null) {
+          if (a > b) sg1++; else if (b > a) sg2++;
+        }
+      }
+      if (sg1 < 2 && sg2 < 2) {
+        alert(`${p.equipo1} vs ${p.equipo2}: no hay ganador claro. Un equipo debe ganar al menos 2 sets.`);
+        return;
+      }
     }
 
     setGuardandoGrupo((prev) => new Set(prev).add(key));
