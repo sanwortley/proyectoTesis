@@ -37,6 +37,8 @@ function Login() {
         email: jugador?.email ?? '',
         role,
         token,
+        categoria_id: jugador?.categoria_id ?? null,
+        valor_numerico: jugador?.valor_numerico ?? null,
       };
 
       setJugador?.(user);
