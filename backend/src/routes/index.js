@@ -457,7 +457,17 @@ router.put('/jugadores/:id', verificarToken, upload.single('foto_perfil'), async
         values.push(apodo);
       }
     }
-    if (email) { fields.push(`email=$${idx++}`); values.push(email); }
+    if (email) {
+      const emailCheck = await client.query(
+        'SELECT id_jugador FROM jugador WHERE LOWER(TRIM(email)) = LOWER(TRIM($1)) AND id_jugador != $2',
+        [email, id]
+      );
+      if (emailCheck.rowCount > 0) {
+        await client.query('ROLLBACK');
+        return res.status(400).json({ error: 'El email ya está registrado por otro jugador.' });
+      }
+      fields.push(`email=$${idx++}`); values.push(email);
+    }
     if (telefono !== undefined) {
       if (telefono === 'null' || telefono === '') {
         fields.push(`telefono=$${idx++}`);
@@ -515,6 +525,9 @@ router.put('/jugadores/:id', verificarToken, upload.single('foto_perfil'), async
 
   } catch (error) {
     await client.query('ROLLBACK');
+    if (error.code === '23505') {
+      return res.status(400).json({ error: 'El email ya está registrado por otro jugador.' });
+    }
     console.error('Error al editar jugador:', error);
     res.status(500).json({ error: 'Error al actualizar el jugador' });
   } finally {
