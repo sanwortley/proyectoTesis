@@ -4,12 +4,17 @@ import pool from '../config/db.js';
 export async function generarPlayoffSiNoExiste(idTorneo) {
   const client = await pool.connect();
   try {
+    // Lock exclusivo por torneo: evita que llamadas concurrentes generen duplicados o deadlocks
+    await client.query('BEGIN');
+    await client.query('SELECT pg_advisory_xact_lock($1)', [idTorneo]);
+
     // ¿ya existe algo?
     const check = await client.query(
       'SELECT COUNT(*) FROM partidos_llave WHERE id_torneo = $1',
       [idTorneo]
     );
     if (parseInt(check.rows[0].count) > 0) {
+      await client.query('COMMIT');
       console.log('[PLAYOFF] Ya existía árbol, no se regenera');
       return;
     }
@@ -108,7 +113,6 @@ export async function generarPlayoffSiNoExiste(idTorneo) {
     // CUARTOS / SEMIS / FINAL
     // (para N=4,8,16... ahora con N=8 tenés 4 partidos de CUARTOS)
     // ============================
-    await client.query('BEGIN');
 
     const cuartosIds = [];
 
