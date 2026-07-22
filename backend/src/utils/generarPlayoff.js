@@ -85,7 +85,17 @@ export async function generarPlayoffSiNoExiste(idTorneo) {
       );
     }
 
-    const seeds = clasif.rows; // [{id_equipo, nombre_equipo, id_grupo, pos}, ...]
+    let seeds = clasif.rows; // [{id_equipo, nombre_equipo, ...}, ...]
+
+    // Para liga: recortar al mayor poder de 2 ≤ N (top 8 de 10, top 16 de 20, etc.)
+    if (modalidad === 'liga' && seeds.length > 2) {
+      const potencia = Math.pow(2, Math.floor(Math.log2(seeds.length)));
+      if (potencia < seeds.length) {
+        console.log(`[PLAYOFF] Liga: ${seeds.length} equipos → tomando top ${potencia}`);
+        seeds = seeds.slice(0, potencia);
+      }
+    }
+
     const N = seeds.length;
 
     if (N === 0) {
