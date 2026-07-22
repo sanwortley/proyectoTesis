@@ -1708,35 +1708,34 @@ router.put('/partidos-grupo/:id', async (req, res) => {
     const puntos1 = setsGanados1 > setsGanados2 ? 3 : 0;
     const puntos2 = setsGanados2 > setsGanados1 ? 3 : 0;
 
+    // Adquirir locks en orden consistente (equipo_id ASC) para evitar deadlocks
     await client.query(
-      `
-      UPDATE equipos_grupo
-      SET
-        puntos = puntos + $1,
-        partidos_jugados = partidos_jugados + 1,
-        sets_favor = sets_favor + $2,
-        sets_contra = sets_contra + $3,
-        games_favor = games_favor + $4,
-        games_contra = games_contra + $5
-      WHERE grupo_id = $6 AND equipo_id = $7
-      `,
-      [puntos1, setsGanados1, setsGanados2, gamesFavor1, gamesFavor2, grupo_id, equipo1_id]
+      `SELECT equipo_id FROM equipos_grupo
+       WHERE grupo_id = $1 AND equipo_id = ANY(ARRAY[$2,$3]::int[])
+       ORDER BY equipo_id FOR UPDATE`,
+      [grupo_id, equipo1_id, equipo2_id]
     );
 
-    await client.query(
-      `
-      UPDATE equipos_grupo
-      SET
-        puntos = puntos + $1,
-        partidos_jugados = partidos_jugados + 1,
-        sets_favor = sets_favor + $2,
-        sets_contra = sets_contra + $3,
-        games_favor = games_favor + $4,
-        games_contra = games_contra + $5
-      WHERE grupo_id = $6 AND equipo_id = $7
-      `,
-      [puntos2, setsGanados2, setsGanados1, gamesFavor2, gamesFavor1, grupo_id, equipo2_id]
-    );
+    // Determinar cuál id es menor para actualizar siempre en el mismo orden
+    const [primerEquipo, segundoEquipo] = equipo1_id < equipo2_id
+      ? [{ id: equipo1_id, puntos: puntos1, sf: setsGanados1, sc: setsGanados2, gf: gamesFavor1, gc: gamesFavor2 },
+         { id: equipo2_id, puntos: puntos2, sf: setsGanados2, sc: setsGanados1, gf: gamesFavor2, gc: gamesFavor1 }]
+      : [{ id: equipo2_id, puntos: puntos2, sf: setsGanados2, sc: setsGanados1, gf: gamesFavor2, gc: gamesFavor1 },
+         { id: equipo1_id, puntos: puntos1, sf: setsGanados1, sc: setsGanados2, gf: gamesFavor1, gc: gamesFavor2 }];
+
+    for (const eq of [primerEquipo, segundoEquipo]) {
+      await client.query(
+        `UPDATE equipos_grupo
+         SET puntos = puntos + $1,
+             partidos_jugados = partidos_jugados + 1,
+             sets_favor  = sets_favor  + $2,
+             sets_contra = sets_contra + $3,
+             games_favor  = games_favor  + $4,
+             games_contra = games_contra + $5
+         WHERE grupo_id = $6 AND equipo_id = $7`,
+        [eq.puntos, eq.sf, eq.sc, eq.gf, eq.gc, grupo_id, eq.id]
+      );
+    }
 
     await client.query('COMMIT');
 
