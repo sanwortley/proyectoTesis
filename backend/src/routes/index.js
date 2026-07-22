@@ -409,8 +409,11 @@ router.get('/jugadores/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const result = await pool.query(
-      `SELECT id_jugador, nombre_jugador, apellido_jugador, apodo, email, telefono, rol, categoria_id, foto_perfil
-       FROM jugador WHERE id_jugador = $1`,
+      `SELECT j.id_jugador, j.nombre_jugador, j.apellido_jugador, j.apodo, j.email, j.telefono,
+              j.rol, j.categoria_id, j.foto_perfil, c.valor_numerico
+       FROM jugador j
+       LEFT JOIN categoria c ON c.id_categoria = j.categoria_id
+       WHERE j.id_jugador = $1`,
       [id]
     );
     if (result.rowCount === 0) return res.status(404).json({ error: 'Jugador no encontrado' });
