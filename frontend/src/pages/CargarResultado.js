@@ -181,16 +181,20 @@ export default function CargarResultado() {
   };
 
   const handleScoreKeyDown = (e) => {
-    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const allowed = ['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'];
+    if (!allowed.includes(e.key)) return;
     e.preventDefault();
     const inputs = Array.from(document.querySelectorAll('.tabla-input'));
     const idx = inputs.indexOf(e.target);
-    if (e.key === 'ArrowRight' && idx < inputs.length - 1) {
-      inputs[idx + 1].focus();
-      inputs[idx + 1].select();
-    } else if (e.key === 'ArrowLeft' && idx > 0) {
-      inputs[idx - 1].focus();
-      inputs[idx - 1].select();
+    const INPUTS_POR_PARTIDO = 6; // 3 sets × 2 equipos
+    let target = -1;
+    if (e.key === 'ArrowRight') target = idx + 1;
+    else if (e.key === 'ArrowLeft') target = idx - 1;
+    else if (e.key === 'ArrowDown') target = idx + INPUTS_POR_PARTIDO;
+    else if (e.key === 'ArrowUp') target = idx - INPUTS_POR_PARTIDO;
+    if (target >= 0 && target < inputs.length) {
+      inputs[target].focus();
+      inputs[target].select();
     }
   };
 
